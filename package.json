@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/CRPT-FIT/crptFit/issues"
   },
-  "homepage": "https://github.com/Unconfined/crptFit#readme"
+  "homepage": "https://github.com/Unconfined/crptFit#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "knex": "^0.8.6"
+  }
 }
