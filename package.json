@@ -1,0 +1,19 @@
+{
+  "name": "crpt-fit",
+  "version": "1.0.0",
+  "description": "Social platform for fitness enthusiasts",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CRPT-FIT/crptFit.git"
+  },
+  "author": "Ricky Walker, Chris Castillo, Paul Keller, Ted Ly", 
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CRPT-FIT/crptFit/issues"
+  },
+  "homepage": "https://github.com/Unconfined/crptFit#readme"
+}
