@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/CRPT-FIT/crptFit.git"
   },
-  "author": "Ricky Walker, Chris Castillo, Paul Keller, Ted Ly", 
+  "author": "Ricky Walker, Chris Castillo, Paul Keller, Ted Ly",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/CRPT-FIT/crptFit/issues"
