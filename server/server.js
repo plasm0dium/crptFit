@@ -1,5 +1,5 @@
 var express = require('express');
-var db = require('mysql/config.js');
+var db = require('./mysql/config');
 
 var app = express();
 var port = process.env.PORT || 8000;
