@@ -1,29 +1,24 @@
-<!--
-Create tabs with an icon and label, using the tabs-positive style.
-Each tab's child <ion-nav-view> directive will have its own
-navigation history that also transitions its views in and out.
--->
-<ion-tabs class="tabs-icon-top tabs-color-active-positive">
+<ion-tabs tabs-style="tabs-icon-top" tabs-type="tabs-positive" animation="slide-left-right">
   <!-- ALL ROUTES NEED TO BE SET -->
-  <!-- Dashboard Tab -->
-  <ion-tab title="Home" icon-off="ion-ios-home-outline" icon-on="ion-ios-home" href="#/tab/dash">
-    <ion-nav-view name="tab-dash"></ion-nav-view>
+  <!-- home Tab -->
+  <ion-tab title="Home" icon-off="ion-ios-home-outline" icon-on="ion-ios-home" href="#/tab/homepage">
+    <ion-nav-view name="homepage-tab"></ion-nav-view>
   </ion-tab>
-  <!-- Account Tab -->
-  <ion-tab title="Profile" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" href="#/tab/account">
-    <ion-nav-view name="tab-account"></ion-nav-view>
+  <!-- Profile Tab -->
+  <ion-tab title="Profile" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" href="#/tab/profile">
+    <ion-nav-view name="profile-tab"></ion-nav-view>
   </ion-tab>
   <!-- Search tab -->
-  <ion-tab title="Search" icon-off="ion-ios-search" icon-on="ion-ios-search-strong" href="#/tab/account">
-    <ion-nav-view name="tab-account"></ion-nav-view>
+  <ion-tab title="Search" icon-off="ion-ios-search" icon-on="ion-ios-search-strong" href="#/tab/search">
+    <ion-nav-view name="search-tab"></ion-nav-view>
   </ion-tab>
   <!-- Friends Tab -->
-  <ion-tab title="Friends" icon-off="ion-ios-people-outline" icon-on="ion-ios-people" href="#/tab/account">
-    <ion-nav-view name="tab-account"></ion-nav-view>
+  <ion-tab title="Network" icon-off="ion-ios-people-outline" icon-on="ion-ios-people" href="#/tab/people">
+    <ion-nav-view name="group-tab"></ion-nav-view>
   </ion-tab>
-
-  <ion-tab title="Menu" icon-off="ion-grid" icon-on="ion-grid" href="#/tab/account">
-    <ion-nav-view name="tab-account"></ion-nav-view>
+<!-- Menu Tab -->
+  <ion-tab title="Menu" icon-off="ion-grid" icon-on="ion-grid" href="#/tab/menu">
+    <ion-nav-view name="menu-tab"></ion-nav-view>
   </ion-tab>
 
 </ion-tabs>
