@@ -63,6 +63,33 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
         }
       }
     })
+    .state('tab.progress', {
+      url: '/progress',
+      views: {
+        'progress-tab': {
+          templateUrl: 'templates/progress-tab.html',
+          controller: 'ProgressCtrl'
+        }
+      }
+    })
+    .state('tab.search', {
+      url: '/search',
+      views: {
+        'search-tab': {
+          templateUrl: 'templates/search-tab.html',
+          controller: 'SearchCtrl'
+        }
+      }
+    })
+    .state('tab.group', {
+      url: '/people',
+      views: {
+        'group-tab': {
+          templateUrl: 'templates/group-tab.html',
+          controller: 'GroupCtrl'
+        }
+      }
+    })
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');
 
