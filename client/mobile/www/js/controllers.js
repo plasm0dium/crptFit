@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('crptFit.controllers', [])
 
 .controller('DashCtrl', function($scope) {})
 
