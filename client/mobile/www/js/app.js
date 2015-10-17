@@ -29,6 +29,11 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
     controller: "LoginCtrl"
 
   })
+  .state('progress', {
+    url: '/progress',
+    templateUrl: 'templates/progress-tab.html',
+    controller: 'ProgressCtrl'
+  })
   // setup an abstract state for the tabs directive
     .state('tab', {
     url: '/tab',
@@ -60,15 +65,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
         'menu-tab': {
           templateUrl: 'templates/menu-tab.html',
           controller: 'MenuCtrl'
-        }
-      }
-    })
-    .state('tab.progress', {
-      url: '/progress',
-      views: {
-        'progress-tab': {
-          templateUrl: 'templates/progress-tab.html',
-          controller: 'ProgressCtrl'
         }
       }
     })
