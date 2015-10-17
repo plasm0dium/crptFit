@@ -34,6 +34,7 @@ db.knex.schema.hasTable('tasks').then(function(exists) {
       t.string('description', 100);
       t.boolean('complete');
       t.integer('user_id');
+      t.timestamps();
     });
   }
 })
@@ -60,6 +61,7 @@ db.knex.schema.hasTable('stats').then(function(exists) {
       t.increments('id').primary();
       t.integer('weight');
       t.integer('user_id');
+      t.timestaps();
     });
   }
 })
