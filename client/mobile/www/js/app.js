@@ -45,6 +45,24 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
         }
       }
     })
+    .state('tab.homepage', {
+      url: '/homepage',
+      views: {
+        'homepage-tab': {
+          templateUrl: 'templates/homepage-tab.html',
+          controller: 'HomeCtrl'
+        }
+      }
+    })
+    .state('tab.menu', {
+      url: '/menu',
+      views: {
+        'menu-tab': {
+          templateUrl: 'templates/menu-tab.html',
+          controller: 'MenuCtrl'
+        }
+      }
+    })
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');
 
