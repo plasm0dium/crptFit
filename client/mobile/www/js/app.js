@@ -30,7 +30,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
+  .state('login', {
+    url: '/login',
+    templateUrl: 'templates/login-tab.html',
+    controller: "LoginCtrl"
 
+  })
   // setup an abstract state for the tabs directive
     .state('tab', {
     url: '/tab',
@@ -38,25 +43,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     templateUrl: 'templates/tabs.html'
   })
   // Each tab has its own nav history stack:
-    .state('tab.login', {
-      url: '/login',
-        views: {
-          'tab-login' : {
-            templateUrl: 'templates/login-tab.html',
-            controller: "LoginCtrl"
-          }
-        }
-    })
     .state('tab.profile', {
       url: '/profile',
       views: {
-        'tab-profile': {
+        'profile-tab': {
           templateUrl: 'templates/profile-tab.html',
           controller: 'ProfileCtrl'
         }
       }
     })
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/login');
+  $urlRouterProvider.otherwise('/login');
 
 });
