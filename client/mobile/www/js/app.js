@@ -45,6 +45,15 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
         }
       }
     })
+    .state('tab.progress', {
+      url: '/progress',
+      views: {
+        'profile-tab':{
+          templateUrl: 'templates/progress-tab.html',
+          controller: 'ProgressCtrl'
+        }
+      }
+    })
     .state('tab.homepage', {
       url: '/homepage',
       views: {
@@ -60,15 +69,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
         'menu-tab': {
           templateUrl: 'templates/menu-tab.html',
           controller: 'MenuCtrl'
-        }
-      }
-    })
-    .state('tab.progress', {
-      url: '/progress',
-      views: {
-        'progress-tab': {
-          templateUrl: 'templates/progress-tab.html',
-          controller: 'ProgressCtrl'
         }
       }
     })
