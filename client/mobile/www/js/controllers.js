@@ -10,6 +10,6 @@ angular.module('crptFit.controllers', [])
 
 .controller('ProgressCtrl', [function() { }])
 
-.controller('SearchCtrl', [function() { }])
+.controller('MessagesCtrl', function($scope) { })
 
 .controller('GroupCtrl', [function() { }])
