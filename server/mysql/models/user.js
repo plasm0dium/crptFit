@@ -1,4 +1,4 @@
-var db = require('./mysql/config');
+var db = require('../config.js');
 
 require('./task');
 require('./client');
@@ -23,10 +23,8 @@ var User = db.Model.extend({
   },
 }, {
   //User Class Methods
-fetchById: function(id) {
-  return new this({
-    id: id
-    }).fetch();
+fetchById: function(options) {
+  return new this(options).fetch();
   },
 fetchByUsername: function (username) {
   return this({
@@ -41,6 +39,6 @@ fetchByName: function (name) {
 newUser: function (options) {
   return new this(options);
   }
-}
+})
 
 module.exports = db.model('User', User);
