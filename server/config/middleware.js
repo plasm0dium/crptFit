@@ -4,48 +4,28 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var session = require('express-session');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 var app = express();
 
 var routes = require('../routes/index');
-var auth = require('../routes/auth');
+var auth = require('./auth');
+var users = require('../routes/users');
 
 
-app.use(logger('dev'));
-app.use(bodyParser.json());
+app.use(logger('dev')); // log every request to console
+app.use(bodyParser.json()); // get information from html 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(__dirname + '/../../client/mobile/www'));
+app.use(cookieParser()); // read cookies (needed for auth)
+app.use(express.static(__dirname + '/../../client/mobile/www')); // render view 
 
 
-app.use(session({secret: "Bcrypt for life"}));
+app.use(session({secret: "Bcrypt for life"})); // session secret
 
-app.use(passport.initialize());
-app.use(passport.session());
+require('./passport')(app);
 
-// place a user into session
-passport.serializeUser(function(user, done){
-	done(null, user.id);
-});
-
-// pull a user out of session
-passport.deserializeUser(function(user, done){
-	done(null, user.id);
-});
-
-passport.use(new GoogleStrategy({
-    clientID: '927552591724-9ca3d7s5e8i8j2r26tgcpkr83bfh2c8p.apps.googleusercontent.com',
-    clientSecret: '0_MDGzk33aBM4g-wkXUWwHim',
-    callbackURL: "http://localhost:8000/"
-  },
-  function(accessToken, refreshToken, profile, done) {
-    	done(null, profile);
-    })
-);
-
-// app.use('/', routes);
-// app.use('/auth', auth);
+app.use('/', routes);
+app.use('/auth', auth);
+app.use('/users', users)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
