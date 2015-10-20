@@ -10,7 +10,6 @@ module.exports = function (passport) {
     });
 
   passport.deserializeUser(function (id ,done) {
-    console.log('deserializeUser :', db.model('User').fetchById({ fbId: id }))
     db.model('User').fetchById({ fbId: id })
         .then(function(user) {
           done(null, user);
@@ -26,6 +25,7 @@ module.exports = function (passport) {
       clientSecret: Auth.clientSecret,
       passReqToCallback: true,
       enabledProof: false,
+      profileFields: ['id', 'birthday', 'email', 'displayName', 'gender', 'photos', 'friends', 'about'],
       callbackURL: "http://localhost:8100/auth/facebook/callback"
     },
   function(req, accessToken, refreshToken, profile, done) {
@@ -49,6 +49,6 @@ module.exports = function (passport) {
       return done(err, false)
     })
 
-    console.log(profile);
+    console.log("PROFILE", profile._json.friends);
   }))
 }
