@@ -1,4 +1,4 @@
-angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
+angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', 'highcharts-ng'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
