@@ -29,7 +29,7 @@ fetchById: function(options) {
 fetchByUsername: function (username) {
   return this({
     username: username,
-    }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends']});
+  }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends']});
 },
 fetchByName: function (name) {
   return this({

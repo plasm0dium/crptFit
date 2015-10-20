@@ -15,7 +15,7 @@ var Task = db.Model.extend({
   fetchById: function (id) {
     return new this({
       id: id
-    }).fetch({withRelated: ['User']})
+    }).fetch({withRelated: ['user']})
   }
 })
 

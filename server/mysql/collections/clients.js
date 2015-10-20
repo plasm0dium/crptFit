@@ -1,8 +1,8 @@
-var db = require('..config');
+var db = require('../config');
 
-require('./mysql/models/client');
+require('../models/client');
 
-var Clients = db.collection('Clients').extend({
+var Clients = db.Collection.extend({
   model: db.model('Client')
 }, {
   fetchByUser: function(userId) {
