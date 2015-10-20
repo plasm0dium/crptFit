@@ -1,9 +1,9 @@
 var express = require('express');
 var db = require('./mysql/config');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 var passport = require('passport');
 
-var morgan = require('morgan')
+var morgan = require('morgan');
 var app = express();
 var port = process.env.PORT || 8100;
 
@@ -36,13 +36,13 @@ app.get('/auth/facebook',
 app.get('/auth/facebook/callback', function (req, res, next) {
   passport.authenticate('facebook',
     function(err, user, info) {
+      if (err) { return next(err); }
+      req.logIn(user, function(err) {
         if (err) { return next(err); }
-        req.logIn(user, function(err) {
-          if (err) { return next(err); }
-          console.log('USER LOGGED IN: ', req.user);
-          res.redirect( '/#/tab/homepage' );
-        });
-      })(req, res, next);
+        console.log('USER LOGGED IN: ', req.user);
+        res.redirect( '/#/tab/homepage' );
+      });
+    })(req, res, next);
 })
 
 app.get('/logout', function(req, res){
@@ -55,7 +55,6 @@ app.get('/logout', function(req, res){
 app.get('/hello', function (req,res) {
   console.log('REQ.USER: ', req.user)
 })
-
 
 app.listen(port, function(){
   console.log('listening on port...', port);

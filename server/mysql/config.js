@@ -23,7 +23,7 @@ db.knex.schema.hasTable('users').then(function(exists) {
     });
   }
 })
-.then(function(t){
+.then(function(t) {
   console.log('created table:', t);
 });
 
@@ -38,7 +38,7 @@ db.knex.schema.hasTable('tasks').then(function(exists) {
     });
   }
 })
-.then(function(t){
+.then(function(t) {
   console.log('created table:', t);
 });
 
@@ -51,7 +51,7 @@ db.knex.schema.hasTable('clients').then(function(exists) {
     });
   }
 })
-.then(function(t){
+.then(function(t) {
   console.log('created table:', t);
 });
 
@@ -65,7 +65,7 @@ db.knex.schema.hasTable('stats').then(function(exists) {
     });
   }
 })
-.then(function(t){
+.then(function(t) {
   console.log('created table:', t);
 });
 
@@ -78,7 +78,7 @@ db.knex.schema.hasTable('friends').then(function(exists) {
     });
   }
 })
-.then(function(t){
+.then(function(t) {
   console.log('created table:', t);
 });
 
