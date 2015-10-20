@@ -1,8 +1,8 @@
 var db = require('..config');
 
-require('./mysql/models/stat');
+require('../models/stat');
 
-var Stats = db.collection('Stats').extend({
+var Stats = db.Collection.extend({
   model: db.model('Stat')
 }, {
   fetchByUser: function(userId) {

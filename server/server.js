@@ -44,7 +44,14 @@ app.get('/auth/facebook/callback', function (req, res, next) {
         res.redirect( '/#/tab/homepage' );
       });
     })(req, res, next);
-})
+});
+
+app.get('/auth', function (req, res){
+   if(req.user){
+    console.log("This is your user", req.user);
+   }
+
+});
 
 app.get('/logout', function(req, res){
   console.log('LOGOUT REQ.USER', req.user.attributes)
