@@ -36,13 +36,13 @@ app.get('/auth/facebook',
 app.get('/auth/facebook/callback', function (req, res, next) {
   passport.authenticate('facebook',
     function(err, user, info) {
+      if (err) { return next(err); }
+      req.logIn(user, function(err) {
         if (err) { return next(err); }
-        req.logIn(user, function(err) {
-          if (err) { return next(err); }
-          console.log('USER LOGGED IN: ', req.user);
-          res.redirect( '/#/tab/homepage' );
-        });
-      })(req, res, next);
+        console.log('USER LOGGED IN: ', req.user);
+        res.redirect( '/#/tab/homepage' );
+      });
+    })(req, res, next);
 })
 
 app.get('/logout', function(req, res){
