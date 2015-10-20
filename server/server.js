@@ -30,9 +30,9 @@ app.use(passport.session());
 
 app.get('/auth/facebook',
   passport.authenticate('facebook', {
-    scope: ['email', 'public_profile', 'user_friends']
-  }));
 
+    scope: ['public_profile', 'email', 'user_friends'],
+ }));
 
 app.get('/auth/facebook/callback', function (req, res, next) {
   passport.authenticate('facebook',
@@ -47,7 +47,7 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 })
 
 app.get('/logout', function(req, res){
-  console.log('LOGOUT REQ.USER', req.user)
+  console.log('LOGOUT REQ.USER', req.user.attributes)
   req.session.destroy();
   req.logout();
   res.send('200');
