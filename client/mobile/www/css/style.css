@@ -1,5 +1,29 @@
 /* Empty. Add your own CSS if you like */
 img{
-  height: 300px;
-  width: 300px;
+  height: 200px;
+  width: 200px;
+}
+.profile-pic{
+  margin-top: 20px;
+}
+.stats{
+  margin: 10px auto 0;
+  display: block;
+  width: 120px;
+}
+.profile-pic img{
+  border-radius: 100%;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid black;
+}
+.profile-name{
+  text-align: center;
+  margin-top: 20px;
+}
+.social-container{
+  text-align: center;
+}
+.recent-activity{
+  margin-top: 20px;
 }
