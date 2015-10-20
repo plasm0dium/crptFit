@@ -1,4 +1,4 @@
-var db = require('./mysql/config');
+var db = require('../config.js');
 
 require('./user');
 
@@ -13,10 +13,10 @@ var Client = db.Model.extend({
     return new this(options);
   },
   fetchById: function (id) {
-    return new this{
+    return new this({
       id: id
-    }.fetch({withRelated: ['User']})
+    }).fetch({withRelated: ['User']})
   }
-}
+})
 
 module.exports = db.model('Client', Client);
