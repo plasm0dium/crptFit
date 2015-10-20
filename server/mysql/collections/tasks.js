@@ -1,4 +1,4 @@
-var db = require('..config');
+var db = require('../config');
 
 require('../models/task');
 
