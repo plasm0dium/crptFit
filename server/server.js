@@ -29,7 +29,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/auth/facebook',
-  passport.authenticate('facebook'));
+  passport.authenticate('facebook', {
+    scope: ['email', 'public_profile', 'user_friends']
+  }));
 
 
 app.get('/auth/facebook/callback', function (req, res, next) {

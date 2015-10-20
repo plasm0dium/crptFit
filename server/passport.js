@@ -26,6 +26,7 @@ module.exports = function (passport) {
       clientSecret: Auth.clientSecret,
       passReqToCallback: true,
       enabledProof: false,
+      profileFields: ['email', 'id', 'displayName', 'gender', 'photos', 'friends', 'about'],
       callbackURL: "http://localhost:8100/auth/facebook/callback"
     },
   function(req, accessToken, refreshToken, profile, done) {
@@ -49,6 +50,6 @@ module.exports = function (passport) {
       return done(err, false)
     })
 
-    console.log(profile);
+    console.log(profile._json.friends);
   }))
 }

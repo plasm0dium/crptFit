@@ -30,7 +30,7 @@
     "passport": "^0.3.0",
     "passport-facebook": "^2.0.0",
     "passport-google-oauth": "^0.2.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
     "express-sql-session": "^1.0.0",
     "registry": "^0.3.0"
   }
