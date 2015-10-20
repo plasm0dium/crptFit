@@ -8,10 +8,12 @@ var app = express();
 var port = process.env.PORT || 8100;
 
 var session = require("express-session");
+
 app.use(session({
   key: 'crptFit',
   secret: 'Ted',
-  resave: true,
+  enabledProof: false,
+  resave: false,
   saveUninitialized: true
 }));
 
@@ -37,16 +39,22 @@ app.get('/auth/facebook/callback', function (req, res, next) {
         req.logIn(user, function(err) {
           if (err) { return next(err); }
           console.log('USER LOGGED IN: ', req.user);
-          res.redirect( '#/tab/homepage' );
+          res.redirect( '/#/tab/homepage' );
         });
       })(req, res, next);
 })
 
 app.get('/logout', function(req, res){
+  console.log('LOGOUT REQ.USER', req.user)
   req.session.destroy();
   req.logout();
   res.send('200');
 });
+
+app.get('/hello', function (req,res) {
+  console.log('REQ.USER: ', req.user)
+})
+
 
 app.listen(port, function(){
   console.log('listening on port...', port);

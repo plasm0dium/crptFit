@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Unconfined/crptFit#readme",
   "dependencies": {
     "express": "^4.13.3",
+    "express-sql-session": "^1.0.0",
     "knex": "^0.8.6",
     "passport": "^0.3.0",
     "passport-facebook": "^2.0.0",

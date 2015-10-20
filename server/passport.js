@@ -10,11 +10,13 @@ module.exports = function (passport) {
     });
 
   passport.deserializeUser(function (id ,done) {
+    console.log('deserializeUser :', db.model('User').fetchById({ fbId: id }))
     db.model('User').fetchById({ fbId: id })
         .then(function(user) {
           done(null, user);
         })
         .catch(function(err){
+          console.log(err)
           done(err, false);
         });
   })
