@@ -1,12 +1,41 @@
-<ion-view view-title="Progress">
-  <ion-content has-header="true" padding="true">
+<ion-view view-title="Profile">
+  <ion-content has-header="true" padding="true" class="" ng-controller="ProfileCtrl as ctrl">
     <!-- these links do not exist -->
-    not real links
-     <ion-item href="#/tab/my-trainers">
-     My Trainers
-   </ion-item>
-   <ion-item href="#/tab/my-clients">
-     My CLients
-   </ion-item>
+    <div class="profile-pic">
+      <img src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xla1/v/t1.0-1/p320x320/11207352_10153187674043380_1116100885168652930_n.jpg?oh=d7f6ff74aceb3fa73ea9445b093e5ca1&oe=568A9D7B&__gda__=1456142688_a2601005d9b85a7c5bbdacc49d721186">
+    </div>
+    <div class="profile-name">
+      <h2>Ricky Walker</h2>
+    </div>
+
+    <div class="social-container">
+      <ul class="row">
+        <li class="col">
+          <div>20</div>
+          <div>F</div>
+        </li>
+        <li class="col">
+          <div>32</div>
+          <div>C</div>
+        </li>
+        <li class="col">
+          <div>2</div>
+          <div>T</div>
+        </li>
+      </ul>
+    </div>
+
+    <button class="stats button icon-left ion-arrow-graph-up-right button-positive">  Stats</button>
+
+    <div class="recent-activity">
+      <div ng-repeat="update in ctrl.feed" >
+        <a class="item item-avatar">
+          <img src="https://healthhabits.files.wordpress.com/2008/09/body_builder.gif"/>
+          <h3>{{update.username}}</h3>
+          <p>{{update.update}}</p>
+        </a>
+      </div>
+    </div>
+    
   </ion-content>
 </ion-view>
