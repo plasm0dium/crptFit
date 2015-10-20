@@ -45,6 +45,15 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
         }
       }
     })
+    .state('tab.progress', {
+      url: '/progress',
+      views: {
+        'progress-tab':{
+          templateUrl: 'templates/progress-tab.html',
+          controller: 'ProgressCtrl'
+        }
+      }
+    })
     .state('tab.homepage', {
       url: '/homepage',
       views: {
@@ -54,30 +63,12 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
         }
       }
     })
-    .state('tab.menu', {
-      url: '/menu',
+    .state('tab.messages', {
+      url: '/messages',
       views: {
-        'menu-tab': {
-          templateUrl: 'templates/menu-tab.html',
-          controller: 'MenuCtrl'
-        }
-      }
-    })
-    .state('tab.progress', {
-      url: '/progress',
-      views: {
-        'progress-tab': {
-          templateUrl: 'templates/progress-tab.html',
-          controller: 'ProgressCtrl'
-        }
-      }
-    })
-    .state('tab.search', {
-      url: '/search',
-      views: {
-        'search-tab': {
-          templateUrl: 'templates/search-tab.html',
-          controller: 'SearchCtrl'
+        'messages-tab': {
+          templateUrl: 'templates/messages-tab.html',
+          controller: 'MessagesCtrl'
         }
       }
     })

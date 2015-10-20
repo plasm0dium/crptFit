@@ -1,4 +1,4 @@
-<ion-tabs tabs-style="tabs-icon-top" tabs-type="tabs-positive" animation="slide-left-right">
+<ion-tabs class="tabs-icon-top tabs-positive fade-in-not-out">
   <!-- ALL ROUTES NEED TO BE SET -->
   <!-- home Tab -->
   <ion-tab title="Home" icon-off="ion-ios-home-outline" icon-on="ion-ios-home" href="#/tab/homepage">
@@ -9,16 +9,16 @@
     <ion-nav-view name="profile-tab"></ion-nav-view>
   </ion-tab>
   <!-- Search tab -->
-  <ion-tab title="Search" icon-off="ion-ios-search" icon-on="ion-ios-search-strong" href="#/tab/search">
-    <ion-nav-view name="search-tab"></ion-nav-view>
-  </ion-tab>
-  <!-- Friends Tab -->
-  <ion-tab title="Network" icon-off="ion-ios-people-outline" icon-on="ion-ios-people" href="#/tab/people">
+  <ion-tab title="Social" icon-off="ion-ios-people-outline" icon-on="ion-ios-people" href="#/tab/people">
     <ion-nav-view name="group-tab"></ion-nav-view>
   </ion-tab>
+  <!-- Friends Tab -->
+  <ion-tab title="Progress" icon-off="ion-arrow-graph-up-right" icon-on="ion-arrow-graph-up-right" href="#/tab/progress">
+    <ion-nav-view name="progress-tab"></ion-nav-view>
+  </ion-tab>
 <!-- Menu Tab -->
-  <ion-tab title="Menu" icon-off="ion-grid" icon-on="ion-grid" href="#/tab/menu">
-    <ion-nav-view name="menu-tab"></ion-nav-view>
+  <ion-tab title="Messages" icon-off="ion-ios-email-outline" icon-on="ion-ios-email" href="#/tab/messages">
+    <ion-nav-view name="messages-tab"></ion-nav-view>
   </ion-tab>
 
 </ion-tabs>

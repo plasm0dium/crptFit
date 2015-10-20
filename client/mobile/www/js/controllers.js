@@ -1,15 +1,15 @@
 angular.module('crptFit.controllers', [])
 
-.controller('LoginCtrl', function($scope) { })
+.controller('LoginCtrl', [function() { }])
 
-.controller('ProfileCtrl', function($scope) { })
+.controller('ProfileCtrl', [function() { }])
 
-.controller('HomeCtrl', function($scope) { })
+.controller('HomeCtrl', [function() { }])
 
-.controller('MenuCtrl', function($scope) { })
+.controller('MenuCtrl', [function() { }])
 
-.controller('ProgressCtrl', function($scope) { })
+.controller('ProgressCtrl', [function() { }])
 
-.controller('SearchCtrl', function($scope) { })
+.controller('MessagesCtrl', [function() { }])
 
-.controller('GroupCtrl', function($scope) { })
+.controller('GroupCtrl', [function() { }])
