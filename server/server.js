@@ -30,7 +30,7 @@ app.use(passport.session());
 
 app.get('/auth/facebook',
   passport.authenticate('facebook', {
-    scope: ['public_profile', 'email', 'user_friends'],
+    scope: ['public_profile', 'email', 'user_friends', 'user_birthday'],
  }));
 
 app.get('/auth/facebook/callback', function (req, res, next) {
