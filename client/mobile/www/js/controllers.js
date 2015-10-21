@@ -32,4 +32,4 @@ angular.module('crptFit.controllers', [])
 
 .controller('MessagesCtrl', [function() { }])
 
-.controller('GroupCtrl', [function() { }])
+.controller('SocialCtrl', [function() { }])
