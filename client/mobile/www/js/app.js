@@ -1,4 +1,4 @@
-angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
+angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', 'highcharts-ng'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -100,11 +100,11 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services'])
       }
     })
     .state('tab.group', {
-      url: '/people',
+      url: '/social',
       views: {
         'group-tab': {
-          templateUrl: 'templates/group-tab.html',
-          controller: 'GroupCtrl'
+          templateUrl: 'templates/social-tab.html',
+          controller: 'SocialCtrl'
         }
       }
     })
