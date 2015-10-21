@@ -58,8 +58,7 @@ angular.module('crptFit.controllers', [])
     {user: 'Ted', message: ':D'}
   ]
   $('.userMessage').on('click', function(){
-    var elem = document.getElementById('{{messages.user}}');
-    console.log(elem)
+    $(this).attr('class')
   })
 }])
 
