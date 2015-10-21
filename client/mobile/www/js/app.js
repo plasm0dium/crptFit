@@ -27,7 +27,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
     url: '/login',
     templateUrl: 'templates/login-tab.html',
     controller: "LoginCtrl"
-
   })
   // setup an abstract state for the tabs directive
     .state('tab', {
@@ -102,7 +101,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
     .state('tab.group', {
       url: '/social',
       views: {
-        'group-tab': {
+        'social-tab': {
           templateUrl: 'templates/social-tab.html',
           controller: 'SocialCtrl'
         }

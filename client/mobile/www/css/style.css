@@ -27,3 +27,7 @@ img{
 .recent-activity{
   margin-top: 20px;
 }
+.social-icon{
+  position: absolute;
+  top: 20px;
+}

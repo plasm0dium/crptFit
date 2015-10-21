@@ -41,7 +41,7 @@ app.use(passport.session());
 //Direct to Facebook Login
 app.get('/auth/facebook',
   passport.authenticate('facebook', {
-    scope: ['public_profile', 'email', 'user_friends', 'user_birthday'],
+    scope: ['public_profile', 'email', 'user_friends', 'user_birthday']
  }));
 //Facebook Auth Callback
 app.get('/auth/facebook/callback', function (req, res, next) {
@@ -55,7 +55,7 @@ app.get('/auth/facebook/callback', function (req, res, next) {
       });
     })(req, res, next);
 });
-//Get Homepage & Ensure User is Authenticated
+
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   console.log('GET REQ AUTHENTICATED', req.user)
   res.redirect('/tab/homepage');

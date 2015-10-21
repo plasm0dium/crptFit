@@ -60,6 +60,7 @@ db.knex.schema.hasTable('trainers').then(function(exists) {
     return db.knex.schema.createTable('trainers', function(t) {
       t.increments('id').primary();
       t.integer('trainer_id');
+      t.integer('trainers_id');
       t.integer('user_id');
     });
   }
@@ -88,6 +89,21 @@ db.knex.schema.hasTable('friends').then(function(exists) {
       t.increments('id').primary();
       t.integer('friends_id');
       t.integer('user_id');
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('messages').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('messages', function(t) {
+      t.increments('id').primary();
+      t.integer('messages_id');
+      t.integer('user_id');
+      t.string('text', 200);
+      t.timestamps();
     });
   }
 })
