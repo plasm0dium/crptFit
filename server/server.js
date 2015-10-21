@@ -41,9 +41,7 @@ app.use(passport.session());
 
 app.get('/auth/facebook',
   passport.authenticate('facebook', {
-
-    scope: ['public_profile', 'email', 'user_friends', 'user_birthday'],
-
+    scope: ['public_profile', 'email', 'user_friends', 'user_birthday']
  }));
 
 app.get('/auth/facebook/callback', function (req, res, next) {
@@ -123,7 +121,7 @@ app.post('/auth/tasks', function (req, res) {
 });
 //Search for Friends
 app.get('auth/friends:id', function (req, res) {
-  
+
 });
 
 
@@ -131,7 +129,7 @@ function ensureAuthenticated(req, res, next) {
   console.log('AUTHENTICATED FUNCTION')
   if(req.isAuthenticated()) {
     return next()
-  } else {
+  } else {  
     res.redirect('/')
   }
 }
