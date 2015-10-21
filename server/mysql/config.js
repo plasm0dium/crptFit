@@ -59,6 +59,7 @@ db.knex.schema.hasTable('trainers').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('trainers', function(t) {
       t.increments('id').primary();
+      t.integer('trainer_id');
       t.integer('trainers_id');
       t.integer('user_id');
     });
