@@ -28,7 +28,23 @@ angular.module('crptFit.controllers', [])
 
 .controller('MenuCtrl', [function() { }])
 
-.controller('ProgressCtrl', [function() { }])
+.controller('ProgressCtrl', ['$scope', function($scope) {
+  $scope.chartConfig = {
+      options: {
+          chart: {
+              type: 'bar'
+          }
+      },
+      series: [{
+          data: [2, 16, 32, -5, 80]
+      }],
+      title: {
+          text: ''
+      },
+
+      loading: false
+  }
+ }])
 
 .controller('MessagesCtrl', [function() { }])
 
