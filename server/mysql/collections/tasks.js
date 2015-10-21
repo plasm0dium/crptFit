@@ -1,8 +1,8 @@
-var db = require('..config');
+var db = require('../config');
 
-require('./mysql/models/task');
+require('../models/task');
 
-var Tasks = db.collection('Tasks').extend({
+var Tasks = db.Collection.extend({
   model: db.model('Task')
 }, {
   fetchByUser: function(userId) {
