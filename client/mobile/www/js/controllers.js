@@ -36,10 +36,10 @@ angular.module('crptFit.controllers', [])
           }
       },
       series: [{
-          data: [10, 15, 12, 8, 7]
+          data: [2, 16, 32, -5, 80]
       }],
       title: {
-          text: 'Hello'
+          text: ''
       },
 
       loading: false
