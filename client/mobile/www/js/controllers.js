@@ -52,7 +52,8 @@ angular.module('crptFit.controllers', [])
   var self = this;
   // Add a refreshing function here
   self.friends = Social.friendsList();
-
+  self.clients = Social.clientsList();
+  self.trainers = Social.trainersList();
   self.showFriends = function(){
 
   };

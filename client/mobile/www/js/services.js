@@ -77,7 +77,7 @@ angular.module('crptFit.services', [])
     addClient: function(client){
       clients.push(client);
     },
-    trainers: function(){
+    trainersList: function(){
       return trainers;
     },
     sendTrainerRequest: function(){
