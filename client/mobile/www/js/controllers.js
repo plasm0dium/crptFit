@@ -32,7 +32,11 @@ angular.module('crptFit.controllers', [])
   $scope.chartConfig = {
       options: {
           chart: {
+<<<<<<< HEAD
               type: 'spline'
+=======
+              type: 'line'
+>>>>>>> db775dbacf86c5bc9bc339430d63b5fa4274fa1f
           }
       },
       series: [{
@@ -62,4 +66,20 @@ angular.module('crptFit.controllers', [])
   })
 }])
 
-.controller('SocialCtrl', [function() { }])
+.controller('SocialCtrl', ['Social', function(Social) {
+  var self = this;
+  // Add a refreshing function here
+  self.friends = Social.friendsList();
+
+  self.showFriends = function(){
+
+  };
+
+  self.showClients = function(){
+
+  };
+
+  self.showTrainers = function(){
+
+  }
+}])

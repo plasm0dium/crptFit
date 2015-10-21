@@ -1,6 +1,6 @@
 angular.module('crptFit.services', [])
 
-.factory('Chats', function() {
+.factory('Chats', [function() {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
@@ -47,4 +47,44 @@ angular.module('crptFit.services', [])
       return null;
     }
   };
-});
+}])
+.factory('Social', [ function(){
+  // Set up functions for ajax 
+  var friends = [
+    // The data inside of this array will come from a user's friends table
+    {username: 'Ricky Walker'},
+    {username: 'Ted Ly'}
+  ];
+  var clients = [
+    // The data inside of this array will come from a user's clients table
+  ];
+  var trainers = [
+    // The data inside of this array will coem from a user's trainers table
+  ];
+  return {
+    friendsList: function(){
+      return friends;
+    },
+    sendFriendRequest: function(friend){
+
+    },
+    addFriend: function(friend){
+      friends.push(friend);
+    },
+    clientsList: function(){
+      return clients;
+    },
+    addClient: function(client){
+      clients.push(client);
+    },
+    trainers: function(){
+      return trainers;
+    },
+    sendTrainerRequest: function(){
+
+    },
+    addTrainer: function(trainer){
+      trainers.push(trainer);
+    }
+  };
+}]);
