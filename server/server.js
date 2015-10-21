@@ -118,8 +118,8 @@ app.post('/auth/tasks', function (req, res) {
   });
 });
 //Search for Friends
-app.get('auth/friends:id', function (req, res) {
-
+app.get('auth/friends/search', function (req, res) {
+  db.collection('Trip')
 });
 
 
