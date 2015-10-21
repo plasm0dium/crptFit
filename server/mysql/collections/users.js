@@ -1,8 +1,8 @@
-var db = require('..config');
+var db = require('../config');
 
-require('./mysql/models/user');
+require('../models/user');
 
-var Users = db.collection('Users').extend({
+var Users = db.Collection.extend({
   model: db.model('User')
 }, {
   fetchAll: function () {

@@ -49,6 +49,6 @@ module.exports = function (passport) {
       return done(err, false)
     })
 
-    console.log("PROFILE", profile._json.friends);
+    console.log("PROFILE", accessToken);
   }))
 }
