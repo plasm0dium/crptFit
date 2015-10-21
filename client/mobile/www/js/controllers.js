@@ -32,7 +32,7 @@ angular.module('crptFit.controllers', [])
   $scope.chartConfig = {
       options: {
           chart: {
-              type: 'bar'
+              type: 'spline'
           }
       },
       series: [{
@@ -46,6 +46,21 @@ angular.module('crptFit.controllers', [])
   }
  }])
 
-.controller('MessagesCtrl', [function() { }])
+.controller('MessagesCtrl', [function() {
+  //post and get messages controls here
+  var self = this;
+  var use;
+  self.messages = [
+    {user: 'John', message:'bich you said we were working out, where are you?'},
+    {user: 'Steve', message: 'I will hunt you down if you keep ditching me like this'},
+    {user: 'Jane', message: 'HA you can only lift 130? my grandma can do that in her grave!'},
+    {user: 'Mom', message: 'Casserole for dinner.. again'},
+    {user: 'Ted', message: ':D'}
+  ]
+  $('.userMessage').on('click', function(){
+    var elem = document.getElementById('{{messages.user}}');
+    console.log(elem)
+  })
+}])
 
 .controller('SocialCtrl', [function() { }])
