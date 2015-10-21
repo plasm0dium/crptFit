@@ -48,16 +48,10 @@ angular.module('crptFit.controllers', [])
 
 .controller('MessagesCtrl', [function() { }])
 
-.controller('SocialCtrl', [function() {
+.controller('SocialCtrl', ['Social', function(Social) {
   var self = this;
   // Add a refreshing function here
-  self.people = [
-    {username: 'Ricky Walker'},
-    {username: 'Ricky Walker'},
-    {username: 'Ricky Walker'},
-    {username: 'Ricky Walker'},
-    {username: 'Ricky Walker'}
-  ];
+  self.friends = Social.friendsList();
 
   self.showFriends = function(){
 
@@ -68,6 +62,6 @@ angular.module('crptFit.controllers', [])
   };
 
   self.showTrainers = function(){
-    
+
   }
 }])
