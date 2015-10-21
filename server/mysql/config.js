@@ -101,7 +101,7 @@ db.knex.schema.hasTable('messages').then(function(exists) {
       t.increments('id').primary();
       t.integer('messages_id');
       t.integer('user_id');
-      t.string('text', 100);
+      t.string('text', 200);
       t.timestamps();
     });
   }
