@@ -9,10 +9,13 @@ var Stat = db.Model.extend({
     return this.belongsTo('User');
   },
 }, {
+  newStat: function (options) {
+    return new this(options);
+  },
   fetchById: function (id) {
     return new this({
       id: id
-    }).fetch({withRelated: ['User']})
+    }).fetch({withRelated: ['user']})
   }
 })
 

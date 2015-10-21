@@ -4,6 +4,7 @@ require('./task');
 require('./client');
 require('./stat');
 require('./friend');
+require('./trainer');
 
 var User = db.Model.extend({
   //User Properties
@@ -21,6 +22,12 @@ var User = db.Model.extend({
   friend: function () {
     this.hasMany('Friend')
   },
+  trainers: function() {
+    this.hasMany('Trainer')
+  },
+  messages: function() {
+    this.hasMany('Messages')
+  }
 }, {
   //User Class Methods
 fetchById: function(options) {
@@ -29,7 +36,7 @@ fetchById: function(options) {
 fetchByUsername: function (username) {
   return this({
     username: username,
-    }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends']});
+  }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends']});
 },
 fetchByName: function (name) {
   return this({
