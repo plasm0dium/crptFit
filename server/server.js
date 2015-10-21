@@ -38,12 +38,12 @@ require('./passport')(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
-
+//Direct to Facebook Login
 app.get('/auth/facebook',
   passport.authenticate('facebook', {
     scope: ['public_profile', 'email', 'user_friends', 'user_birthday'],
  }));
-
+//Facebook Auth Callback
 app.get('/auth/facebook/callback', function (req, res, next) {
   passport.authenticate('facebook',
     function(err, user, info) {
@@ -51,25 +51,25 @@ app.get('/auth/facebook/callback', function (req, res, next) {
       req.logIn(user, function(err) {
         if (err) { return next(err); }
         console.log('USER LOGGED IN: ', req.user);
-        res.redirect( '/#/tab/homepage' );
+        res.redirect( '/tab/homepage' );
       });
     })(req, res, next);
 });
-
-app.get('/#/tab/homepage', ensureAuthenticated, function (req,res) {
+//Get Homepage & Ensure User is Authenticated
+app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   console.log('GET REQ AUTHENTICATED', req.user)
-  res.redirect('/#/tab/homepage');
+  res.redirect('/tab/homepage');
   res.json(req.user);
 })
 
-
+//Logout User
 app.get('/logout', function(req, res){
   console.log('LOGOUT REQ.USER', req.user.attributes)
   req.session.destroy();
   req.logout();
   res.send('200');
 });
-
+//Get All User's Tasks
 app.get('/auth/tasks', function (req,res) {
   db.collection('Tasks').fetchByUser(req.user.attributes.id)
   .then(function(tasks) {
@@ -86,14 +86,14 @@ app.get('/auth/friends', function (req, res) {
   });
 });
 
-//Search for Friends to Add
-app.get('auth/friends/search', function (req, res) {
-  db.collection('Friends').fetchAll()
+//Search All Users to Add as Friend
+app.get('auth/users/search', function (req, res) {
+  db.collection('Users').fetchAll()
   .then(function(allFriends) {
     res.json(allFriends.toJSON());
   })
 });
-
+// Get Collection of User's Stats
 app.get('/auth/stats', function (req, res) {
   db.collection('Stats').fetchByUser(req.user.attributes.id)
   .then(function(stats) {
@@ -101,7 +101,7 @@ app.get('/auth/stats', function (req, res) {
     res.json(stats.toJSON());
   });
 });
-//
+//Fetch a User's Clients
 app.get('/auth/clients', function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
   .then(function(clients) {
@@ -109,7 +109,7 @@ app.get('/auth/clients', function (req, res) {
     res.json(stats.toJSON());
   });
 });
-
+//Add a New Task to User
 app.post('/auth/tasks', function (req, res) {
   //CHECK FRONT END VARIABLE
   var task = req.body.task.name;
@@ -122,10 +122,10 @@ app.post('/auth/tasks', function (req, res) {
     return task;
   })
   .catch(function (err) {
-    console.log('ERR IN POST /auth/tasks : ', err)
+    console.log('ERR IN POST /auth/tasks : ', err);
   });
 });
-//Update task to complete
+//Update User's Task to Complete
 app.post('/auth/task/complete:id', function(req, res) {
   var taskId = req.params.id;
   db.model('Task').completeTask(req.user.attributes.id)
@@ -136,7 +136,7 @@ app.post('/auth/task/complete:id', function(req, res) {
     return err;
   });
 });
-//Add a friend
+//Add a Friend to User
 app.post('/auth/friends/add:id', function (req, res) {
   var userId = req.user.attributes.id;
   var friendId = req.params.id;
@@ -144,14 +144,14 @@ app.post('/auth/friends/add:id', function (req, res) {
     friends_id: friendId,
     user_id: userId
   }).then(function (friend) {
-    console.log('ADDED FRIEND :', friend)
+    console.log('ADDED FRIEND :', friend);
     return friend;
   })
   .catch(function (err) {
     return err;
   });
 });
-
+//Adds a Client to User
 app.post('/auth/clients/add:id', function (req, res) {
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
@@ -163,11 +163,11 @@ app.post('/auth/clients/add:id', function (req, res) {
     return newClient;
   })
   .catch(function(err) {
-    return err
-  })
-})
+    return err;
+  });
+});
 
-
+app.post('/')
 function ensureAuthenticated(req, res, next) {
   console.log('AUTHENTICATED FUNCTION')
   if(req.isAuthenticated()) {
