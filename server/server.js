@@ -123,7 +123,7 @@ app.post('/auth/tasks', function (req, res) {
 });
 //Search for Friends
 app.get('auth/friends:id', function (req, res) {
-
+  
 });
 
 
