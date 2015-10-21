@@ -58,17 +58,15 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 
 
 
-app.get('/#/tab/homepage', ensureAuthenticated, function (req,res) {
+app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   console.log('GET REQ AUTHENTICATED', req.user)
-  res.redirect('/#/tab/homepage');
-  res.session
   res.json(req.user);
 })
 
 
 app.get('/logout', function(req, res){
   console.log('LOGOUT REQ.USER', req.user.attributes)
-  req.session.destroy();
+  res.session.destroy();
   req.logout();
   res.send('200');
 });
@@ -120,7 +118,7 @@ app.post('/auth/tasks', function (req, res) {
   });
 });
 //Search for Friends
-app.get('auth/friends:id', function (req, res) {
+app.get('/auth/friends:id', function (req, res) {
 
 });
 

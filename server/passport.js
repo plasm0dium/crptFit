@@ -48,7 +48,5 @@ module.exports = function (passport) {
       console.log(err);
       return done(err, false)
     })
-
-    console.log("PROFILE", accessToken);
   }))
 }
