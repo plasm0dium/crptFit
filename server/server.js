@@ -153,9 +153,17 @@ app.post('/auth/friends/add:id', function (req, res) {
 });
 
 app.post('/auth/clients/add:id', function (req, res) {
+  var userId = req.user.attributes.id;
   var clientId = req.params.id;
   db.model('Client').newClient({
-    
+    client_id: clientId,
+    user_id: userId
+  }).then(function(newClient) {
+    console.log('ADDED NEW CLIENT :', newClient);
+    return newClient;
+  })
+  .catch(function(err) {
+    return err
   })
 })
 
