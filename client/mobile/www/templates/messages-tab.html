@@ -1,0 +1,9 @@
+<ion-view title="Messages" ng-controller="MessagesCtrl as ctrl">
+  <ion-content has-header="true" padding="true">
+    <div ng-repeat="messages in ctrl.messages">
+    <a class="item item-icon-right icon ion-email userMessage" href="#/tab/message" id="{{messages.user}}">{{messages.user}}<i class="icon ion-chevron-right icon-accessory"></i></a>
+    </div>
+  </ion-content>
+</ion-view>
+
+<!-- show results using <a class="item item-avatar" /> -->
