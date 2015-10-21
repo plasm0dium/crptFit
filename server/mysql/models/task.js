@@ -9,6 +9,12 @@ var Task = db.Model.extend({
     return this.belongsTo('User');
   },
 }, {
+  completeTask: function (id) {
+    return new this({
+      id: id
+      })
+      .save({complete: true}, {patch: true})
+  },
   newTask: function (options) {
     return new this(options);
   },
