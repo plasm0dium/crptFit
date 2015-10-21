@@ -59,7 +59,6 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 app.get('/#/tab/homepage', ensureAuthenticated, function (req,res) {
   console.log('GET REQ AUTHENTICATED', req.user)
   res.redirect('/#/tab/homepage');
-  res.session
   res.json(req.user);
 })
 
@@ -78,13 +77,21 @@ app.get('/auth/tasks', function (req,res) {
     res.json(tasks.toJSON());
   });
 });
-
+//Fetch User's Friends
 app.get('/auth/friends', function (req, res) {
   db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(friends) {
     console.log('THESE ARE USER FRIENDS: ', friends)
     res.json(friends.toJSON());
   });
+});
+
+//Search for Friends to Add
+app.get('auth/friends/search', function (req, res) {
+  db.collection('Friends').fetchAll()
+  .then(function(allFriends) {
+    res.json(allFriends.toJSON());
+  })
 });
 
 app.get('/auth/stats', function (req, res) {
@@ -94,7 +101,7 @@ app.get('/auth/stats', function (req, res) {
     res.json(stats.toJSON());
   });
 });
-
+//
 app.get('/auth/clients', function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
   .then(function(clients) {
@@ -113,14 +120,44 @@ app.post('/auth/tasks', function (req, res) {
   }).save()
   .then(function(task) {
     return task;
-  }).catch(function (err) {
+  })
+  .catch(function (err) {
     console.log('ERR IN POST /auth/tasks : ', err)
   });
 });
-//Search for Friends
-app.get('auth/friends/search', function (req, res) {
-  db.collection('Trip')
+//Update task to complete
+app.post('/auth/task/complete:id', function(req, res) {
+  var taskId = req.params.id;
+  db.model('Task').completeTask(req.user.attributes.id)
+  .then(function () {
+    console.log('TASK UPDATED TO COMPLETE :', db.model('Task').fetchByUser(req.user.attributes.id));
+  })
+  .catch(function (err) {
+    return err;
+  });
 });
+//Add a friend
+app.post('/auth/friends/add:id', function (req, res) {
+  var userId = req.user.attributes.id;
+  var friendId = req.params.id;
+  db.model('Friend').newFriend({
+    friends_id: friendId,
+    user_id: userId
+  }).then(function (friend) {
+    console.log('ADDED FRIEND :', friend)
+    return friend;
+  })
+  .catch(function (err) {
+    return err;
+  });
+});
+
+app.post('/auth/clients/add:id', function (req, res) {
+  var clientId = req.params.id;
+  db.model('Client').newClient({
+    
+  })
+})
 
 
 function ensureAuthenticated(req, res, next) {

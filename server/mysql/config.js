@@ -55,6 +55,19 @@ db.knex.schema.hasTable('clients').then(function(exists) {
   console.log('created table:', t);
 });
 
+db.knex.schema.hasTable('trainers').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('trainers', function(t) {
+      t.increments('id').primary();
+      t.integer('trainer_id');
+      t.integer('user_id');
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
 db.knex.schema.hasTable('stats').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('stats', function(t) {
