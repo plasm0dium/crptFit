@@ -32,7 +32,7 @@ angular.module('crptFit.controllers', [])
   $scope.chartConfig = {
       options: {
           chart: {
-              type: 'bar'
+              type: 'line'
           }
       },
       series: [{
@@ -48,4 +48,26 @@ angular.module('crptFit.controllers', [])
 
 .controller('MessagesCtrl', [function() { }])
 
-.controller('SocialCtrl', [function() { }])
+.controller('SocialCtrl', [function() {
+  var self = this;
+  // Add a refreshing function here
+  self.people = [
+    {username: 'Ricky Walker'},
+    {username: 'Ricky Walker'},
+    {username: 'Ricky Walker'},
+    {username: 'Ricky Walker'},
+    {username: 'Ricky Walker'}
+  ];
+
+  self.showFriends = function(){
+
+  };
+
+  self.showClients = function(){
+
+  };
+
+  self.showTrainers = function(){
+    
+  }
+}])
