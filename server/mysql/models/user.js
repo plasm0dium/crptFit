@@ -11,27 +11,27 @@ var User = db.Model.extend({
   tableName: 'users',
   hasTimeStamp: true,
   tasks: function () {
-    this.hasMany('Task')
+    return this.hasMany('Task')
   },
   clients: function () {
-    this.hasMany('Client')
+    return this.hasMany('Client')
   },
   stats: function () {
-    this.hasMany('Stat')
+    return this.hasMany('Stat')
   },
-  friend: function () {
-    this.hasMany('Friend')
+  friends: function () {
+    return this.hasMany('Friend')
   },
   trainers: function() {
-    this.hasMany('Trainer')
+    return this.hasMany('Trainer')
   },
   messages: function() {
-    this.hasMany('Messages')
+    return this.hasMany('Messages')
   }
 }, {
   //User Class Methods
 fetchById: function(options) {
-  return new this(options).fetch();
+  return new this(options).fetch({withRelated: ['tasks', 'clients', 'stats','friends']});
   },
 fetchByUsername: function (username) {
   return this({

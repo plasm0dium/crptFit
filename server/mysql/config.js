@@ -86,7 +86,7 @@ db.knex.schema.hasTable('stats').then(function(exists) {
 db.knex.schema.hasTable('friends').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('friends', function(t) {
-      t.increments('id').primary();
+      t.string('status', 50);
       t.integer('friends_id');
       t.integer('user_id');
     });
