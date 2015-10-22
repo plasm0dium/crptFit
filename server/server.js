@@ -144,12 +144,6 @@ app.post('/auth/task/complete:id', function(req, res) {
   });
 });
 
-
-db.model('User').fetchById(1).then(function(user) {
-  console.log('THIS IS USER :', user.relations.friends.toJSON())
-  return user;
-})
-
 //Add a Friend to User
 app.post('/auth/friends/add:id', function (req, res) {
   var userId = req.user.attributes.id;
