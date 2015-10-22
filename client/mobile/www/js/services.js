@@ -128,7 +128,7 @@ angular.module('crptFit.services', [])
     },
   };
 }])
-.factory('Progress', [function(){
+.factory('Progress', ['$http', function($http){
   var strength = [
     //the data in this array will come from a users stats table
      10,
@@ -149,14 +149,15 @@ angular.module('crptFit.services', [])
     //the data in this array will come from a users stats table and be modified before entry
     14,19,2,40,3,90
   ]
+  //all functions need integration with db 10/22
   return {
     checkMeStr : function(strong){
       console.log(strong, 'clicked');
       strength.push(strong);
     },
     checkMeSpd : function(timeSpd, distance){
-      console.log(timeSpd, distance)
-      speed.push((distance/timeSpd)*60)
+      console.log(timeSpd, distance);
+      speed.push((distance/timeSpd)*60);
     },
     checkMeWgt : function(weigh){
       console.log(weigh, 'clicked');
@@ -171,15 +172,68 @@ angular.module('crptFit.services', [])
     getWgt : function(){
       return weight;
     },
+    //all functions below here need to be tested and found working 10/22
     postStr : function(val){
-      //this function needs the proper AJAX request
-      strength.push(val);
+      $http({
+        method: 'POST',
+        url: '/auth/stats',
+        data: 'checkMeStr'
+      }).then(function(data){
+        console.log(data);
+      });
     },
     postSpd : function(){
       //this function needs the proper AJAX request
+      $http({
+        method: 'POST',
+        url: '/auth/stats',
+        data: 'checkMeSpd'
+      }).then(function(data){
+        console.log(data);
+      });
     },
     postWgt : function(){
       //this function needs the proper AJAX request
+      $http({
+        method: 'POST',
+        url: '/auth/stats',
+        data: 'checkMeWgt'
+      }).then(function(data){
+        console.log(data);
+      });
+    },
+    queryStr : function(){
+      $http({
+        method: 'GET',
+        url: '/auth/stats'
+      }).then(function(response){
+        stat = response.data;
+        strength.push(stat);
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
+    },
+    querySpd : function(){
+      $http({
+        method: 'GET',
+        url: '/auth/stats'
+      }).then(function(response){
+        stat = response.data;
+        speed.push(stat);
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
+    },
+    queryWgt : function(){
+      $http({
+        method: 'GET',
+        url: '/auth/stats'
+      }).then(function(response){
+        stat = response.data;
+        weight.push(stat);
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
     }
-  }
+  };
 }]);
