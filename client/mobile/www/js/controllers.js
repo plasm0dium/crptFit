@@ -27,7 +27,7 @@ angular.module('crptFit.controllers', [])
 .controller('MenuCtrl', [function() { }])
 .controller('ProgressCtrl', ['$scope', 'Progress', function($scope, Progress) {
   var self = this;
-
+  self.postStr = Progress.postStr();
  }])
  .controller('ProgressCtrlStr', ['$scope', 'Progress', function($scope, Progress) {
    var self = this;

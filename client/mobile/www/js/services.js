@@ -159,8 +159,9 @@ angular.module('crptFit.services', [])
     getWgt : function(){
       return weight;
     },
-    postStr : function(){
+    postStr : function(val){
       //this function needs the proper AJAX request
+      strength.push(val);
     },
     postSpd : function(){
       //this function needs the proper AJAX request
