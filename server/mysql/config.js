@@ -18,8 +18,11 @@ db.knex.schema.hasTable('users').then(function(exists) {
       t.increments('id').primary();
       t.string('fbId', 100);
       t.string('username', 100);
-      t.string('profile_url', 100)
-      t.text('about');
+      t.string('profile_pic', 400);
+      t.string('birthday', 20);
+      t.string('email', 30);
+      t.string('gender', 10);
+      t.text('profile');
     });
   }
 })
@@ -86,7 +89,7 @@ db.knex.schema.hasTable('stats').then(function(exists) {
 db.knex.schema.hasTable('friends').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('friends', function(t) {
-      t.increments('id').primary();
+      t.string('status', 50);
       t.integer('friends_id');
       t.integer('user_id');
     });
