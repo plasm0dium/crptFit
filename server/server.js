@@ -144,6 +144,31 @@ app.post('/auth/task/complete:id', function(req, res) {
   });
 });
 
+// db.model('Friend').newFriend({
+//   friends_id: 2,
+//   user_id: 1
+// })
+// .save()
+db.model('User').fetchById(2).then(function (results) {
+  console.log('RESULTS', results)
+  return results
+})
+// var storage = []
+// db.collection('Friends').fetchByUser(1)
+// .then(function(friends) {
+//   var friendsArray = friends.models;
+//   for(var i = 0; i < friendsArray.length; i++ ) {
+//     var tojson = db.model('User').fetchById({
+//       id: friendsArray[i].attributes.friends_id
+//     })._boundTo
+//     storage.push(tojson)
+//   }
+//   return storage
+// }).then(function (result) {
+//       console.log('FRIENDS OBJECTS :', result)
+//       return result
+//     })
+
 //Add a Friend to User
 app.post('/auth/friends/add:id', function (req, res) {
   var userId = req.user.attributes.id;
