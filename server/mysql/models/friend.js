@@ -7,14 +7,14 @@ var Friend = db.Model.extend({
   hasTimeStamp: true,
   user: function () {
     return this.belongsTo('User');
-  },
+  }
 }, {
   newFriend: function (options) {
     return new this(options);
   },
   fetchById: function (id) {
     return new this({
-      id: id
+      user_id: id
     }).fetch({withRelated: ['user']})
   }
 })
