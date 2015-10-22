@@ -35,7 +35,7 @@ angular.module('crptFit.controllers', [])
    };
    self.Strength = Progress.getStr();
    self.checkMe = function(){
-     self.check = Progress.checkMeStr(self.strong.val);
+     self.check = Progress.postStr(self.strong.val);
    };
    $scope.chartConfig = {
        options: {
