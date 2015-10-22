@@ -13,7 +13,6 @@ angular.module('crptFit.controllers', [])
     {username: 'Ricky Walker', update: 'Did 5000 squats!'}
   ];
  }])
-
 .controller('HomeCtrl', [function() {
   var self = this;
   // Add a refreshing function here
@@ -25,18 +24,12 @@ angular.module('crptFit.controllers', [])
     {username: 'Ricky Walker', update: 'Did 5000 squats!'}
   ];
  }])
-
 .controller('MenuCtrl', [function() { }])
-
 .controller('ProgressCtrl', ['$scope', function($scope) {
   $scope.chartConfig = {
       options: {
           chart: {
-<<<<<<< HEAD
               type: 'spline'
-=======
-              type: 'line'
->>>>>>> db775dbacf86c5bc9bc339430d63b5fa4274fa1f
           }
       },
       series: [{
@@ -49,7 +42,6 @@ angular.module('crptFit.controllers', [])
       loading: false
   }
  }])
-
 .controller('MessagesCtrl', [function() {
   //post and get messages controls here
   var self = this;
@@ -65,21 +57,20 @@ angular.module('crptFit.controllers', [])
     $(this).attr('class')
   })
 }])
-
 .controller('SocialCtrl', ['Social', function(Social) {
   var self = this;
   // Add a refreshing function here
-  self.friends = Social.friendsList();
+  self.list = Social.friendsList();
 
   self.showFriends = function(){
-
+    self.list = Social.friendsList();
   };
 
   self.showClients = function(){
-
+    self.list = Social.clientsList();
   };
 
   self.showTrainers = function(){
-
+    self.list = Social.trainersList();
   }
 }])

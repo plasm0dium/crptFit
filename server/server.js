@@ -51,7 +51,7 @@ app.get('/auth/facebook/callback', function (req, res, next) {
       req.logIn(user, function(err) {
         if (err) { return next(err); }
         console.log('USER LOGGED IN: ', req.user);
-        res.redirect( '/tab/homepage' );
+        res.redirect( '/#/tab/homepage' );
       });
     })(req, res, next);
 });
