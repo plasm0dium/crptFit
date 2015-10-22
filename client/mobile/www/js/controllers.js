@@ -25,23 +25,87 @@ angular.module('crptFit.controllers', [])
   ];
  }])
 .controller('MenuCtrl', [function() { }])
-.controller('ProgressCtrl', ['$scope', function($scope) {
-  $scope.chartConfig = {
-      options: {
-          chart: {
-              type: 'spline'
-          }
-      },
-      series: [{
-          data: [2, 16, 32, -5, 80]
-      }],
-      title: {
-          text: ''
-      },
-      loading: false
-  }
+.controller('ProgressCtrl', ['$scope', 'Progress', function($scope, Progress) {
+  var self = this;
  }])
-
+ .controller('ProgressCtrlStr', ['$scope', 'Progress', function($scope, Progress) {
+   var self = this;
+   self.strong = {
+     val: null
+   };
+   self.Strength = Progress.getStr();
+   self.checkMe = function(){
+     self.check = Progress.checkMeStr(self.strong.val);
+   };
+   $scope.chartConfig = {
+       options: {
+           chart: {
+               type: 'spline'
+           }
+       },
+       series: [{
+           data: self.Strength
+       }],
+       xAxis: {
+         tickInterval: 5
+       },
+       title: {
+           text: ''
+       },
+       loading: false
+   };
+  }])
+  .controller('ProgressCtrlSpd', ['$scope', 'Progress', function($scope, Progress) {
+    var self = this;
+    self.timeSpd = {
+      val: null
+    };
+    self.distance={
+      val: null
+    };
+    self.Speed = Progress.getSpd();
+    self.checkMe = function(){
+      self.check = Progress.checkMeSpd(self.timeSpd.val, self.distance.val);
+    };
+    $scope.chartConfig = {
+        options: {
+            chart: {
+                type: 'spline'
+            }
+        },
+        series: [{
+            data: self.Speed
+        }],
+        title: {
+            text: ''
+        },
+        loading: false
+    };
+   }])
+   .controller('ProgressCtrlWgt', ['$scope', 'Progress', function($scope, Progress) {
+     var self = this;
+     self.weight = {
+       val: null
+     };
+     self.Weight = Progress.getWgt();
+     self.checkMe = function(){
+       self.check = Progress.checkMeWgt(self.weight.val);
+     };
+     $scope.chartConfig = {
+         options: {
+             chart: {
+                 type: 'spline'
+             }
+         },
+         series: [{
+             data: self.Weight
+         }],
+         title: {
+             text: ''
+         },
+         loading: false
+     };
+    }])
 .controller('MessagesCtrl', ['Message', function(Message) {
   //post and get messages controls here
   var self = this;
