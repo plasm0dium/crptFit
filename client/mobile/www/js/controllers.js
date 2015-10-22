@@ -13,7 +13,6 @@ angular.module('crptFit.controllers', [])
     {username: 'Ricky Walker', update: 'Did 5000 squats!'}
   ];
  }])
-
 .controller('HomeCtrl', [function() {
   var self = this;
   // Add a refreshing function here
@@ -25,9 +24,7 @@ angular.module('crptFit.controllers', [])
     {username: 'Ricky Walker', update: 'Did 5000 squats!'}
   ];
  }])
-
 .controller('MenuCtrl', [function() { }])
-
 .controller('ProgressCtrl', ['$scope', function($scope) {
   $scope.chartConfig = {
       options: {
@@ -57,21 +54,20 @@ angular.module('crptFit.controllers', [])
 
   };
 }])
-
 .controller('SocialCtrl', ['Social', function(Social) {
   var self = this;
   // Add a refreshing function here
-  self.friends = Social.friendsList();
+  self.list = Social.friendsList();
 
   self.showFriends = function(){
-
+    self.list = Social.friendsList();
   };
 
   self.showClients = function(){
-
+    self.list = Social.clientsList();
   };
 
   self.showTrainers = function(){
-
+    self.list = Social.trainersList();
   }
 }])

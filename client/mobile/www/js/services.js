@@ -48,8 +48,9 @@ angular.module('crptFit.services', [])
     }
   };
 }])
-.factory('Social', [ function(){
-  // Set up functions for ajax
+
+.factory('Social', ['$http', function($http){
+  // Set up functions for ajax 
   var friends = [
     // The data inside of this array will come from a user's friends table
     {username: 'Ricky Walker'},
@@ -57,33 +58,42 @@ angular.module('crptFit.services', [])
   ];
   var clients = [
     // The data inside of this array will come from a user's clients table
+    {username: 'Barney'}
   ];
   var trainers = [
     // The data inside of this array will coem from a user's trainers table
+    {username: 'Chris Castillo'},
+    {username: 'Paul Keller'}
   ];
   return {
     friendsList: function(){
+      // This function needs the proper AJAX request
       return friends;
     },
     sendFriendRequest: function(friend){
-
+      // This function needs the proper AJAX request
     },
     addFriend: function(friend){
+      // This function needs the proper AJAX request
       friends.push(friend);
     },
     clientsList: function(){
+      // This function needs the proper AJAX request
       return clients;
     },
     addClient: function(client){
+      // This function needs the proper AJAX request
       clients.push(client);
     },
-    trainers: function(){
+    trainersList: function(){
+      // This function needs the proper AJAX request
       return trainers;
     },
     sendTrainerRequest: function(){
-
+      // This function needs the proper AJAX request
     },
     addTrainer: function(trainer){
+      // This function needs the proper AJAX request
       trainers.push(trainer);
     }
   };
