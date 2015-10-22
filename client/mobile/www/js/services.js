@@ -48,6 +48,7 @@ angular.module('crptFit.services', [])
     }
   };
 }])
+
 .factory('Social', ['$http', function($http){
   // Set up functions for ajax 
   var friends = [
@@ -95,5 +96,35 @@ angular.module('crptFit.services', [])
       // This function needs the proper AJAX request
       trainers.push(trainer);
     }
+  };
+}])
+.factory('Message', [function(){
+  var messages = [
+    {user: 'John', message:'bich you said we were working out, where are you?'},
+    {user: 'Steve', message: 'I will hunt you down if you keep ditching me like this'},
+    {user: 'Jane', message: 'HA you can only lift 130? my grandma can do that in her grave!'},
+    {user: 'Mom', message: 'Casserole for dinner.. again'},
+    {user: 'Ted', message: ':D'}
+  ];
+  var userCli;
+//get user message table from db
+  return {
+    messageList : function(){
+      return messages;
+    },
+    clickUser : function(){
+      $('.userMessage').click(function(){
+        for(var i = 0; i < messages.length; i++){
+          var use = messages[i];
+          if(this.id === use.user){
+          console.log(use.message)
+            userCli = use.message
+          }
+        }
+      });
+    },
+    userMess : function(){
+      return userCli;
+    },
   };
 }]);

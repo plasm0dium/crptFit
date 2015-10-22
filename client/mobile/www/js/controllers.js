@@ -38,24 +38,21 @@ angular.module('crptFit.controllers', [])
       title: {
           text: ''
       },
-
       loading: false
   }
  }])
-.controller('MessagesCtrl', [function() {
+
+.controller('MessagesCtrl', ['Message', function(Message) {
   //post and get messages controls here
   var self = this;
-  var use;
-  self.messages = [
-    {user: 'John', message:'bich you said we were working out, where are you?'},
-    {user: 'Steve', message: 'I will hunt you down if you keep ditching me like this'},
-    {user: 'Jane', message: 'HA you can only lift 130? my grandma can do that in her grave!'},
-    {user: 'Mom', message: 'Casserole for dinner.. again'},
-    {user: 'Ted', message: ':D'}
-  ]
-  $('.userMessage').on('click', function(){
-    $(this).attr('class')
-  })
+  self.messages = Message.messageList();
+  self.clickUser = Message.clickUser();
+  self.userCli = Message.userMess();
+  Message.clickUser();
+
+  self.refreshMessages = function(){
+
+  };
 }])
 .controller('SocialCtrl', ['Social', function(Social) {
   var self = this;
