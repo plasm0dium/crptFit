@@ -85,7 +85,6 @@ app.get('/auth/friends', function (req, res) {
     res.json(friends.toJSON());
   });
 });
-
 //Search All Users to Add as Friend
 app.get('auth/users/search', function (req, res) {
   db.collection('Users').fetchAll()

@@ -8,9 +8,8 @@ angular.module('crptFit.controllers', [])
   self.friendCount = Social.getFriendsLength();
   self.trainerCount = Social.getTrainersLength();
   self.clientCount = Social.getClientsLength();
+
   self.feed = [
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'},
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
     {username: 'Ricky Walker', update: 'Did 5000 squats!'}
@@ -44,7 +43,6 @@ angular.module('crptFit.controllers', [])
       loading: false
   }
  }])
-
 .controller('MessagesCtrl', ['Message', function(Message) {
   //post and get messages controls here
   var self = this;
