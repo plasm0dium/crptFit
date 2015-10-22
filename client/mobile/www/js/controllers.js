@@ -51,6 +51,11 @@ angular.module('crptFit.controllers', [])
   self.messages = Message.messageList();
   self.clickUser = Message.clickUser();
   self.userCli = Message.userMess();
+  Message.clickUser();
+
+  self.refreshMessages = function(){
+
+  };
 }])
 
 .controller('SocialCtrl', ['Social', function(Social) {
