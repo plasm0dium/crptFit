@@ -54,7 +54,10 @@ angular.module('crptFit.services', [])
   var friends = [
     // The data inside of this array will come from a user's friends table
     {username: 'Ricky Walker'},
+    {username: 'Ted Ly'},
+    {username: 'Ted Ly'},
     {username: 'Ted Ly'}
+
   ];
   var clients = [
     // The data inside of this array will come from a user's clients table
@@ -70,6 +73,9 @@ angular.module('crptFit.services', [])
       // This function needs the proper AJAX request
       return friends;
     },
+    getFriendsLength: function(){
+      return friends.length;
+    },
     sendFriendRequest: function(friend){
       // This function needs the proper AJAX request
     },
@@ -81,6 +87,9 @@ angular.module('crptFit.services', [])
       // This function needs the proper AJAX request
       return clients;
     },
+    getClientsLength: function(){
+      return clients.length;
+    },
     addClient: function(client){
       // This function needs the proper AJAX request
       clients.push(client);
@@ -88,6 +97,9 @@ angular.module('crptFit.services', [])
     trainersList: function(){
       // This function needs the proper AJAX request
       return trainers;
+    },
+    getTrainersLength: function(){
+      return trainers.length;
     },
     sendTrainerRequest: function(){
       // This function needs the proper AJAX request

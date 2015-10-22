@@ -2,9 +2,12 @@ angular.module('crptFit.controllers', [])
 
 .controller('LoginCtrl', [function() { }])
 
-.controller('ProfileCtrl', [function() {
+.controller('ProfileCtrl', ['Social', function(Social) {
   var self = this;
   // Add a refreshing function here
+  self.friendCount = Social.getFriendsLength();
+  self.trainerCount = Social.getTrainersLength();
+  self.clientCount = Social.getClientsLength();
   self.feed = [
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
