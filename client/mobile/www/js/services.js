@@ -50,7 +50,7 @@ angular.module('crptFit.services', [])
 }])
 
 .factory('Social', ['$http', function($http){
-  // Set up functions for ajax 
+  // Set up functions for ajax
   var friends = [
     // The data inside of this array will come from a user's friends table
     {username: 'Ricky Walker'},
@@ -128,3 +128,59 @@ angular.module('crptFit.services', [])
     },
   };
 }])
+
+.factory('Progress', [function(){
+  var strength = [
+    //the data in this array will come from a users stats table
+     10,
+     20,
+     30,
+     50,
+     75
+  ];
+  var weight = [
+    //the data in this array will come from a users stats table
+     745,
+     600,
+     300,
+     200,
+     190
+  ];
+  var speed = [
+    //the data in this array will come from a users stats table and be modified before entry
+    14,19,2,40,3,90
+  ]
+  return {
+    checkMeStr : function(strong){
+      console.log(strong, 'clicked');
+      strength.push(strong);
+    },
+    checkMeSpd : function(timeSpd, distance){
+      console.log(timeSpd, distance)
+      speed.push((distance/timeSpd)*60)
+    },
+    checkMeWgt : function(weigh){
+      console.log(weigh, 'clicked');
+      weight.push(weigh);
+    },
+    getStr : function(){
+      return strength;
+    },
+    getSpd : function(){
+      return speed;
+    },
+    getWgt : function(){
+      return weight;
+    },
+    postStr : function(val){
+      //this function needs the proper AJAX request
+      strength.push(val);
+    },
+    postSpd : function(){
+      //this function needs the proper AJAX request
+    },
+    postWgt : function(){
+      //this function needs the proper AJAX request
+    }
+  }
+}]);
