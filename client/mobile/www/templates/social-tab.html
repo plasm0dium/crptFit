@@ -3,13 +3,13 @@
     <div class="tabs-striped tabs-top">
       <!-- Start of social list filtering icons -->
       <div class="row social-menu-container">
-        <a class="tab-item active col-25" href="">
+        <a class="tab-item active col-25" ng-click="ctrl.showFriends()">
           <i class="icon"><span class="social-icon">F</span></i>
         </a>
-        <a class="tab-item col-25">
+        <a class="tab-item col-25" ng-click="ctrl.showTrainers()">
           <i class="icon"><span class="social-icon">T</span></i>
         </a>
-        <a class="tab-item col-25">
+        <a class="tab-item col-25" ng-click="ctrl.showClients()">
           <i class="icon"><span class="social-icon">C</span></i>
         </a>
         <a class="tab-item col-25">
@@ -17,7 +17,7 @@
         </a>
       </div>
       <!-- Start of social list -->
-      <div ng-repeat="person in ctrl.people">
+      <div ng-repeat="person in ctrl.list">
         <a class="item item-avatar">
           <img src="https://healthhabits.files.wordpress.com/2008/09/body_builder.gif"/>
           <h3>{{person.username}}</h3>

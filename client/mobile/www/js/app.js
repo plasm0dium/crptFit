@@ -98,6 +98,15 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         }
       }
     })
+    .state('tab.messages-send-tab', {
+      url: '/message',
+      views: {
+        'messages-tab': {
+          templateUrl: 'templates/messages-send-tab.html',
+          controller: 'MessagesCtrl'
+        }
+      }
+    })
     .state('tab.group', {
       url: '/social',
       views: {

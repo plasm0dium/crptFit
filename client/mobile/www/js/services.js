@@ -1,6 +1,6 @@
 angular.module('crptFit.services', [])
 
-.factory('Chats', function() {
+.factory('Chats', [function() {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
@@ -47,4 +47,84 @@ angular.module('crptFit.services', [])
       return null;
     }
   };
-});
+}])
+
+.factory('Social', ['$http', function($http){
+  // Set up functions for ajax 
+  var friends = [
+    // The data inside of this array will come from a user's friends table
+    {username: 'Ricky Walker'},
+    {username: 'Ted Ly'}
+  ];
+  var clients = [
+    // The data inside of this array will come from a user's clients table
+    {username: 'Barney'}
+  ];
+  var trainers = [
+    // The data inside of this array will coem from a user's trainers table
+    {username: 'Chris Castillo'},
+    {username: 'Paul Keller'}
+  ];
+  return {
+    friendsList: function(){
+      // This function needs the proper AJAX request
+      return friends;
+    },
+    sendFriendRequest: function(friend){
+      // This function needs the proper AJAX request
+    },
+    addFriend: function(friend){
+      // This function needs the proper AJAX request
+      friends.push(friend);
+    },
+    clientsList: function(){
+      // This function needs the proper AJAX request
+      return clients;
+    },
+    addClient: function(client){
+      // This function needs the proper AJAX request
+      clients.push(client);
+    },
+    trainersList: function(){
+      // This function needs the proper AJAX request
+      return trainers;
+    },
+    sendTrainerRequest: function(){
+      // This function needs the proper AJAX request
+    },
+    addTrainer: function(trainer){
+      // This function needs the proper AJAX request
+      trainers.push(trainer);
+    }
+  };
+}])
+.factory('Message', [function(){
+  var messages = [
+    {user: 'John', message:'bich you said we were working out, where are you?'},
+    {user: 'Steve', message: 'I will hunt you down if you keep ditching me like this'},
+    {user: 'Jane', message: 'HA you can only lift 130? my grandma can do that in her grave!'},
+    {user: 'Mom', message: 'Casserole for dinner.. again'},
+    {user: 'Ted', message: ':D'}
+  ];
+  var userCli;
+//get user message table from db
+  return {
+    messageList : function(){
+      return messages;
+    },
+    clickUser : function(){
+      $('.userMessage').click(function(){
+        for(var i = 0; i < messages.length; i++){
+          var use = messages[i];
+          if(this.id === use.user){
+          console.log(use.message)
+            userCli = use.message
+          }
+        }
+      });
+    },
+    userMess : function(){
+      return userCli;
+    },
+  };
+}]);
