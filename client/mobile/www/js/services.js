@@ -150,6 +150,18 @@ angular.module('crptFit.services', [])
     14,19,2,40,3,90
   ]
   return {
+    checkMeStr : function(strong){
+      console.log(strong, 'clicked');
+      strength.push(strong);
+    },
+    checkMeSpd : function(timeSpd, distance){
+      console.log(timeSpd, distance)
+      speed.push((distance/timeSpd)*60)
+    },
+    checkMeWgt : function(weigh){
+      console.log(weigh, 'clicked');
+      weight.push(weigh);
+    },
     getStr : function(){
       return strength;
     },
