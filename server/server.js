@@ -44,6 +44,7 @@ app.get('/auth/facebook',
   passport.authenticate('facebook', {
     scope: ['public_profile', 'email', 'user_friends', 'user_birthday']
  }));
+
 //Facebook Auth Callback
 app.get('/auth/facebook/callback', function (req, res, next) {
   passport.authenticate('facebook',
@@ -60,7 +61,7 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   console.log('GET REQ AUTHENTICATED', req.user)
-  res.redirect('/tab/homepage');
+  res.redirect('/#/tab/homepage');
   res.json(req.user);
 })
 
@@ -71,6 +72,7 @@ app.get('/logout', function(req, res){
   req.logout();
   res.send('200');
 });
+
 //Get All User's Tasks
 app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
   db.collection('Tasks').fetchByUser(req.user.attributes.id)
@@ -79,6 +81,7 @@ app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
     res.json(tasks.toJSON());
   });
 });
+
 //Fetch User's Friends
 app.get('/auth/friends', ensureAuthenticated, function (req, res) {
   db.collection('Friends').fetchByUser(req.user.attributes.id)
@@ -95,6 +98,7 @@ app.get('auth/users/search', ensureAuthenticated, function (req, res) {
     res.json(allFriends.toJSON());
   })
 });
+
 // Get Collection of User's Stats
 app.get('/auth/stats', ensureAuthenticated, function (req, res) {
   db.collection('Stats').fetchByUser(req.user.attributes.id)
@@ -103,6 +107,7 @@ app.get('/auth/stats', ensureAuthenticated, function (req, res) {
     res.json(stats.toJSON());
   });
 });
+
 //Fetch a User's Clients
 app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
@@ -111,6 +116,7 @@ app.get('/auth/clients', ensureAuthenticated,function (req, res) {
     res.json(stats.toJSON());
   });
 });
+
 //Add a New Task to User
 app.post('/auth/tasks', function (req, res) {
   //CHECK FRONT END VARIABLE
@@ -127,7 +133,6 @@ app.post('/auth/tasks', function (req, res) {
     console.log('ERR IN POST /auth/tasks : ', err);
   });
 });
-
 
 //Update User's Task to Complete
 app.post('/auth/task/complete:id', function(req, res) {
@@ -148,7 +153,8 @@ app.post('/auth/friends/add:id', function (req, res) {
   db.model('Friend').newFriend({
     friends_id: friendId,
     user_id: userId
-  }).save()
+  })
+  .save()
   .then(function (friend) {
     console.log('ADDED FRIEND :', friend);
     return friend;
@@ -165,7 +171,8 @@ app.post('/auth/clients/add:id', function (req, res) {
   db.model('Client').newClient({
     client_id: clientId,
     user_id: userId
-  }).save()
+  })
+  .save()
   .then(function(newClient) {
     console.log('ADDED NEW CLIENT :', newClient);
     return newClient;
@@ -174,6 +181,16 @@ app.post('/auth/clients/add:id', function (req, res) {
     return err;
   });
 });
+
+//On Accept Adds Trainer to User
+app.post('/auth/trainer/add:id', function (req, res) {
+  var userId = req.user.attributes.id;
+  var clientId = req.params.id;
+  db.model('Trainer').newTrainer({
+
+  })
+  .save()
+})
 
 function ensureAuthenticated(req, res, next) {
   console.log('AUTHENTICATED FUNCTION')

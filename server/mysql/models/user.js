@@ -19,7 +19,7 @@ var User = db.Model.extend({
   stats: function () {
     return this.hasMany('Stat')
   },
-  friend: function () {
+  friends: function () {
     return this.hasMany('Friend')
   },
   trainers: function() {
@@ -31,7 +31,7 @@ var User = db.Model.extend({
 }, {
   //User Class Methods
 fetchById: function(options) {
-  return new this(options).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends']});
+  return new this(options).fetch({withRelated: ['tasks', 'clients', 'stats','friends']});
   },
 fetchByUsername: function (username) {
   return this({

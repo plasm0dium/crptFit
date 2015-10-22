@@ -37,7 +37,11 @@ module.exports = function (passport) {
       if(!user) {
         return db.model('User').newUser({
           fbId : profile.id,
-          username : profile.displayName
+          username : profile.displayName,
+          profile_pic: profile.photos[0].value,
+          birthday: profile._json.birthday,
+          email: profile._json.email,
+          gender: profile._json.gender
         }).save()
       } else {
         console.log('IN CALLBACK: USER ALREADY EXISTS')
@@ -49,8 +53,7 @@ module.exports = function (passport) {
       console.log(err);
       return done(err, false)
     })
-
-    console.log("THIS IS YOUR PROFILE", profile);
   })
-}))
+    console.log("PROFILE", profile);
+  }))
 }
