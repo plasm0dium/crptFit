@@ -184,6 +184,14 @@ function ensureAuthenticated(req, res, next) {
   }
 }
 
+db.model('Friend').newFriend({
+  friends_id: 2,
+  user_id: 1
+}).save()
+.then(function(friend){
+  console.log(friend);
+})
+
 app.listen(port, function(){
   console.log('listening on port...', port);
 });
