@@ -1,5 +1,11 @@
 angular.module('crptFit.controllers', [])
 
+.controller('SideCtrl', ['$scope', function($scope){
+    $scope.toggleMenu = function() {
+      $scope.sideMenuController.toggleLeft();
+    }
+}])
+
 .controller('LoginCtrl', [function() { }])
 
 .controller('ProfileCtrl', [function() {
@@ -38,22 +44,22 @@ angular.module('crptFit.controllers', [])
      self.check = Progress.postStr(self.strong.val);
    };
    $scope.chartConfig = {
-       options: {
-           chart: {
-               type: 'spline'
-           }
-       },
-       series: [{
-           data: self.Strength
-       }],
-       xAxis: {
-         tickInterval: 5
-       },
-       title: {
-           text: ''
-       },
-       loading: false
-   };
+     options: {
+       chart: {
+         type: 'spline'
+       }
+     },
+     series: [{
+       data: self.Strength
+     }],
+     xAxis: {
+       tickInterval: 5
+     },
+     title: {
+       text: ''
+     },
+     loading: false
+    };
   }])
   .controller('ProgressCtrlSpd', ['$scope', 'Progress', function($scope, Progress) {
     var self = this;

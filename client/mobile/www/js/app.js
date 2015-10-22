@@ -34,7 +34,16 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
     abstract: true,
     templateUrl: 'templates/tabs.html'
   })
-  // Each tab has its own nav history stack:
+  .state('side', {
+    url: '/tab',
+    views: {
+      'side-bar': {
+        templateUrl: 'templates/side-menu.html',
+        controller: 'SideCtrl'
+      }
+    }
+  })
+// Each tab has its own nav history stack:
     .state('tab.profile', {
       url: '/profile',
       views: {
