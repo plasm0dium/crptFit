@@ -96,6 +96,7 @@ angular.module('crptFit.services', [])
     {user: 'Mom', message: 'Casserole for dinner.. again'},
     {user: 'Ted', message: ':D'}
   ];
+  var userCli;
 //get user message table from db
   return {
     messageList : function(){
@@ -107,10 +108,13 @@ angular.module('crptFit.services', [])
           var use = messages[i];
           if(this.id === use.user){
           console.log(use.message)
-            return use.message
+            userCli = use.message
           }
         }
       });
+    },
+    userMess : function(){
+      return userCli;
     },
   };
 }]);

@@ -50,6 +50,7 @@ angular.module('crptFit.controllers', [])
   var self = this;
   self.messages = Message.messageList();
   self.clickUser = Message.clickUser();
+  self.userCli = Message.userMess();
 }])
 
 .controller('SocialCtrl', ['Social', function(Social) {
