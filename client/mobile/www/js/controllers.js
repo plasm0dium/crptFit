@@ -25,23 +25,64 @@ angular.module('crptFit.controllers', [])
   ];
  }])
 .controller('MenuCtrl', [function() { }])
-.controller('ProgressCtrl', ['$scope', function($scope) {
-  $scope.chartConfig = {
-      options: {
-          chart: {
-              type: 'spline'
-          }
-      },
-      series: [{
-          data: [2, 16, 32, -5, 80]
-      }],
-      title: {
-          text: ''
-      },
-      loading: false
-  }
- }])
+.controller('ProgressCtrl', ['$scope', 'Progress', function($scope, Progress) {
+  var self = this;
 
+ }])
+ .controller('ProgressCtrlStr', ['$scope', 'Progress', function($scope, Progress) {
+   var self = this;
+   self.Strength = Progress.getStr();
+   $scope.chartConfig = {
+       options: {
+           chart: {
+               type: 'spline'
+           }
+       },
+       series: [{
+           data: self.Strength
+       }],
+       title: {
+           text: ''
+       },
+       loading: false
+   };
+  }])
+  .controller('ProgressCtrlSpd', ['$scope', 'Progress', function($scope, Progress) {
+    var self = this;
+    self.Speed = Progress.getSpd();
+    $scope.chartConfig = {
+        options: {
+            chart: {
+                type: 'spline'
+            }
+        },
+        series: [{
+            data: self.Speed
+        }],
+        title: {
+            text: ''
+        },
+        loading: false
+    };
+   }])
+   .controller('ProgressCtrlWgt', ['$scope', 'Progress', function($scope, Progress) {
+     var self = this;
+     self.Weight = Progress.getWgt();
+     $scope.chartConfig = {
+         options: {
+             chart: {
+                 type: 'spline'
+             }
+         },
+         series: [{
+             data: self.Weight
+         }],
+         title: {
+             text: ''
+         },
+         loading: false
+     };
+    }])
 .controller('MessagesCtrl', ['Message', function(Message) {
   //post and get messages controls here
   var self = this;
