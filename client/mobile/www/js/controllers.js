@@ -65,7 +65,7 @@ angular.module('crptFit.controllers', [])
     };
     self.Speed = Progress.getSpd();
     self.checkMe = function(){
-      self.check = Progress.checkMeSpd(self.timeSpd.val, self.distance.val);
+      self.check = Progress.postSpd(self.timeSpd.val, self.distance.val);
     };
     $scope.chartConfig = {
         options: {
@@ -89,7 +89,7 @@ angular.module('crptFit.controllers', [])
      };
      self.Weight = Progress.getWgt();
      self.checkMe = function(){
-       self.check = Progress.checkMeWgt(self.weight.val);
+       self.check = Progress.postWgt(self.weight.val);
      };
      $scope.chartConfig = {
          options: {

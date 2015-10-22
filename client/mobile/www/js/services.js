@@ -102,18 +102,18 @@ angular.module('crptFit.services', [])
   ];
   //all functions need integration with db 10/22
   return {
-    checkMeStr : function(strong){
-      console.log(strong, 'clicked');
-      strength.push(strong);
-    },
-    checkMeSpd : function(timeSpd, distance){
-      console.log(timeSpd, distance);
-      speed.push((distance/timeSpd)*60);
-    },
-    checkMeWgt : function(weigh){
-      console.log(weigh, 'clicked');
-      weight.push(weigh);
-    },
+    // checkMeStr : function(strong){
+    //   console.log(strong, 'clicked');
+    //   strength.push(strong);
+    // },
+    // checkMeSpd : function(timeSpd, distance){
+    //   console.log(timeSpd, distance);
+    //   speed.push((distance/timeSpd)*60);
+    // },
+    // checkMeWgt : function(weigh){
+    //   console.log(weigh, 'clicked');
+    //   weight.push(weigh);
+    // },
     getStr : function(){
       return strength;
     },
@@ -134,24 +134,26 @@ angular.module('crptFit.services', [])
         queryStr();
       });
     },
-    postSpd : function(){
+    postSpd : function(val){
       //this function needs the proper AJAX request
       $http({
         method: 'POST',
         url: '/auth/stats',
-        data: 'checkMeSpd'
+        data: val
       }).then(function(data){
         console.log(data);
+        querySpd();
       });
     },
-    postWgt : function(){
+    postWgt : function(val){
       //this function needs the proper AJAX request
       $http({
         method: 'POST',
         url: '/auth/stats',
-        data: 'checkMeWgt'
+        data: val
       }).then(function(data){
         console.log(data);
+        queryWgt();
       });
     },
     queryStr : function(){
