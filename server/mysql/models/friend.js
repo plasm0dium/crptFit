@@ -7,7 +7,7 @@ var Friend = db.Model.extend({
   hasTimeStamp: true,
   user: function () {
     return this.belongsTo('User');
-  },
+  }
 }, {
   newFriend: function (options) {
     return new this(options);
