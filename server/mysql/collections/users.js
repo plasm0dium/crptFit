@@ -6,7 +6,7 @@ var Users = db.Collection.extend({
   model: db.model('User')
 }, {
   fetchAll: function () {
-    return db.collection('Users').forge().fetch()
+    return db.collection('Users').forge().fetch({withRelated: ['tasks']})
   }
 })
 

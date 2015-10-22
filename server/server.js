@@ -83,13 +83,22 @@ app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
 });
 
 //Fetch User's Friends
-app.get('/auth/friends', ensureAuthenticated, function (req, res) {
+
+app.get('/auth/friends', function (req, res) {
+  var storage = [];
   db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(friends) {
-    console.log('THESE ARE USER FRIENDS: ', friends)
-    res.json(friends.toJSON());
+    var friendsArray = friends.models;
+    for(var i = 0; i < friendsArray.length; i++ ) {
+      var tojson = db.model('User').fetchById({
+        id: friendsArray[i].attributes.friends_id
+      }).then(function(result) {
+        storage.push(result);
+      }).then(function() {
+        return res.json(storage.toJSON());
+      })
+    }})
   });
-});
 
 //Search All Users to Add as Friend
 app.get('auth/users/search', ensureAuthenticated, function (req, res) {
@@ -155,9 +164,16 @@ app.post('/auth/friends/add:id', function (req, res) {
     user_id: userId
   })
   .save()
-  .then(function (friend) {
-    console.log('ADDED FRIEND :', friend);
-    return friend;
+  .then(function() {
+    db.model('Friend').newFriend({
+      friends_id: userId,
+      user_id: friendId
+    })
+    .save()
+  })
+  .then(function (newFriend) {
+    console.log('ADDED NEW FRIEND', newFriend)
+    return newFriend;
   })
   .catch(function (err) {
     return err;
@@ -173,6 +189,13 @@ app.post('/auth/clients/add:id', function (req, res) {
     user_id: userId
   })
   .save()
+  .then(function() {
+    db.model('Trainer').newTrainer({
+      trainer_id: userId,
+      user_id: clientId
+    })
+    .save()
+  })
   .then(function(newClient) {
     console.log('ADDED NEW CLIENT :', newClient);
     return newClient;
