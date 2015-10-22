@@ -29,7 +29,7 @@ module.exports = function (passport) {
       callbackURL: "http://localhost:8100/auth/facebook/callback"
     },
   function(req, accessToken, refreshToken, profile, done) {
-    process.nextTick(function(){
+    
       db.model('User').fetchById({
         fbId: profile.id,
         username: profile.displayName
@@ -53,7 +53,7 @@ module.exports = function (passport) {
       console.log(err);
       return done(err, false)
     })
-  })
+
     console.log("PROFILE", profile);
   }))
 }

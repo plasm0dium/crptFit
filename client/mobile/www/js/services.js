@@ -183,4 +183,4 @@ angular.module('crptFit.services', [])
       //this function needs the proper AJAX request
     }
   }
-}]);
+}])
