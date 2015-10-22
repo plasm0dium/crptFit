@@ -1,6 +1,12 @@
 angular.module('crptFit.controllers', [])
 
-.controller('LoginCtrl', [function() { }])
+.controller('LoginCtrl', [function() { 
+  
+}])
+
+// .run([function(Restangular, principal) {
+//     Restangular.setDefaultHeaders({'x-access-token': principal.token});
+// }])
 
 .controller('ProfileCtrl', [function() {
   var self = this;

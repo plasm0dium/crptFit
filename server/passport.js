@@ -25,13 +25,14 @@ module.exports = function (passport) {
       clientSecret: Auth.clientSecret,
       passReqToCallback: true,
       enabledProof: false,
-      profileFields: ['id', 'birthday', 'email', 'displayName', 'gender', 'photos', 'friends', 'about'],
+      profileFields: ['id', 'birthday', 'email', 'displayName', 'gender', 'picture.type(large)', 'friends', 'about'],
       callbackURL: "http://localhost:8100/auth/facebook/callback"
     },
   function(req, accessToken, refreshToken, profile, done) {
-    db.model('User').fetchById({
-      fbId: profile.id,
-      username: profile.displayName
+    process.nextTick(function(){
+      db.model('User').fetchById({
+        fbId: profile.id,
+        username: profile.displayName
     }).then(function (user) {
       if(!user) {
         return db.model('User').newUser({
@@ -48,5 +49,8 @@ module.exports = function (passport) {
       console.log(err);
       return done(err, false)
     })
-  }))
+
+    console.log("THIS IS YOUR PROFILE", profile);
+  })
+}))
 }

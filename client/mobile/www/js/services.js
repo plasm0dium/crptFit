@@ -127,4 +127,4 @@ angular.module('crptFit.services', [])
       return userCli;
     },
   };
-}]);
+}])

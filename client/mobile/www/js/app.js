@@ -25,13 +25,14 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
   $stateProvider
   .state('login', {
     url: '/login',
-    templateUrl: 'templates/login-tab.html',
-    controller: "LoginCtrl"
+    templateUrl: 'templates/login-tab.html'
+   
   })
   // setup an abstract state for the tabs directive
     .state('tab', {
     url: '/tab',
     abstract: true,
+    controller: "LoginCtrl",
     templateUrl: 'templates/tabs.html'
   })
   // Each tab has its own nav history stack:
@@ -119,4 +120,4 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');
 
-});
+})

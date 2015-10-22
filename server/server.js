@@ -3,6 +3,7 @@ var db = require('./mysql/config');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var morgan = require('morgan');
+var jwt = require('jsonwebtoken');
 var app = express();
 var port = process.env.PORT || 8100;
 
@@ -71,7 +72,7 @@ app.get('/logout', function(req, res){
   res.send('200');
 });
 //Get All User's Tasks
-app.get('/auth/tasks', function (req,res) {
+app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
   db.collection('Tasks').fetchByUser(req.user.attributes.id)
   .then(function(tasks) {
     console.log('THIS IS A TASK :', tasks);
@@ -79,7 +80,7 @@ app.get('/auth/tasks', function (req,res) {
   });
 });
 //Fetch User's Friends
-app.get('/auth/friends', function (req, res) {
+app.get('/auth/friends', ensureAuthenticated, function (req, res) {
   db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(friends) {
     console.log('THESE ARE USER FRIENDS: ', friends)
@@ -88,14 +89,14 @@ app.get('/auth/friends', function (req, res) {
 });
 
 //Search All Users to Add as Friend
-app.get('auth/users/search', function (req, res) {
+app.get('auth/users/search', ensureAuthenticated, function (req, res) {
   db.collection('Users').fetchAll()
   .then(function(allFriends) {
     res.json(allFriends.toJSON());
   })
 });
 // Get Collection of User's Stats
-app.get('/auth/stats', function (req, res) {
+app.get('/auth/stats', ensureAuthenticated, function (req, res) {
   db.collection('Stats').fetchByUser(req.user.attributes.id)
   .then(function(stats) {
     console.log('THESE ARE USER STATS: ', stats);
@@ -103,7 +104,7 @@ app.get('/auth/stats', function (req, res) {
   });
 });
 //Fetch a User's Clients
-app.get('/auth/clients', function (req, res) {
+app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
   .then(function(clients) {
     console.log('THESE ARE USER CLIENTS :', clients);
@@ -174,7 +175,6 @@ app.post('/auth/clients/add:id', function (req, res) {
   });
 });
 
-app.post('/')
 function ensureAuthenticated(req, res, next) {
   console.log('AUTHENTICATED FUNCTION')
   if(req.isAuthenticated()) {
@@ -183,17 +183,6 @@ function ensureAuthenticated(req, res, next) {
     res.redirect('/')
   }
 }
-
-db.model('Friend').newFriend({
- friends_id: 00,
- user_id: 5
-}).save()
-
-
-db.collection('Friends').fetchByUser(4).then(function (friend) {
-console.log("THIS IS MY FRIEND", friend.models)
- return friend;
-})
 
 app.listen(port, function(){
   console.log('listening on port...', port);

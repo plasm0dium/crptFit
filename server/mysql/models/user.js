@@ -31,7 +31,7 @@ var User = db.Model.extend({
 }, {
   //User Class Methods
 fetchById: function(options) {
-  return new this(options).fetch();
+  return new this(options).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends']});
   },
 fetchByUsername: function (username) {
   return this({
