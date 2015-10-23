@@ -5,16 +5,16 @@ require('../models/message');
 var Messages = db.Collection.extend({
   model: db.model('Message')
 }, {
-  fetchByUser: function(userId) {
+  fetchByChat: function(chatId) {
     return db.collection('Messages')
     .forge()
     .query(function(qb) {
-      qb.where('user_id', '=', userId);
+      qb.where('chat_id', '=', chatId);
     })
     .fetch();
   },
   fetchAll: function () {
-    return db.collection('Messages').forge().fetch({withRelated: ['user']})
+    return db.collection('Messages').forge().fetch({withRelated: ['chat']})
   }
 })
 
