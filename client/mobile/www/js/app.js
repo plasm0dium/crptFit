@@ -18,24 +18,18 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
 
 .config(function($stateProvider, $urlRouterProvider) {
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
   $stateProvider
   .state('login', {
     url: '/login',
     templateUrl: 'templates/login-tab.html'
-   
   })
-  // setup an abstract state for the tabs directive
     .state('tab', {
     url: '/tab',
     abstract: true,
     controller: "LoginCtrl",
     templateUrl: 'templates/tabs.html'
   })
-  // Each tab has its own nav history stack:
+// Each tab has its own nav history stack:
     .state('tab.profile', {
       url: '/profile',
       views: {
@@ -117,7 +111,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         }
       }
     })
-  // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');
 
 })

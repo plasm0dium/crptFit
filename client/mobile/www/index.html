@@ -19,8 +19,6 @@
     <script src="cordova.js"></script>
 
     <!-- your app's js -->
-    <script type="text/javascript" src="https://cdn.rawgit.com/auth0/angular-jwt/master/dist/angular-jwt.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular-cookies.min.js"> </script>
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
@@ -30,17 +28,24 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   </head>
   <body ng-app="crptFit" class="slide-left-right-ios7">
-
-    <ion-nav-bar class="nav-title-slide-ios7 bar-positive">
-      <ion-nav-back-button>
-      </ion-nav-back-button>
-    </ion-nav-bar>
-    <!--
-      The views will be rendered in the <ion-nav-view> directive below
-      Templates are in the /templates folder (but you could also
-      have templates inline in this html file if you'd like).
-    -->
-    <ion-nav-view class="slide-left-right"></ion-nav-view>
-
+    <ion-side-menus>
+      <ion-side-menu side="right">
+        <ion-content>
+          <a class="item item-icon-right" href="/logout">Log Out<i class="icon ion-chevron-right icon-accessory"></i></a>
+        </ion-content>
+      </ion-side-menu>
+      <ion-side-menu-content class="sideNav">
+        <ion-nav-bar class="nav-title-slide-ios7 bar-positive">
+          <ion-nav-buttons side="right">
+            <button class="button button-icon button-clear ion-ios-gear" menu-toggle="right"></button>
+          </ion-nav-buttons>
+          <!-- controlls back function from nested views -->
+          <ion-nav-back-button>
+          </ion-nav-back-button>
+        </ion-nav-bar>
+        <!-- main view controller -->
+        <ion-nav-view class="slide-left-right"></ion-nav-view>
+      </ion-side-menu-content>
+    </ion-side-menus>
   </body>
 </html>

@@ -73,7 +73,7 @@ app.get('/logout', function(req, res){
   console.log('LOGOUT REQ.USER', req.user.attributes)
   res.session.destroy();
   req.logout();
-  res.send('200');
+  res.redirect('/');
 });
 
 // Get All User's Tasks
@@ -103,8 +103,8 @@ app.get('/auth/friends', function (req, res) {
     }})
   });
 
-// Search All Users to Add as Friend
-app.get('auth/users/search', ensureAuthenticated, function (req, res) {
+//Search All Users to Add as Friend
+app.get('auth/users/search', function (req, res) {
   db.collection('Users').fetchAll()
   .then(function(allFriends) {
     res.json(allFriends.toJSON());
