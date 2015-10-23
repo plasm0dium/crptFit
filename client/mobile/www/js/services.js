@@ -227,6 +227,3 @@ angular.module('crptFit.services', [])
     }
   };
 }])
-.factory('Utility', ['$http', function($http){
-
-}]);
