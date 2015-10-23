@@ -1,57 +1,8 @@
 angular.module('crptFit.services', [])
 
-// Start of Chats Factory ====================================================
-.factory('Chats', [function() {
-  // Might use a resource here that returns a JSON array
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'https://pbs.twimg.com/profile_images/479090794058379264/84TKj_qa.jpeg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'https://pbs.twimg.com/profile_images/598205061232103424/3j5HUXMY.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
-  }];
-
-  return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
-    }
-  };
-}])
-
 // Start of Social Factory ====================================================
 .factory('Social', ['$http', function($http){
-  // Set up functions for ajax 
+  // Set up functions for ajax
   var friends = [];
   var clients = [];
   var trainers = [
@@ -153,8 +104,8 @@ angular.module('crptFit.services', [])
         for(var i = 0; i < messages.length; i++){
           var use = messages[i];
           if(this.id === use.user){
-          console.log(use.message)
-            userCli = use.message
+          console.log(use.message);
+            userCli = use.message;
           }
         }
       });
@@ -164,7 +115,7 @@ angular.module('crptFit.services', [])
     },
   };
 }])
-.factory('Progress', [function(){
+.factory('Progress', ['$http', function($http){
   var strength = [
     //the data in this array will come from a users stats table
      10,
@@ -184,20 +135,21 @@ angular.module('crptFit.services', [])
   var speed = [
     //the data in this array will come from a users stats table and be modified before entry
     14,19,2,40,3,90
-  ]
+  ];
+  //all functions need integration with db 10/22
   return {
-    checkMeStr : function(strong){
-      console.log(strong, 'clicked');
-      strength.push(strong);
-    },
-    checkMeSpd : function(timeSpd, distance){
-      console.log(timeSpd, distance)
-      speed.push((distance/timeSpd)*60)
-    },
-    checkMeWgt : function(weigh){
-      console.log(weigh, 'clicked');
-      weight.push(weigh);
-    },
+    // checkMeStr : function(strong){
+    //   console.log(strong, 'clicked');
+    //   strength.push(strong);
+    // },
+    // checkMeSpd : function(timeSpd, distance){
+    //   console.log(timeSpd, distance);
+    //   speed.push((distance/timeSpd)*60);
+    // },
+    // checkMeWgt : function(weigh){
+    //   console.log(weigh, 'clicked');
+    //   weight.push(weigh);
+    // },
     getStr : function(){
       return strength;
     },
@@ -207,15 +159,74 @@ angular.module('crptFit.services', [])
     getWgt : function(){
       return weight;
     },
+    //all functions below here need to be tested and found working 10/22
     postStr : function(val){
-      //this function needs the proper AJAX request
-      strength.push(val);
+      $http({
+        method: 'POST',
+        url: '/auth/stats',
+        data: val
+      }).then(function(data){
+        console.log(data);
+        queryStr();
+      });
     },
-    postSpd : function(){
+    postSpd : function(val){
       //this function needs the proper AJAX request
+      $http({
+        method: 'POST',
+        url: '/auth/stats',
+        data: val
+      }).then(function(data){
+        console.log(data);
+        querySpd();
+      });
     },
-    postWgt : function(){
+    postWgt : function(val){
       //this function needs the proper AJAX request
+      $http({
+        method: 'POST',
+        url: '/auth/stats',
+        data: val
+      }).then(function(data){
+        console.log(data);
+        queryWgt();
+      });
+    },
+    queryStr : function(){
+      $http({
+        method: 'GET',
+        url: '/auth/stats'
+      }).then(function(response){
+        stat = response.data;
+        strength.push(stat);
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
+    },
+    querySpd : function(){
+      $http({
+        method: 'GET',
+        url: '/auth/stats'
+      }).then(function(response){
+        stat = response.data;
+        speed.push(stat);
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
+    },
+    queryWgt : function(){
+      $http({
+        method: 'GET',
+        url: '/auth/stats'
+      }).then(function(response){
+        stat = response.data;
+        weight.push(stat);
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
     }
-  }
+  };
+}])
+.factory('Utility', ['$http', function($http){
+
 }]);
