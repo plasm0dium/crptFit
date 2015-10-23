@@ -1,4 +1,10 @@
-<ion-view>
+<ion-view title="Tasks" ng-controller="ProgressCtrlTask as ctrl">
   <ion-content>
+    <div ng-repeat="task in ctrl.tasks" ng-click="ctrl.toggle(task)" ng-class="{taskCom : task.toggled}">
+      <button type="button" class="button button-dark destro" ng-click="ctrl.finishTask(task)">remove</button>
+      <ion-checkbox>
+        {{task.task}}: {{task.todo}}
+      </ion-checkbox>
+    </div>
   </ion-content>
 </ion-view>

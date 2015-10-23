@@ -137,7 +137,7 @@ angular.module('crptFit.services', [])
     //the data in this array will come from a users stats table and be modified before entry
     14,19,2,40,3,90
   ];
-  //all functions need integration with db 10/22
+  //all functions need integration with db
   return {
     // checkMeStr : function(strong){
     //   console.log(strong, 'clicked');
@@ -160,7 +160,7 @@ angular.module('crptFit.services', [])
     getWgt : function(){
       return weight;
     },
-    //all functions below here need to be tested and found working 10/22
+    //all functions below here need to be tested and found working
     postStr : function(val){
       $http({
         method: 'POST',
@@ -229,3 +229,30 @@ angular.module('crptFit.services', [])
 
   };
 }])
+.factory('Task', ['$http', function($http){
+  var testTask = [
+    {task: 'Task1', todo: 'Run a million miles'},
+    {task: 'Task2', todo: 'Find the dragonballs'},
+    {task: 'Task3', todo: 'Become Perfectly Huge'}
+  ];
+  return {
+    finishTask : function(task){
+      //UNCOMMENT FOR PRODUCTION
+      // $http({
+      //   method: 'POST',
+      //   url: '/auth/tasks',
+      // })
+      console.log(task, 'clicked')
+      testTask.splice(testTask.indexOf(task), 1);
+    },
+    getTask : function(){
+      $http({
+        method: 'GET',
+        url: '/auth/tasks',
+      })
+    },
+    taskFunc : function(){
+      return testTask;
+    }
+  };
+}]);

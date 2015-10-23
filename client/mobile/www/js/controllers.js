@@ -106,6 +106,16 @@ angular.module('crptFit.controllers', [])
          loading: false
      };
     }])
+.controller('ProgressCtrlTask', ['Task', function(Task){
+  var self = this;
+  self.tasks = Task.taskFunc();
+  self.toggle = function(task){
+    task.toggled = !task.toggled;
+  };
+  self.finishTask = function(task){
+    self.finish = Task.finishTask(task);
+  }
+}])
 .controller('MessagesCtrl', ['Message', function(Message) {
   //post and get messages controls here
   var self = this;
