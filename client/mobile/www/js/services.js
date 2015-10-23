@@ -1,44 +1,78 @@
 angular.module('crptFit.services', [])
 
+// Start of Social Factory ====================================================
 .factory('Social', ['$http', function($http){
   // Set up functions for ajax
-  var friends = [
-    // The data inside of this array will come from a user's friends table
-    {username: 'Ricky Walker'},
-    {username: 'Ted Ly'}
-  ];
-  var clients = [
-    // The data inside of this array will come from a user's clients table
-    {username: 'Barney'}
-  ];
+  var friends = [];
+  var clients = [];
   var trainers = [
-    // The data inside of this array will coem from a user's trainers table
+    // The data inside of this array will come from a user's trainers table
+    // Right now, it is static information but will be pulled from the database
     {username: 'Chris Castillo'},
     {username: 'Paul Keller'}
   ];
+
   return {
     friendsList: function(){
-      // This function needs the proper AJAX request
+      // Grab friends and store it in the friends array above (refactor - DRY)
+      $http({
+        method: 'GET',
+        url: '/auth/friends'
+      })
+      .then(function(response){
+        friends = response.data;
+        console.log(friends);
+      }, function(error){
+        console.log(error);
+      });
       return friends;
+    },
+    getFriendsLength: function(){
+      return friends.length;
     },
     sendFriendRequest: function(friend){
       // This function needs the proper AJAX request
     },
-    addFriend: function(friend){
+    addFriend: function(friendId){
       // This function needs the proper AJAX request
-      friends.push(friend);
+      $http({
+        method: 'POST',
+        url: '/auth/friends/add:' + friendId
+      });
+      this.friendsList();
     },
     clientsList: function(){
       // This function needs the proper AJAX request
+      // Grab clients and store them in the clients array above (refactor - DRY)
+      $http({
+        method: 'GET',
+        url: '/auth/clients'
+      })
+      .then(function(response){
+        clients = response.data;
+        console.log(friends);
+      }, function(error){
+        console.log(error);
+      });
       return clients;
     },
-    addClient: function(client){
+    getClientsLength: function(){
+      return clients.length;
+    },
+    addClient: function(clientId){
       // This function needs the proper AJAX request
-      clients.push(client);
+      $http({
+        method: 'POST',
+        url: '/auth/clients/add:' + clientId
+      });
+      this.clientsList();
     },
     trainersList: function(){
       // This function needs the proper AJAX request
       return trainers;
+    },
+    getTrainersLength: function(){
+      return trainers.length;
     },
     sendTrainerRequest: function(){
       // This function needs the proper AJAX request
@@ -49,6 +83,8 @@ angular.module('crptFit.services', [])
     }
   };
 }])
+
+// Start of Messages Factory ====================================================
 .factory('Message', [function(){
   var messages = [
     {user: 'John', message:'bich you said we were working out, where are you?'},
