@@ -71,7 +71,7 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
 // Logout User
 app.get('/logout', function(req, res){
   console.log('LOGOUT REQ.USER', req.user.attributes)
-  res.session.destroy();
+  req.session.destroy();
   req.logout();
   res.redirect('/');
 });
