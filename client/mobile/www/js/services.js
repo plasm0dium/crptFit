@@ -249,7 +249,10 @@ angular.module('crptFit.services', [])
       $http({
         method: 'GET',
         url: '/auth/tasks',
-      })
+      }).then(function(response){
+        tasks = response.data;
+        testTask.push(tasks);
+      });
     },
     taskFunc : function(){
       return testTask;
