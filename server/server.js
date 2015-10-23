@@ -87,20 +87,29 @@ app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
 
 // Fetch User's Friends
 
+// var storage = [];
+
+var storage = [];
 app.get('/auth/friends', function (req, res) {
-  var storage = [];
   db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(friends) {
     var friendsArray = friends.models;
     for(var i = 0; i < friendsArray.length; i++ ) {
-      var tojson = db.model('User').fetchById({
+      db.model('User').fetchById({
         id: friendsArray[i].attributes.friends_id
-      }).then(function(result) {
-        storage.push(result);
-      }).then(function() {
-        return res.json(storage.toJSON());
       })
-    }})
+      .then(function(result) {
+        storage.push(result);
+      })
+    }}).then(function() {
+      console.log('THIS IS STORAGE :', storage)
+    })
+      .then(function() {
+        console.log('RES>JSON :', storage)
+        return res.json(storage);
+      }).then(function () {
+        storage = [];
+      })
   });
 
 //Search All Users to Add as Friend
@@ -279,7 +288,8 @@ app.post('/auth/confirmfriend', function (req, res){
   var friendId = req.params.id;
   db.model('friendRequest').acceptFriendRequest({
     user_id: userId,
-    friend_id: friendId
+    friend_id: friendId  
+
   })
   .then(function () {
     db.model('friendRequest').acceptFriendRequest({
