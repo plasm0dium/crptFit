@@ -238,11 +238,11 @@ angular.module('crptFit.services', [])
   return {
     finishTask : function(task){
       //UNCOMMENT FOR PRODUCTION
-      // $http({
-      //   method: 'POST',
-      //   url: '/auth/tasks',
-      // })
-      console.log(task, 'clicked')
+      $http({
+        method: 'POST',
+        url: '/auth/tasks',
+      });
+      console.log(task, 'clicked');
       testTask.splice(testTask.indexOf(task), 1);
     },
     getTask : function(){
