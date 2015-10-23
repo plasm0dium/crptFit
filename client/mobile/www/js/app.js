@@ -21,8 +21,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
   $stateProvider
   .state('login', {
     url: '/login',
-    templateUrl: 'templates/login-tab.html',
-    controller: "LoginCtrl"
+    templateUrl: 'templates/login-tab.html'
   })
     .state('tab', {
     url: '/tab',
