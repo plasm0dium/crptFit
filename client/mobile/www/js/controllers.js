@@ -1,5 +1,6 @@
 angular.module('crptFit.controllers', [])
 
+
 .controller('ProfileCtrl', ['Social', function(Social) {
   var self = this;
   // Add a refreshing function here

@@ -113,4 +113,35 @@ db.knex.schema.hasTable('messages').then(function(exists) {
   console.log('created table:', t);
 });
 
+db.knex.schema.hasTable('friend_request').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('friend_request', function(t) {
+      t.increments('id').primary();
+      t.integer('friend_id');
+      t.integer('user_id');
+      t.integer('status', 10);
+      t.timestamps();
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('client_request').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('client_request', function(t) {
+      t.increments('id').primary();
+      t.integer('client_id');
+      t.integer('user_id');
+      t.integer('status', 10);
+      t.timestamps();
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+
 module.exports = db;
