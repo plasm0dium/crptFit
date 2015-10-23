@@ -82,9 +82,13 @@ angular.module('crptFit.services', [])
     sendFriendRequest: function(friend){
       // This function needs the proper AJAX request
     },
-    addFriend: function(friend){
+    addFriend: function(friendId){
       // This function needs the proper AJAX request
-      friends.push(friend);
+      $http({
+        method: 'POST',
+        url: '/auth/friends/add:' + friendId
+      });
+      this.friendsList();
     },
     clientsList: function(){
       // This function needs the proper AJAX request
@@ -106,11 +110,11 @@ angular.module('crptFit.services', [])
     },
     addClient: function(clientId){
       // This function needs the proper AJAX request
-      // $http({
-      //   method: 'POST',
-      //   url: '/auth/clients/add:' + clientId
-      // });
-      // this.clientsList();
+      $http({
+        method: 'POST',
+        url: '/auth/clients/add:' + clientId
+      });
+      this.clientsList();
     },
     trainersList: function(){
       // This function needs the proper AJAX request
