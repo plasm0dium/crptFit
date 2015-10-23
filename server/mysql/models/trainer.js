@@ -3,7 +3,7 @@ var db = require('../config.js');
 require('./user');
 
 var Trainer = db.Model.extend({
-  tableName: 'trainer',
+  tableName: 'trainers',
   hasTimeStamp: true,
   user: function () {
     return this.belongsTo('User');

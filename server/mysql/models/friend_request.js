@@ -12,6 +12,17 @@ var friendRequest = db.Model.extend({
   newFriendRequest: function (options) {
     return new this(options);
   },
+  acceptFriendRequest: function (options) {
+    return new this(options)
+    .fetch()
+    .then(function(result) {
+      result.save({status: 1}, {patch: true});
+    })
+    .then(function (update) {
+      console.log(update);
+      return update;
+    })
+  },
   fetchById: function (id) {
     return new this({
       user_id: id
