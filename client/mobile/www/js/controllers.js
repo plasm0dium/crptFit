@@ -1,6 +1,8 @@
 angular.module('crptFit.controllers', [])
 
-.controller('LoginCtrl', [function() { }])
+.controller('LoginCtrl', ['Utility', function(Utility) {
+
+}])
 
 .controller('ProfileCtrl', ['Social', function(Social) {
   var self = this;
@@ -37,25 +39,25 @@ angular.module('crptFit.controllers', [])
    };
    self.Strength = Progress.getStr();
    self.checkMe = function(){
-     self.check = Progress.checkMeStr(self.strong.val);
+     self.check = Progress.postStr(self.strong.val);
    };
    $scope.chartConfig = {
-       options: {
-           chart: {
-               type: 'spline'
-           }
-       },
-       series: [{
-           data: self.Strength
-       }],
-       xAxis: {
-         tickInterval: 5
-       },
-       title: {
-           text: ''
-       },
-       loading: false
-   };
+     options: {
+       chart: {
+         type: 'spline'
+       }
+     },
+     series: [{
+       data: self.Strength
+     }],
+     xAxis: {
+       tickInterval: 5
+     },
+     title: {
+       text: ''
+     },
+     loading: false
+    };
   }])
   .controller('ProgressCtrlSpd', ['$scope', 'Progress', function($scope, Progress) {
     var self = this;
@@ -67,7 +69,7 @@ angular.module('crptFit.controllers', [])
     };
     self.Speed = Progress.getSpd();
     self.checkMe = function(){
-      self.check = Progress.checkMeSpd(self.timeSpd.val, self.distance.val);
+      self.check = Progress.postSpd(self.timeSpd.val, self.distance.val);
     };
     $scope.chartConfig = {
         options: {
@@ -91,7 +93,7 @@ angular.module('crptFit.controllers', [])
      };
      self.Weight = Progress.getWgt();
      self.checkMe = function(){
-       self.check = Progress.checkMeWgt(self.weight.val);
+       self.check = Progress.postWgt(self.weight.val);
      };
      $scope.chartConfig = {
          options: {

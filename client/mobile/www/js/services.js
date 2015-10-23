@@ -2,7 +2,7 @@ angular.module('crptFit.services', [])
 
 // Start of Social Factory ====================================================
 .factory('Social', ['$http', function($http){
-  // Set up functions for ajax 
+  // Set up functions for ajax
   var friends = [];
   var clients = [];
   var trainers = [
@@ -104,8 +104,8 @@ angular.module('crptFit.services', [])
         for(var i = 0; i < messages.length; i++){
           var use = messages[i];
           if(this.id === use.user){
-          console.log(use.message)
-            userCli = use.message
+          console.log(use.message);
+            userCli = use.message;
           }
         }
       });
@@ -115,7 +115,7 @@ angular.module('crptFit.services', [])
     },
   };
 }])
-.factory('Progress', [function(){
+.factory('Progress', ['$http', function($http){
   var strength = [
     //the data in this array will come from a users stats table
      10,
@@ -135,20 +135,21 @@ angular.module('crptFit.services', [])
   var speed = [
     //the data in this array will come from a users stats table and be modified before entry
     14,19,2,40,3,90
-  ]
+  ];
+  //all functions need integration with db 10/22
   return {
-    checkMeStr : function(strong){
-      console.log(strong, 'clicked');
-      strength.push(strong);
-    },
-    checkMeSpd : function(timeSpd, distance){
-      console.log(timeSpd, distance)
-      speed.push((distance/timeSpd)*60)
-    },
-    checkMeWgt : function(weigh){
-      console.log(weigh, 'clicked');
-      weight.push(weigh);
-    },
+    // checkMeStr : function(strong){
+    //   console.log(strong, 'clicked');
+    //   strength.push(strong);
+    // },
+    // checkMeSpd : function(timeSpd, distance){
+    //   console.log(timeSpd, distance);
+    //   speed.push((distance/timeSpd)*60);
+    // },
+    // checkMeWgt : function(weigh){
+    //   console.log(weigh, 'clicked');
+    //   weight.push(weigh);
+    // },
     getStr : function(){
       return strength;
     },
@@ -158,15 +159,74 @@ angular.module('crptFit.services', [])
     getWgt : function(){
       return weight;
     },
+    //all functions below here need to be tested and found working 10/22
     postStr : function(val){
-      //this function needs the proper AJAX request
-      strength.push(val);
+      $http({
+        method: 'POST',
+        url: '/auth/stats',
+        data: val
+      }).then(function(data){
+        console.log(data);
+        queryStr();
+      });
     },
-    postSpd : function(){
+    postSpd : function(val){
       //this function needs the proper AJAX request
+      $http({
+        method: 'POST',
+        url: '/auth/stats',
+        data: val
+      }).then(function(data){
+        console.log(data);
+        querySpd();
+      });
     },
-    postWgt : function(){
+    postWgt : function(val){
       //this function needs the proper AJAX request
+      $http({
+        method: 'POST',
+        url: '/auth/stats',
+        data: val
+      }).then(function(data){
+        console.log(data);
+        queryWgt();
+      });
+    },
+    queryStr : function(){
+      $http({
+        method: 'GET',
+        url: '/auth/stats'
+      }).then(function(response){
+        stat = response.data;
+        strength.push(stat);
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
+    },
+    querySpd : function(){
+      $http({
+        method: 'GET',
+        url: '/auth/stats'
+      }).then(function(response){
+        stat = response.data;
+        speed.push(stat);
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
+    },
+    queryWgt : function(){
+      $http({
+        method: 'GET',
+        url: '/auth/stats'
+      }).then(function(response){
+        stat = response.data;
+        weight.push(stat);
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
     }
-  }
+  };
+}])
+.factory('Utility', ['$http', function($http){
+
 }]);
