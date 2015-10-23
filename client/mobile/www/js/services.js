@@ -192,12 +192,5 @@ angular.module('crptFit.services', [])
   };
 }])
 .factory('Utility', ['$http', function($http){
-  return {
-    logOut : function(){
-      $http({
-        method: 'GET',
-        url: '/logout'
-      });
-    }
-  };
+
 }]);

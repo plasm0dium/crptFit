@@ -1,10 +1,7 @@
 angular.module('crptFit.controllers', [])
 
 .controller('LoginCtrl', ['Utility', function(Utility) {
-  var self = this;
-  self.logOut = function(){
-    self.logout = Utility.logOut();
-  };
+
 }])
 
 .controller('ProfileCtrl', [function() {

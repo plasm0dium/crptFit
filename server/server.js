@@ -67,7 +67,7 @@ app.get('/logout', function(req, res){
   console.log('LOGOUT REQ.USER', req.user.attributes)
   req.session.destroy();
   req.logout();
-  res.send('200');
+  res.redirect('/');
 });
 //Get All User's Tasks
 app.get('/auth/tasks', function (req,res) {
