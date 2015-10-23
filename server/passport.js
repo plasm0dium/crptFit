@@ -30,8 +30,8 @@ module.exports = function (passport) {
     },
   function(req, accessToken, refreshToken, profile, done) {
     db.model('User').fetchById({
-      fbId: profile.id,
-      username: profile.displayName
+        fbId: profile.id,
+        username: profile.displayName
     }).then(function (user) {
       if(!user) {
         return db.model('User').newUser({

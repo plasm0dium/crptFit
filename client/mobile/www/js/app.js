@@ -26,6 +26,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
     .state('tab', {
     url: '/tab',
     abstract: true,
+    controller: "LoginCtrl",
     templateUrl: 'templates/tabs.html'
   })
 // Each tab has its own nav history stack:
@@ -112,4 +113,4 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
     })
   $urlRouterProvider.otherwise('/login');
 
-});
+})
