@@ -88,6 +88,7 @@ app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
 // Fetch User's Friends
 var storage = [];
 app.get('/auth/friends', function (req, res) {
+  
   db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(friends) {
     var friendsArray = friends.models;
