@@ -68,44 +68,44 @@ angular.module('crptFit.controllers', [])
       self.check = Progress.postSpd(self.timeSpd.val, self.distance.val);
     };
     $scope.chartConfig = {
-        options: {
-            chart: {
-                type: 'spline'
-            }
-        },
-        series: [{
-            data: self.Speed
-        }],
+      options: {
+        chart: {
+          type: 'spline'
+        }
+      },
+      series: [{
+        data: self.Speed
+      }],
         title: {
-            text: ''
+          text: ''
         },
         loading: false
     };
-   }])
-   .controller('ProgressCtrlWgt', ['$scope', 'Progress', function($scope, Progress) {
-     var self = this;
-     self.weight = {
-       val: null
-     };
-     self.Weight = Progress.getWgt();
-     self.checkMe = function(){
-       self.check = Progress.postWgt(self.weight.val);
-     };
-     $scope.chartConfig = {
-         options: {
-             chart: {
-                 type: 'spline'
-             }
-         },
-         series: [{
-             data: self.Weight
-         }],
-         title: {
-             text: ''
-         },
-         loading: false
-     };
-    }])
+  }])
+  .controller('ProgressCtrlWgt', ['$scope', 'Progress', function($scope, Progress) {
+    var self = this;
+    self.weight = {
+      val: null
+    };
+    self.Weight = Progress.getWgt();
+    self.checkMe = function(){
+      self.check = Progress.postWgt(self.weight.val);
+    };
+    $scope.chartConfig = {
+      options: {
+        chart: {
+          type: 'spline'
+        }
+      },
+      series: [{
+        data: self.Weight
+      }],
+      title: {
+        text: ''
+      },
+      loading: false
+    };
+  }])
 .controller('ProgressCtrlTask', ['Task', function(Task){
   var self = this;
   self.tasks = Task.taskFunc();
