@@ -209,7 +209,7 @@ app.post('/auth/confirmclient', function (req, res) {
     trainer_id: clientId,
     user_id: user_id
   })
-  .save()  
+  .save()
   })
   .then(function(newClient) {
     console.log('ADDED NEW CLIENT :', newClient);
