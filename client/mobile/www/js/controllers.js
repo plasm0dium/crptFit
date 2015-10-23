@@ -1,12 +1,11 @@
 angular.module('crptFit.controllers', [])
 
-.controller('SideCtrl', ['$scope', function($scope){
-    $scope.toggleMenu = function() {
-      $scope.sideMenuController.toggleLeft();
-    }
+.controller('LoginCtrl', ['Utility', function(Utility) {
+  var self = this;
+  self.logOut = function(){
+    self.logout = Utility.logOut();
+  };
 }])
-
-.controller('LoginCtrl', [function() { }])
 
 .controller('ProfileCtrl', [function() {
   var self = this;
