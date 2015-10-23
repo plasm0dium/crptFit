@@ -29,8 +29,7 @@ module.exports = function (passport) {
       callbackURL: "http://localhost:8100/auth/facebook/callback"
     },
   function(req, accessToken, refreshToken, profile, done) {
-    
-      db.model('User').fetchById({
+    db.model('User').fetchById({
         fbId: profile.id,
         username: profile.displayName
     }).then(function (user) {

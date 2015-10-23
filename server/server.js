@@ -3,7 +3,6 @@ var db = require('./mysql/config');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var morgan = require('morgan');
-var jwt = require('jsonwebtoken');
 var app = express();
 var port = process.env.PORT || 8100;
 
@@ -39,13 +38,13 @@ require('./passport')(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
-//Direct to Facebook Login
+// Direct to Facebook Login
 app.get('/auth/facebook',
   passport.authenticate('facebook', {
     scope: ['public_profile', 'email', 'user_friends', 'user_birthday']
  }));
 
-//Facebook Auth Callback
+// Facebook Auth Callback
 app.get('/auth/facebook/callback', function (req, res, next) {
   passport.authenticate('facebook',
     function(err, user, info) {
@@ -65,7 +64,7 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   res.json(req.user);
 })
 
-//Logout User
+// Logout User
 app.get('/logout', function(req, res){
   console.log('LOGOUT REQ.USER', req.user.attributes)
   res.session.destroy();
@@ -73,7 +72,7 @@ app.get('/logout', function(req, res){
   res.send('200');
 });
 
-//Get All User's Tasks
+// Get All User's Tasks
 app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
   db.collection('Tasks').fetchByUser(req.user.attributes.id)
   .then(function(tasks) {
@@ -82,7 +81,7 @@ app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
   });
 });
 
-//Fetch User's Friends
+// Fetch User's Friends
 
 app.get('/auth/friends', function (req, res) {
   var storage = [];
@@ -100,7 +99,7 @@ app.get('/auth/friends', function (req, res) {
     }})
   });
 
-//Search All Users to Add as Friend
+// Search All Users to Add as Friend
 app.get('auth/users/search', ensureAuthenticated, function (req, res) {
   db.collection('Users').fetchAll()
   .then(function(allFriends) {
@@ -117,7 +116,7 @@ app.get('/auth/stats', ensureAuthenticated, function (req, res) {
   });
 });
 
-//Fetch a User's Clients
+// Fetch a User's Clients
 app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
   .then(function(clients) {
@@ -126,9 +125,9 @@ app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   });
 });
 
-//Add a New Task to User
+// Add a New Task to User
 app.post('/auth/tasks', function (req, res) {
-  //CHECK FRONT END VARIABLE
+  // CHECK FRONT END VARIABLE
   var task = req.body.task.name;
   db.model('Task').newTask({
     description: task,
@@ -143,7 +142,7 @@ app.post('/auth/tasks', function (req, res) {
   });
 });
 
-//Update User's Task to Complete
+// Update User's Task to Complete
 app.post('/auth/task/complete:id', function(req, res) {
   var taskId = req.params.id;
   db.model('Task').completeTask(req.user.attributes.id)
@@ -155,7 +154,7 @@ app.post('/auth/task/complete:id', function(req, res) {
   });
 });
 
-//Add a Friend to User
+// Add a Friend to User
 app.post('/auth/friends/add:id', function (req, res) {
   var userId = req.user.attributes.id;
   var friendId = req.params.id;
@@ -180,7 +179,7 @@ app.post('/auth/friends/add:id', function (req, res) {
   });
 });
 
-//Adds a Client to User
+// Adds a Client to User
 app.post('/auth/clients/add:id', function (req, res) {
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
@@ -205,7 +204,7 @@ app.post('/auth/clients/add:id', function (req, res) {
   });
 });
 
-//On Accept Adds Trainer to User
+// On Accept Adds Trainer to User
 app.post('/auth/trainer/add:id', function (req, res) {
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
