@@ -115,6 +115,7 @@ angular.module('crptFit.services', [])
     },
   };
 }])
+
 .factory('Progress', ['$http', function($http){
   var strength = [
     //the data in this array will come from a users stats table
@@ -225,5 +226,6 @@ angular.module('crptFit.services', [])
         console.log('Something went wrong : ', error);
       });
     }
+
   };
 }])

@@ -1,62 +1,19 @@
-// var express = require('express');
-// var logger = require('morgan');
-// var cookieParser = require('cookie-parser');
-// var bodyParser = require('body-parser');
-// var passport = require('passport');
-// var session = require('express-session');
+function middleware(req, res, next) {
+  var token = req.headers['x-access-token'];
 
-// var app = express();
+  if (token) {
+    try {
+      var decoded = jwt.verify(token, config.auth.token.secret);
 
-// var routes = require('../routes/index');
-// var auth = require('./auth');
-// var users = require('../routes/users');
+      req.principal = {
+        isAuthenticated: true,
+        roles: decoded.roles || [],
+        user: decoded.user
+      };
+      return next();
 
+    } catch (err) { console.log('ERROR when parsing access token.', err); }
+  }
 
-// app.use(logger('dev')); // log every request to console
-// app.use(bodyParser.json()); // get information from html 
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(cookieParser()); // read cookies (needed for auth)
-// app.use(express.static(__dirname + '/../../client/mobile/www')); // render view 
-
-
-// app.use(session({secret: "Bcrypt for life"})); // session secret
-
-// require('./passport')(app);
-
-// app.use('/', routes);
-// app.use('/auth', auth);
-// app.use('/users', users)
-
-// // catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   var err = new Error('Not Found');
-//   err.status = 404;
-//   next(err);
-// });
-
-// // error handlers
-
-// // development error handler
-// // will print stacktrace
-// if (app.get('env') === 'development') {
-//   app.use(function(err, req, res, next) {
-//     res.status(err.status || 500);
-//     res.render('error', {
-//       message: err.message,
-//       error: err
-//     });
-//   });
-// }
-
-// // production error handler
-// // no stacktraces leaked to user
-// app.use(function(err, req, res, next) {
-//   res.status(err.status || 500);
-//   res.render('error', {
-//     message: err.message,
-//     error: {}
-//   });
-// });
-
-
-// module.exports = app;
+  return res.status(401).json({ error: 'Invalid access token!' });
+}
