@@ -13,7 +13,13 @@ var Task = db.Model.extend({
     return new this({
       id: id
       })
-      .save({complete: true}, {patch: true})
+      .fetch()
+      .then(function (result) {
+        result.save({complete: true}, {patch: true});
+      })
+      .then(function(update) {
+        return update;
+      })
   },
   newTask: function (options) {
     return new this(options);
