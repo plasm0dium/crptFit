@@ -13,9 +13,12 @@ angular.module('crptFit.controllers', ['ionic'])
     {username: 'Ricky Walker', update: 'Did 5000 squats!'}
   ];
  }])
-.controller('HomeCtrl', [function() {
+.controller('HomeCtrl', ['Social', function(Social) {
   var self = this;
   // Add a refreshing function here
+  Social.friendsList();
+  Social.clientsList();
+  Social.trainersList();
   self.feed = [
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
