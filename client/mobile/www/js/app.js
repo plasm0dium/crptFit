@@ -74,6 +74,15 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         }
       }
     })
+    .state('tab.tasks', {
+      url: '/tasks',
+      views: {
+        'progress-tab':{
+          templateUrl: 'templates/task-tab.html',
+          controller: 'ProgressCtrlTask'
+        }
+      }
+    })
     .state('tab.homepage', {
       url: '/homepage',
       views: {
