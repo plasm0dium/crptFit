@@ -122,7 +122,6 @@ angular.module('crptFit.controllers', ['ionic'])
   }
 }])
 .controller('MessagesCtrl', ['Message', function(Message) {
-  //post and get messages controls here
   var self = this;
   self.sendTo = {
     val: ''
