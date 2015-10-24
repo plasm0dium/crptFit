@@ -59,7 +59,7 @@ app.get('/auth/facebook/callback', function (req, res, next) {
       if (err) { return next(err); }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
-        console.log('USER LOGGED IN: ', req.user);
+        console.log('USER LOGGED IN: ', req.user.relations.friends.models[0].attributes);
         res.redirect( '/#/tab/homepage' );
       });
     })(req, res, next);
@@ -89,8 +89,7 @@ app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
   });
 });
 
-// Fetch User's Friends
-
+// Fetch Logged in Users Friends
 var storage = [];
 app.get('/auth/friends', function (req, res) {
   db.collection('Friends').fetchByUser(req.user.attributes.id)
@@ -111,6 +110,26 @@ app.get('/auth/friends', function (req, res) {
         storage = [];
       })
   });
+//Search a Friends Friends
+  app.get('/auth/friends/:id', function (req, res) {
+    db.collection('Friends').fetchByUser(req.params.id)
+    .then(function(friends) {
+      var friendsArray = friends.models;
+      for(var i = 0; i < friendsArray.length; i++ ) {
+        db.model('User').fetchById({
+          id: friendsArray[i].attributes.friends_id
+        })
+        .then(function(result) {
+          storage.push(result);
+        })
+      }})
+        .then(function() {
+          console.log('RES>JSON :', storage)
+          return res.json(storage);
+        }).then(function () {
+          storage = [];
+        })
+    });
 
 //Search All Users to Add as Friend
 app.get('auth/users/search', function (req, res) {
@@ -138,7 +157,6 @@ app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   });
 });
 
-<<<<<<< HEAD
 //Fetch a User's Trainers
 app.get('/auth/trainers', function (req, res) {
   db.collection('Trainers').fetchByUser(req.user.attributes.id)
@@ -149,25 +167,17 @@ app.get('/auth/trainers', function (req, res) {
 })
 
 //Add a new Stat
-app.post('/auth/stat/add', function (req, res) {
+// app.post('/auth/stat/add', function (req, res) {
+// }
 
-=======
 // Fetch Chatroom
 app.get('/auth/chat/get:id', function (req, res){
   var chatId = req.params.id;
   db.model('Chat').fetchById(chatId)
   .then(function(chat) {
     console.log('THIS IS CHAT ROOM :', chat);
-    res.json(chat.toJSON());
+    res.json(chat.relations.message.models.toJSON());
   })
-})
-
-db.model('Chat').fetchById(2)
-  .then(function(chat) {
-    console.log('THIS IS CHAT ROOM :', chat);
-    console.log('THIS IS RELATION USER:', chat.relations.user.attributes)
-    console.log('THIS IS RELATION MESSAGE:', chat.relations.messages.attributes)
->>>>>>> 6d84e710eb271338a92053300e70fe93ec798c3e
 })
 
 // Add a New Task to User
@@ -198,7 +208,6 @@ app.post('/auth/task/complete/:id', function(req, res) {
   });
 });
 
-<<<<<<< HEAD
 // Add a Friend to User
 // app.post('/auth/friends/add:id', function (req, res) {
 //   var userId = req.user.attributes.id;
@@ -225,9 +234,6 @@ app.post('/auth/task/complete/:id', function(req, res) {
 // });
 
 // Confirm Client Request and adds Client to User
-=======
-// Adds a Client to User
->>>>>>> 6d84e710eb271338a92053300e70fe93ec798c3e
 app.post('/auth/confirmclient', function (req, res) {
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
@@ -263,6 +269,7 @@ app.post('/auth/confirmclient', function (req, res) {
     return err;
   });
 });
+
 //Send Client Request
 app.post('/auth/clientreq/add:id', function (req, res){
   var userId = req.user.attributes.id;
@@ -291,27 +298,6 @@ app.post('/auth/clientreq/add:id', function (req, res){
 })
 
 // Send a friend request
-// db.model('friendRequest').newFriendRequest({
-//   friend_id: 2,
-//   user_id: 1,
-//   status: 0
-// })
-// .save()
-// .then(function (){
-//   db.model('friendRequest').newFriendRequest({
-//     friend_id: 1,
-//     user_id: 2,
-//     status: 0
-//   })
-//   .save()
-// })
-// .then(function (friendreq){
-//   console.log('ADD FRIEND REQUEST', friendreq);
-//   return friendreq;
-// })
-// .catch(function(err){
-//   return err;
-// })
 app.post('/auth/friendreq/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var friendId = req.params.id;
@@ -339,12 +325,29 @@ app.post('/auth/friendreq/add:id', function (req, res){
 })
 
 // Confirm friend request and add each other as friend
+
+app.post('/auth/chat/add:id', function (req, res){
+var userId1 = req.user.attributes.id;
+var userId2 = req.params.id;
+db.model('Chat').newChat({
+  user_id: userId1,
+  user2_id: userId2
+})
+.save()
+.then(function(){
+  db.model('Chat').newChat({
+    user_id: userId2,
+    user2_id: userId1
+  })
+  .save()
+})
+});
 app.post('/auth/confirmfriend/:id', function (req, res){
   var userId = req.user.attributes.id;
   var friendId = req.params.id;
   db.model('friendRequest').acceptFriendRequest({
     user_id: userId,
-    friend_id: friendId  
+    friend_id: friendId
 
   })
   .then(function () {
@@ -376,6 +379,7 @@ app.post('/auth/confirmfriend/:id', function (req, res){
   });
 });
 
+//Creates a Chat Session
 app.post('/auth/chat/add:id', function (req, res){
   var userId1 = req.user.attributes.id;
   var userId2 = req.params.id;
@@ -396,19 +400,14 @@ app.post('/auth/chat/add:id', function (req, res){
 app.post('/auth/messages/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
+  var body = req.body.message;
   db.model('Message').newMessage({
     user_id: userId,
-    chat_id: chatId
+    chat_id: chatId,
+    text: message
   })
   .save()
 })
-
-// db.model('Message').newMessage({
-//     user_id: 1234,
-//     chat_id: 2,
-//     text: 'Chris hate me!'
-//   })
-//   .save()
 
 function ensureAuthenticated(req, res, next) {
   console.log('AUTHENTICATED FUNCTION')
@@ -421,4 +420,4 @@ function ensureAuthenticated(req, res, next) {
 
 app.listen(port, function(){
   console.log('listening on port...', port);
-});
+})

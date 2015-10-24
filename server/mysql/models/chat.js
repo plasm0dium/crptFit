@@ -10,7 +10,7 @@ var Chat = db.Model.extend({
   },
   message: function() {
     return this.hasMany('Message');
-  } 
+  }
 }, {
   newChat: function (options) {
     return new this(options);
@@ -18,7 +18,7 @@ var Chat = db.Model.extend({
   fetchById: function (id) {
     return new this({
       id: id
-    }).fetch({withRelated: ['user', 'messages']})
+    }).fetch({withRelated: ['user', 'message']})
   }
 })
 
