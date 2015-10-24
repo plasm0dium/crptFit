@@ -15,8 +15,8 @@ var Client = db.Model.extend({
   fetchById: function (id) {
     return new this({
       id: id
-    }).fetch({withRelated: ['user']})
+    }).fetch({withRelated: ['user']});
   }
-})
+});
 
 module.exports = db.model('Client', Client);

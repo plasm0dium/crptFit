@@ -18,8 +18,8 @@ var Chat = db.Model.extend({
   fetchById: function (id) {
     return new this({
       id: id
-    }).fetch({withRelated: ['user', 'messages']})
+    }).fetch({withRelated: ['user', 'message']});
   }
-})
+});
 
 module.exports = db.model('Chat', Chat);

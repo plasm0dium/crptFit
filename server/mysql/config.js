@@ -102,8 +102,8 @@ db.knex.schema.hasTable('chats').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('chats', function(t) {
       t.increments('id').primary();
-      t.integer('user_id');
-      t.integer('user2_id');
+      t.integer('user_id').references('id').inTable('users');
+      t.integer('user2_id').references('id').inTable('users');
       t.timestamps();
     });
   }
@@ -116,8 +116,8 @@ db.knex.schema.hasTable('messages').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('messages', function(t) {
       t.increments('id').primary();
-      t.integer('chat_id');
-      t.integer('user_id');
+      t.integer('chat_id').references('id').inTable('chats');
+      t.integer('user_id').references('id').inTable('user');
       t.string('text', 200);
       t.timestamps();
     });

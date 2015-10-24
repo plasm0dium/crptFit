@@ -14,8 +14,8 @@ var Messages = db.Collection.extend({
     .fetch();
   },
   fetchAll: function () {
-    return db.collection('Messages').forge().fetch({withRelated: ['chat']})
+    return db.collection('Messages').forge().fetch({withRelated: ['chat']});
   }
-})
+});
 
 module.exports = db.collection('Messages', Messages);

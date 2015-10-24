@@ -67,14 +67,14 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 
 
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
-  console.log('GET REQ AUTHENTICATED', req.user)
+  console.log('GET REQ AUTHENTICATED', req.user);
   res.redirect('/#/tab/homepage');
   res.json(req.user);
-})
+});
 
 // Logout User
 app.get('/logout', function(req, res){
-  console.log('LOGOUT REQ.USER', req.user.attributes)
+  console.log('LOGOUT REQ.USER', req.user.attributes);
   req.session.destroy();
   req.logout();
   res.redirect('/');
@@ -105,11 +105,11 @@ app.get('/auth/friends', function (req, res) {
       })
     }})
       .then(function() {
-        console.log('RES>JSON :', storage)
+        console.log('RES>JSON :', storage);
         return res.json(storage);
       }).then(function () {
         storage = [];
-      })
+      });
   });
 
 //Search All Users to Add as Friend
@@ -128,7 +128,7 @@ app.get('/auth/stats', ensureAuthenticated, function (req, res) {
     res.json(stats.toJSON());
   });
 });
-
+  
 // Fetch a User's Clients
 app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
@@ -148,12 +148,12 @@ app.get('/auth/chat/get:id', function (req, res){
   })
 })
 
-db.model('Chat').fetchById(2)
+db.model('Chat').fetchById(1)
   .then(function(chat) {
     console.log('THIS IS CHAT ROOM :', chat);
-    console.log('THIS IS RELATION USER:', chat.relations.user.attributes)
-    console.log('THIS IS RELATION MESSAGE:', chat.relations.messages.attributes)
-})
+    console.log('THIS IS RELATION USER:', chat.relations.user.attributes);
+    console.log('THIS IS RELATION MESSAGE:', chat.relations.message.model);
+});
 
 // Add a New Task to User
 app.post('/auth/tasks/:taskname', function (req, res) {

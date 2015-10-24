@@ -11,22 +11,22 @@ var User = db.Model.extend({
   tableName: 'users',
   hasTimeStamp: true,
   tasks: function () {
-    return this.hasMany('Task')
+    return this.hasMany('Task');
   },
   clients: function () {
-    return this.hasMany('Client')
+    return this.hasMany('Client');
   },
   stats: function () {
-    return this.hasMany('Stat')
+    return this.hasMany('Stat');
   },
   friends: function () {
-    return this.hasMany('Friend')
+    return this.hasMany('Friend');
   },
   trainers: function() {
-    return this.hasMany('Trainer')
+    return this.hasMany('Trainer');
   },
   chats: function() {
-    return this.hasMany('Chat')
+    return this.hasMany('Chat');
   }
 }, {
   //User Class Methods
@@ -46,6 +46,6 @@ fetchByName: function (name) {
 newUser: function (options) {
   return new this(options);
   }
-})
+});
 
 module.exports = db.model('User', User);
