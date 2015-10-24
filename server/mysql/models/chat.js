@@ -10,7 +10,7 @@ var Chat = db.Model.extend({
   },
   message: function() {
     return this.hasMany('Message');
-  } 
+  }
 }, {
   newChat: function (options) {
     return new this(options);

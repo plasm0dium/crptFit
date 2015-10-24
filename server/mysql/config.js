@@ -36,7 +36,7 @@ db.knex.schema.hasTable('tasks').then(function(exists) {
       t.increments('id').primary();
       t.string('description', 100);
       t.boolean('complete');
-      t.integer('user_id');
+      t.integer('user_id').references('id').inTable('users');
       t.timestamps();
     });
   }
@@ -50,7 +50,7 @@ db.knex.schema.hasTable('clients').then(function(exists) {
     return db.knex.schema.createTable('clients', function(t) {
       t.increments('id').primary();
       t.integer('clients_id');
-      t.integer('user_id');
+      t.integer('user_id').references('id').inTable('users');
     });
   }
 })
@@ -63,7 +63,7 @@ db.knex.schema.hasTable('trainers').then(function(exists) {
     return db.knex.schema.createTable('trainers', function(t) {
       t.increments('id').primary();
       t.integer('trainer_id');
-      t.integer('user_id');
+      t.integer('user_id').references('id').inTable('users');
     });
   }
 })
@@ -76,7 +76,12 @@ db.knex.schema.hasTable('stats').then(function(exists) {
     return db.knex.schema.createTable('stats', function(t) {
       t.increments('id').primary();
       t.integer('weight');
+      t.integer('benchpress');
+      t.integer('squat');
+      t.integer('deadlift');
+      t.integer('speed')
       t.integer('user_id');
+      t.integer('tasks')
       t.timestamps();
     });
   }
@@ -89,8 +94,8 @@ db.knex.schema.hasTable('friends').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('friends', function(t) {
       t.string('status', 50);
-      t.integer('friends_id');
-      t.integer('user_id');
+      t.integer('friends_id').references('id').inTable('users');
+      t.integer('user_id').references('id').inTable('users');
     });
   }
 })
