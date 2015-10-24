@@ -129,6 +129,7 @@ angular.module('crptFit.services', [])
       return recievedMessage;
     },
     sendMessage : function(val){
+      console.log(val);
       $http({
         method: 'POST',
         url: '/auth/chat',

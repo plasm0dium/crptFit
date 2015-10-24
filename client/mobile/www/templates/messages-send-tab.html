@@ -4,4 +4,16 @@
       {{ctrl.message}}
     </div>
   </ion-content>
+    <ion-footer-bar class="messageFoot">
+      <div class="list messageFoot2">
+        <div class="item item-input-inset">
+          <div class="item-input-wrapper">
+            <input class="messageInput" type="text" placeholder="Type here..." ng-model="ctrl.sendTo.val">
+          </div>
+          <button type="submit" class="button button-small" ng-click="ctrl.send(ctrl.sendTo.val)">
+            Send
+          </button>
+        </div>
+      </div>
+    </ion-footer-bar>
 </ion-view>
