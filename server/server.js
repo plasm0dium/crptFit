@@ -99,9 +99,7 @@ app.get('/auth/friends', function (req, res) {
       .then(function(result) {
         storage.push(result);
       })
-    }}).then(function() {
-      console.log('THIS IS STORAGE :', storage)
-    })
+    }})
       .then(function() {
         console.log('RES>JSON :', storage)
         return res.json(storage);
