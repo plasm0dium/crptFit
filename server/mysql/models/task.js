@@ -22,7 +22,7 @@ var Task = db.Model.extend({
       })
       .then(function(update) {
         return update;
-      })
+      });
   },
   newTask: function (options) {
     return new this(options);
@@ -30,8 +30,8 @@ var Task = db.Model.extend({
   fetchById: function (id) {
     return new this({
       id: id
-    }).fetch({withRelated: ['user']})
+    }).fetch({withRelated: ['user']});
   }
-})
+});
 
 module.exports = db.model('Task', Task);

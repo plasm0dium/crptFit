@@ -72,17 +72,68 @@ db.knex.schema.hasTable('trainers').then(function(exists) {
   console.log('created table:', t);
 });
 
-db.knex.schema.hasTable('stats').then(function(exists) {
+db.knex.schema.hasTable('weights').then(function(exists) {
   if (!exists) {
-    return db.knex.schema.createTable('stats', function(t) {
+    return db.knex.schema.createTable('weights', function(t) {
       t.increments('id').primary();
-      t.integer('weight');
-      t.integer('benchpress');
-      t.integer('squat');
-      t.integer('deadlift');
-      t.integer('speed')
-      t.integer('user_id');
-      t.integer('tasks')
+      t.integer('weight').references('id').inTable('users');
+      t.integer('user_id').references('id').inTable('users');
+      t.timestamps();
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('benchpress').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('benchpress', function(t) {
+      t.increments('id').primary();
+      t.integer('benchpress').references('id').inTable('users');
+      t.integer('user_id').references('id').inTable('users');
+      t.timestamps();
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('squats').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('squats', function(t) {
+      t.increments('id').primary();
+      t.integer('squat').references('id').inTable('users');
+      t.integer('user_id').references('id').inTable('users');
+      t.timestamps();
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('deadlifts').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('deadlifts', function(t) {
+      t.increments('id').primary();
+      t.integer('deadlift').references('id').inTable('users');
+      t.integer('user_id').references('id').inTable('users');
+      t.timestamps();
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('speeds').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('speeds', function(t) {
+      t.increments('id').primary();
+      t.integer('speed').references('id').inTable('users');
+      t.integer('user_id').references('id').inTable('users');
       t.timestamps();
     });
   }

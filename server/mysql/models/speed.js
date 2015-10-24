@@ -2,21 +2,21 @@ var db = require('../config.js');
 
 require('./user');
 
-var Client = db.Model.extend({
-  tableName: 'clients',
+var Speed = db.Model.extend({
+  tableName: 'speeds',
   hasTimeStamp: true,
-  user: function () {
+  chat: function () {
     return this.belongsTo('User');
   },
 }, {
-  newClient: function (options) {
+  newSpeed: function (options) {
     return new this(options);
   },
   fetchById: function (id) {
     return new this({
-      id: id
+      chat_id: id
     }).fetch({withRelated: ['user']});
   }
 });
 
-module.exports = db.model('Client', Client);
+module.exports = db.model('Speed', Speed);

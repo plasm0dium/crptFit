@@ -14,8 +14,8 @@ var Trainers = db.Collection.extend({
     .fetch();
   },
   fetchAll: function () {
-    return db.collection('Trainers').forge().fetch({withRelated: ['user']})
+    return db.collection('Trainers').forge().fetch({withRelated: ['user']});
   }
-})
+});
 
 module.exports = db.collection('Trainers', Trainers);

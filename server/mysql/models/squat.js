@@ -2,21 +2,21 @@ var db = require('../config.js');
 
 require('./user');
 
-var Stat = db.Model.extend({
-  tableName: 'stats',
+var Squat = db.Model.extend({
+  tableName: 'squats',
   hasTimeStamp: true,
   user: function () {
     return this.belongsTo('User');
   },
 }, {
-  newStat: function (options) {
+  newSquat: function (options) {
     return new this(options);
   },
   fetchById: function (id) {
     return new this({
       id: id
-    }).fetch({withRelated: ['user']})
+    }).fetch({withRelated: ['user']});
   }
-})
+});
 
-module.exports = db.model('Stat', Stat);
+module.exports = db.model('Squat', Squat);
