@@ -129,16 +129,15 @@ app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
   .then(function(clients) {
     console.log('THESE ARE USER CLIENTS :', clients);
-    res.json(stats.toJSON());
+    res.json(clients.toJSON());
   });
 });
 
 // Add a New Task to User
-app.post('/auth/tasks', function (req, res) {
-  // CHECK FRONT END VARIABLE
-  var task = req.body.task.name;
+app.post('/auth/tasks/:taskname', function (req, res) {
+  var task = req.params.taskname;
   db.model('Task').newTask({
-    description: task,
+    description: taskname,
     complete: false,
     user_id: req.user.attributes.id
   }).save()
@@ -151,7 +150,7 @@ app.post('/auth/tasks', function (req, res) {
 });
 
 // Update User's Task to Complete
-app.post('/auth/task/complete:id', function(req, res) {
+app.post('/auth/task/complete/:id', function(req, res) {
   var taskId = req.params.id;
   db.model('Task').completeTask(req.user.attributes.id)
   .then(function () {
