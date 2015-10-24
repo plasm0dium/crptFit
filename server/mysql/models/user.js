@@ -25,23 +25,23 @@ var User = db.Model.extend({
   trainers: function() {
     return this.hasMany('Trainer')
   },
-  messages: function() {
-    return this.hasMany('Messages')
+  chats: function() {
+    return this.hasMany('Chat')
   }
 }, {
   //User Class Methods
 fetchById: function(options) {
-  return new this(options).fetch({withRelated: ['tasks', 'clients', 'stats','friends']});
+  return new this(options).fetch({withRelated: ['tasks', 'clients', 'stats','friends', 'chats', 'trainers']});
   },
 fetchByUsername: function (username) {
   return this({
     username: username,
-  }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends']});
+  }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends', 'chats', 'trainers']});
 },
 fetchByName: function (name) {
   return this({
     name: name
-    }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends']});
+    }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends', 'chats', 'trainers']});
   },
 newUser: function (options) {
   return new this(options);
