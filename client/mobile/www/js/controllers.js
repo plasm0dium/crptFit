@@ -123,9 +123,7 @@ angular.module('crptFit.controllers', ['ionic'])
   self.userMessages = function(user){
     self.mess = Message.userMessages(user);
   };
-  self.refreshMessages = function(){
-
-  };
+  self.message = Message.retMess();
 }])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
   var self = this;
