@@ -37,7 +37,8 @@ db.knex.schema.hasTable('tasks').then(function(exists) {
       t.string('description', 100);
       t.boolean('complete');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -109,7 +110,8 @@ db.knex.schema.hasTable('chats').then(function(exists) {
       t.increments('id').primary();
       t.integer('user_id').references('id').inTable('users');
       t.integer('user2_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -124,7 +126,8 @@ db.knex.schema.hasTable('messages').then(function(exists) {
       t.integer('chat_id').references('id').inTable('chats');
       t.integer('user_id').references('id').inTable('user');
       t.string('text', 200);
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -139,7 +142,8 @@ db.knex.schema.hasTable('friend_request').then(function(exists) {
       t.integer('friend_id');
       t.integer('user_id');
       t.integer('status', 10);
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -154,7 +158,8 @@ db.knex.schema.hasTable('client_request').then(function(exists) {
       t.integer('client_id');
       t.integer('user_id');
       t.integer('status', 10);
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })

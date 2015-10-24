@@ -9,7 +9,7 @@ require('./trainer');
 var User = db.Model.extend({
   //User Properties
   tableName: 'users',
-  hasTimeStamp: true,
+  hasTimeStamps: true,
   tasks: function () {
     return this.hasMany('Task')
   },
