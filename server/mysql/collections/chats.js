@@ -15,7 +15,7 @@ var Chats = db.Collection.extend({
     .fetch();
   },
   fetchAll: function () {
-    return db.collection('Chats').forge().fetch({withRelated: ['users']});
+    return db.collection('Chats').forge().fetch({withRelated: ['user']});
   }
 });
 

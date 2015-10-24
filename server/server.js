@@ -8,23 +8,31 @@ var port = process.env.PORT || 8100;
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
-require('./mysql/models/stat');
 require('./mysql/models/task');
 require('./mysql/models/user');
 require('./mysql/models/friend_request');
 require('./mysql/models/client_request');
 require('./mysql/models/chat');
 require('./mysql/models/message');
+require('./mysql/models/weight');
+require('./mysql/models/benchpress');
+require('./mysql/models/squat');
+require('./mysql/models/deadlift');
+require('./mysql/models/speed');
 
 require('./mysql/collections/clients');
 require('./mysql/collections/friends');
-require('./mysql/collections/stats');
 require('./mysql/collections/tasks');
 require('./mysql/collections/users');
 require('./mysql/collections/friend_requests');
 require('./mysql/collections/client_requests');
 require('./mysql/collections/chats');
 require('./mysql/collections/messages');
+require('./mysql/collections/weights');
+require('./mysql/collections/Benchpress');
+require('./mysql/collections/squats');
+require('./mysql/collections/deadlifts');
+require('./mysql/collections/speeds');
 
 var session = require("express-session");
 
@@ -59,7 +67,6 @@ app.get('/auth/facebook/callback', function (req, res, next) {
       if (err) { return next(err); }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
-        console.log('USER LOGGED IN: ', req.user.relations.friends.models[0].attributes);
         res.redirect( '/#/tab/homepage' );
       });
     })(req, res, next);
@@ -140,13 +147,13 @@ app.get('auth/users/search', function (req, res) {
 });
 
 // Get Collection of User's Stats
-app.get('/auth/stats', ensureAuthenticated, function (req, res) {
-  db.collection('Stats').fetchByUser(req.user.attributes.id)
-  .then(function(stats) {
-    console.log('THESE ARE USER STATS: ', stats);
-    res.json(stats.toJSON());
-  });
-});
+// app.get('/auth/stats', ensureAuthenticated, function (req, res) {
+//   db.collection('Stats').fetchByUser(req.user.attributes.id)
+//   .then(function(stats) {
+//     console.log('THESE ARE USER STATS: ', stats);
+//     res.json(stats.toJSON());
+//   });
+// });
   
 // Fetch a User's Clients
 app.get('/auth/clients', ensureAuthenticated,function (req, res) {

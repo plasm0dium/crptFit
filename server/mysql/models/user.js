@@ -2,9 +2,16 @@ var db = require('../config.js');
 
 require('./task');
 require('./client');
-require('./stat');
 require('./friend');
 require('./trainer');
+require('./client_request');
+require('./benchpress');
+require('./chat');
+require('./friend_request');
+require('./weight');
+require('./squat');
+require('./deadlift');
+require('./speed');
 
 var User = db.Model.extend({
   //User Properties
@@ -16,9 +23,6 @@ var User = db.Model.extend({
   clients: function () {
     return this.hasMany('Client');
   },
-  stats: function () {
-    return this.hasMany('Stat');
-  },
   friends: function () {
     return this.hasMany('Friend');
   },
@@ -27,21 +31,36 @@ var User = db.Model.extend({
   },
   chats: function() {
     return this.hasMany('Chat');
+  },
+  weights: function() {
+    return this.hasMany('Weight');
+  },
+  benchpresses: function() {
+    return this.hasMany('Benchpress');
+  },
+  deadlifts: function() {
+    return this.hasMany('DeadLift');
+  },
+  squats: function() {
+    return this.hasMany('Squat');
+  },
+  speeds: function() {
+    return this.hasMany('Speed');
   }
 }, {
   //User Class Methods
 fetchById: function(options) {
-  return new this(options).fetch({withRelated: ['tasks', 'clients', 'stats','friends', 'chats', 'trainers']});
+  return new this(options).fetch({withRelated: ['tasks', 'clients', 'friends', 'chats', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats']});
   },
 fetchByUsername: function (username) {
   return this({
     username: username,
-  }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends', 'chats', 'trainers']});
+  }).fetch({withRelated: ['tasks', 'clients', 'friends', 'chats', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats']});
 },
 fetchByName: function (name) {
   return this({
     name: name
-    }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends', 'chats', 'trainers']});
+    }).fetch({withRelated: ['tasks', 'clients', 'friends', 'chats', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats']});
   },
 newUser: function (options) {
   return new this(options);
