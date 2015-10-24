@@ -4,8 +4,9 @@ require('../models/chat');
 
 var Chats = db.Collection.extend({
   model: db.model('chat')
-}, {
-  fetchByChat: function(userId) {
+}, 
+  {
+  fetchByUser: function(userId) {
     return db.collection('Chats')
     .forge()
     .query(function(qb) {
@@ -19,3 +20,5 @@ var Chats = db.Collection.extend({
 })
 
 module.exports = db.collection('Chats', Chats);
+
+

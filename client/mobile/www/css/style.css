@@ -38,3 +38,12 @@ img{
 	color: #d9d9d9;
 	text-decoration: line-through;
 }
+.messageFoot, .messageFoot2{
+  margin-bottom: 10px;
+  width: 100%;
+  height: 50px;
+}
+.messageInput{
+  overflow: auto;
+  max-height: 100px;
+}
