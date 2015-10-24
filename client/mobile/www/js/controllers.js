@@ -123,27 +123,15 @@ angular.module('crptFit.controllers', ['ionic'])
 }])
 .controller('MessagesCtrl', ['Message', function(Message) {
   var self = this;
-  self.sendTo = {
-    val: ''
-  };
-  self.messages = Message.messageList();
-  self.userMessages = function(user){
-    self.mess = Message.userMessages(user);
-    console.log(Message.getMessage())
-  };
-  self.send = function(val){
-    self.Send = Message.sendMessage(val);
-    self.sendTo.val = '';
+  self.makeChat = function(userId){
+    console.log('clicked')
+    Message.getFriendIds();
+    self.chat = Message.makeChat(userId);
   }
-  self.message = Message.retMess();
 }])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
   var self = this;
   // Add a refreshing function here
-  self.makeChat = function(userId){
-    console.log('clicked')
-    self.chat = Social.makeChat(userId);
-  }
   console.log("LIST OF FRIENDS", self);
   self.list = Social.friendsList();
   console.log('SELF.LIST :', self.list)

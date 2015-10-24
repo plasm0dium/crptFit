@@ -13,13 +13,6 @@ angular.module('crptFit.services', [])
   ];
 
   return {
-    makeChat: function(userId){
-      $http({
-        method: 'POST',
-        url: '/auth/chat/add'+userId
-      })
-      .then(function(){})
-    },
     friendsList: function(){
       // Grab friends and store it in the friends array above (refactor - DRY)
       $http({
@@ -27,7 +20,6 @@ angular.module('crptFit.services', [])
         url: '/auth/friends'
       })
       .then(function(response){
-        console.log('RESP.DATA :', response.data)
         friends = response.data;
       }, function(error){
         console.log(error);
@@ -101,20 +93,16 @@ angular.module('crptFit.services', [])
 .factory('Message', ['$http', function($http){
   var messages = [];
 //get user message table from db
-  var retMessage;
   return {
     messageList : function(){
       return messages;
     },
-    userMessages : function(user){
-      for(var i = 0; i < messages.length; i++){
-        if(messages[i].user === user){
-          retMessage = messages[i].message;
-        }
-      }
-    },
-    retMess : function(){
-      return retMessage;
+    makeChat: function(userId){
+      $http({
+        method: 'POST',
+        url: '/auth/chat/add'+userId
+      })
+      .then(function(){});
     },
     getMessage : function(){
       $http({
