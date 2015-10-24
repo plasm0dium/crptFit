@@ -69,6 +69,16 @@ angular.module('crptFit.services', [])
     },
     trainersList: function(){
       // This function needs the proper AJAX request
+      // $http({
+      //   method: 'GET',
+      //   url: '/auth/trainers'
+      // })
+      // .then(function(response){
+      //   trainers = response.data;
+      //   console.log(friends);
+      // }, function(error){
+      //   console.log(error);
+      // });
       return trainers;
     },
     getTrainersLength: function(){
@@ -84,7 +94,7 @@ angular.module('crptFit.services', [])
     searchResultsList: function(username){
       $http({
         method: 'GET',
-        url: 'auth/users/search' + username
+        url: 'auth/users/search/' + username
       });
     }
   };
