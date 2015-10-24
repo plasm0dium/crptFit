@@ -68,44 +68,54 @@ angular.module('crptFit.controllers', ['ionic'])
       self.check = Progress.postSpd(self.timeSpd.val, self.distance.val);
     };
     $scope.chartConfig = {
-        options: {
-            chart: {
-                type: 'spline'
-            }
-        },
-        series: [{
-            data: self.Speed
-        }],
+      options: {
+        chart: {
+          type: 'spline'
+        }
+      },
+      series: [{
+        data: self.Speed
+      }],
         title: {
-            text: ''
+          text: ''
         },
         loading: false
     };
-   }])
-   .controller('ProgressCtrlWgt', ['$scope', 'Progress', function($scope, Progress) {
-     var self = this;
-     self.weight = {
-       val: null
-     };
-     self.Weight = Progress.getWgt();
-     self.checkMe = function(){
-       self.check = Progress.postWgt(self.weight.val);
-     };
-     $scope.chartConfig = {
-         options: {
-             chart: {
-                 type: 'spline'
-             }
-         },
-         series: [{
-             data: self.Weight
-         }],
-         title: {
-             text: ''
-         },
-         loading: false
-     };
-    }])
+  }])
+  .controller('ProgressCtrlWgt', ['$scope', 'Progress', function($scope, Progress) {
+    var self = this;
+    self.weight = {
+      val: null
+    };
+    self.Weight = Progress.getWgt();
+    self.checkMe = function(){
+      self.check = Progress.postWgt(self.weight.val);
+    };
+    $scope.chartConfig = {
+      options: {
+        chart: {
+          type: 'spline'
+        }
+      },
+      series: [{
+        data: self.Weight
+      }],
+      title: {
+        text: ''
+      },
+      loading: false
+    };
+  }])
+.controller('ProgressCtrlTask', ['Task', function(Task){
+  var self = this;
+  self.tasks = Task.taskFunc();
+  self.toggle = function(task){
+    task.toggled = !task.toggled;
+  };
+  self.finishTask = function(task){
+    self.finish = Task.finishTask(task);
+  }
+}])
 .controller('MessagesCtrl', ['Message', function(Message) {
   //post and get messages controls here
   var self = this;
@@ -122,7 +132,7 @@ angular.module('crptFit.controllers', ['ionic'])
   var self = this;
   // Add a refreshing function here
   self.list = Social.friendsList();
-
+  console.log('SELF.LIST :', self.list)
   self.showFriends = function(){
     self.list = Social.friendsList();
   };
