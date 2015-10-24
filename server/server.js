@@ -68,8 +68,11 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   console.log('GET REQ AUTHENTICATED', req.user)
-  res.redirect('/#/tab/homepage');
-  res.json(req.user);
+  if(res.user) {
+    res.json(req.user.toJSON());
+  } else {
+    res.redirect('/')
+  }
 })
 
 // Logout User
@@ -326,22 +329,6 @@ app.post('/auth/friendreq/add:id', function (req, res){
 
 // Confirm friend request and add each other as friend
 
-app.post('/auth/chat/add:id', function (req, res){
-var userId1 = req.user.attributes.id;
-var userId2 = req.params.id;
-db.model('Chat').newChat({
-  user_id: userId1,
-  user2_id: userId2
-})
-.save()
-.then(function(){
-  db.model('Chat').newChat({
-    user_id: userId2,
-    user2_id: userId1
-  })
-  .save()
-})
-});
 app.post('/auth/confirmfriend/:id', function (req, res){
   var userId = req.user.attributes.id;
   var friendId = req.params.id;
@@ -397,6 +384,7 @@ app.post('/auth/chat/add:id', function (req, res){
   })
 });
 
+//Adds Chat Session
 app.post('/auth/messages/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
