@@ -1,9 +1,22 @@
 angular.module('crptFit.controllers', ['ionic'])
 
 
-.controller('ProfileCtrl', ['Social', function(Social) {
+.controller('ProfileCtrl', ['Social', '$http', function(Social, $http) {
 
   var self = this;
+  self.pic;
+  var drawProfilePicture = function(url){
+     self.pic = url;
+     console.log("INSIDE OF PROFILECTRL:", self.pic);
+  }
+
+  $http({
+    method: 'GET',
+    url: '/auth/picture'
+  }).then(function(response){
+    console.log("this is the request object for a user", response.data.profile_pic);
+      drawProfilePicture(response.data.profile_pic);
+  });
   // Add a refreshing function here
   self.friendCount = Social.getFriendsLength();
   self.trainerCount = Social.getTrainersLength();
