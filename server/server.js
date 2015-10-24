@@ -88,22 +88,22 @@ app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
 // Fetch User's Friends
 var storage = [];
 app.get('/auth/friends', function (req, res) {
-  
   db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(friends) {
     var friendsArray = friends.models;
     for(var i = 0; i < friendsArray.length; i++ ) {
       db.model('User').fetchById({
         id: friendsArray[i].attributes.friends_id
-      }).then(function(result) {
+      })
+      .then(function(result) {
         storage.push(result);
       })
-    }}).then(function() {
-      console.log('THIS IS STORAGE :', storage)
-    })
+    }})
       .then(function() {
         console.log('RES>JSON :', storage)
         return res.json(storage);
+      }).then(function () {
+        storage = [];
       })
   });
 

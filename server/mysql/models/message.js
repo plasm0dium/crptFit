@@ -1,21 +1,21 @@
 var db = require('../config.js');
 
-require('./user');
+require('./chat');
 
 var Message = db.Model.extend({
   tableName: 'messages',
   hasTimeStamp: true,
-  user: function () {
-    return this.belongsTo('User');
+  chat: function () {
+    return this.belongsTo('Chat');
   },
 }, {
-  newFriend: function (options) {
+  newMessage: function (options) {
     return new this(options);
   },
   fetchById: function (id) {
     return new this({
-      id: id
-    }).fetch({withRelated: ['user']})
+      chat_id: id
+    }).fetch({withRelated: ['chat']})
   }
 })
 
