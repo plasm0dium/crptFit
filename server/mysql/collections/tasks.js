@@ -14,8 +14,8 @@ var Tasks = db.Collection.extend({
     .fetch();
   },
   fetchAll: function () {
-    return db.collection('Tasks').forge().fetch({withRelated: ['user']})
+    return db.collection('Tasks').forge().fetch({withRelated: ['user']});
   }
-})
+});
 
 module.exports = db.collection('Tasks', Tasks);

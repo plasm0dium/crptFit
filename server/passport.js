@@ -15,10 +15,10 @@ module.exports = function (passport) {
           done(null, user);
         })
         .catch(function(err){
-          console.log(err)
+          console.log(err);
           done(err, false);
         });
-  })
+  });
 
   passport.use(new FacebookStrategy({
       clientID: Auth.clientId,
@@ -44,15 +44,15 @@ module.exports = function (passport) {
         }).save()
       } else {
         console.log('IN CALLBACK: USER ALREADY EXISTS')
-        return user
+        return user;
       }
     }).then(function(user) {
-      return done(null, user)
+      return done(null, user);
     }).catch(function (err) {
       console.log(err);
-      return done(err, false)
-    })
+      return done(err, false);
+    });
 
     console.log("PROFILE", profile);
-  }))
-}
+  }));
+};

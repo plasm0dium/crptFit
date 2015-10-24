@@ -14,8 +14,8 @@ var friendRequests = db.Collection.extend({
     .fetch();
   },
   fetchAll: function () {
-    return db.collection('friendRequests').forge().fetch({withRelated: ['user']})
+    return db.collection('friendRequests').forge().fetch({withRelated: ['user']});
   }
-})
+});
 
 module.exports = db.collection('friendRequests', friendRequests);

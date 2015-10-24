@@ -2,24 +2,21 @@ var db = require('../config.js');
 
 require('./user');
 
-var Chat = db.Model.extend({
-  tableName: 'chats',
+var Benchpress = db.Model.extend({
+  tableName: 'benchpress',
   hasTimeStamp: true,
   user: function () {
     return this.belongsTo('User');
   },
-  message: function() {
-    return this.hasMany('Message');
-  }
 }, {
-  newChat: function (options) {
+  newBenchPress: function (options) {
     return new this(options);
   },
   fetchById: function (id) {
     return new this({
       id: id
-    }).fetch({withRelated: ['user', 'message']});
+    }).fetch({withRelated: ['user']});
   }
 });
 
-module.exports = db.model('Chat', Chat);
+module.exports = db.model('Benchpress', Benchpress);

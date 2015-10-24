@@ -2,50 +2,69 @@ var db = require('../config.js');
 
 require('./task');
 require('./client');
-require('./stat');
 require('./friend');
 require('./trainer');
+require('./client_request');
+require('./benchpress');
+require('./chat');
+require('./friend_request');
+require('./weight');
+require('./squat');
+require('./deadlift');
+require('./speed');
 
 var User = db.Model.extend({
   //User Properties
   tableName: 'users',
   hasTimeStamp: true,
   tasks: function () {
-    return this.hasMany('Task')
+    return this.hasMany('Task');
   },
   clients: function () {
-    return this.hasMany('Client')
-  },
-  stats: function () {
-    return this.hasMany('Stat')
+    return this.hasMany('Client');
   },
   friends: function () {
-    return this.hasMany('Friend')
+    return this.hasMany('Friend');
   },
   trainers: function() {
-    return this.hasMany('Trainer')
+    return this.hasMany('Trainer');
   },
   chats: function() {
-    return this.hasMany('Chat')
+    return this.hasMany('Chat');
+  },
+  weights: function() {
+    return this.hasMany('Weight');
+  },
+  benchpresses: function() {
+    return this.hasMany('Benchpress');
+  },
+  deadlifts: function() {
+    return this.hasMany('DeadLift');
+  },
+  squats: function() {
+    return this.hasMany('Squat');
+  },
+  speeds: function() {
+    return this.hasMany('Speed');
   }
 }, {
   //User Class Methods
 fetchById: function(options) {
-  return new this(options).fetch({withRelated: ['tasks', 'clients', 'stats','friends', 'chats', 'trainers']});
+  return new this(options).fetch({withRelated: ['tasks', 'clients', 'friends', 'chats', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats']});
   },
 fetchByUsername: function (username) {
   return this({
     username: username,
-  }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends', 'chats', 'trainers']});
+  }).fetch({withRelated: ['tasks', 'clients', 'friends', 'chats', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats']});
 },
 fetchByName: function (name) {
   return this({
     name: name
-    }).fetch({withRelated: ['tasks', 'clients', 'stats', 'friends', 'chats', 'trainers']});
+    }).fetch({withRelated: ['tasks', 'clients', 'friends', 'chats', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats']});
   },
 newUser: function (options) {
   return new this(options);
   }
-})
+});
 
 module.exports = db.model('User', User);
