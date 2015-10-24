@@ -20,11 +20,14 @@
       <div ng-repeat="person in ctrl.list">
         <a class="item item-avatar">
           <img src="https://healthhabits.files.wordpress.com/2008/09/body_builder.gif"/>
+          <div class="list messageFoot2">
+            <button class="button button-dark" ng-click="ctrl.makeChat()">Create Message</button>
+          </div>
           <h3>{{person.username}}</h3>
           <p>{{person.update}}</p>
         </a>
       </div>
-      
+
     </div>
   </ion-content>
 </ion-view>

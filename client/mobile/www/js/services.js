@@ -13,6 +13,13 @@ angular.module('crptFit.services', [])
   ];
 
   return {
+    makeChat: function(userId){
+      $http({
+        method: 'POST',
+        url: '/auth/chat/add'+userId
+      })
+      .then(function(){})
+    },
     friendsList: function(){
       // Grab friends and store it in the friends array above (refactor - DRY)
       $http({
@@ -92,13 +99,7 @@ angular.module('crptFit.services', [])
 
 // Start of Messages Factory ====================================================
 .factory('Message', ['$http', function($http){
-  var messages = [
-    {user: 'John', message:'bich you said we were working out, where are you?'},
-    {user: 'Steve', message: 'I will hunt you down if you keep ditching me like this'},
-    {user: 'Jane', message: 'HA you can only lift 130? my grandma can do that in her grave!'},
-    {user: 'Mom', message: 'Casserole for dinner.. again'},
-    {user: 'Ted', message: ':D'}
-  ];
+  var messages = [];
 //get user message table from db
   var retMessage;
   return {
@@ -118,15 +119,13 @@ angular.module('crptFit.services', [])
     getMessage : function(){
       $http({
         method: 'GET',
-        url: '/auth/chat'
+        url: '/auth/chat/'
       }).then(function(response){
-        console.log('recieved message', response.data);
-        recievedMessage = response.data;
-        messages.push(recievedMessage);
+        console.log('recieved message', response);
+        messages.push(response);
       }, function(error){
         console.log(error);
       });
-      return recievedMessage;
     },
     sendMessage : function(val){
       console.log(val);

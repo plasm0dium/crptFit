@@ -129,6 +129,7 @@ angular.module('crptFit.controllers', ['ionic'])
   self.messages = Message.messageList();
   self.userMessages = function(user){
     self.mess = Message.userMessages(user);
+    console.log(Message.getMessage())
   };
   self.send = function(val){
     self.Send = Message.sendMessage(val);
@@ -139,6 +140,10 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
   var self = this;
   // Add a refreshing function here
+  self.makeChat = function(userId){
+    console.log('clicked')
+    self.chat = Social.makeChat(userId);
+  }
   console.log("LIST OF FRIENDS", self);
   self.list = Social.friendsList();
   console.log('SELF.LIST :', self.list)
