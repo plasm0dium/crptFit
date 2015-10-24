@@ -66,10 +66,18 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 });
 
 
-app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
+app.get('/tab/homepage', function (req,res) {
   console.log('GET REQ AUTHENTICATED', req.user)
-  res.redirect('/#/tab/homepage');
   res.json(req.user);
+  res.redirect('/#/tab/homepage');
+})
+
+// Get a User's Profile Pic
+app.get('/auth/picture', function(req, res){
+  db.model('User').fetchById({id: req.user.attributes.id})
+  .then(function(user){
+    res.json(user);
+  })
 })
 
 // Logout User
@@ -90,7 +98,6 @@ app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
 });
 
 // Fetch User's Friends
-
 var storage = [];
 app.get('/auth/friends', function (req, res) {
   db.collection('Friends').fetchByUser(req.user.attributes.id)
