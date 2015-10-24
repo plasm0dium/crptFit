@@ -120,10 +120,9 @@ angular.module('crptFit.controllers', [])
   //post and get messages controls here
   var self = this;
   self.messages = Message.messageList();
-  self.clickUser = Message.clickUser();
-  self.userCli = Message.userMess();
-  Message.clickUser();
-
+  self.userMessages = function(user){
+    self.mess = Message.userMessages(user);
+  };
   self.refreshMessages = function(){
 
   };

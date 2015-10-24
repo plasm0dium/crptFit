@@ -93,25 +93,22 @@ angular.module('crptFit.services', [])
     {user: 'Mom', message: 'Casserole for dinner.. again'},
     {user: 'Ted', message: ':D'}
   ];
-  var userCli;
 //get user message table from db
+
   return {
     messageList : function(){
       return messages;
     },
-    clickUser : function(){
-      $('.userMessage').click(function(){
-        for(var i = 0; i < messages.length; i++){
-          var use = messages[i];
-          if(this.id === use.user){
-          console.log(use.message);
-            userCli = use.message;
-          }
+    userMessages : function(user){
+      for(var i = 0; i < messages.length; i++){
+        if(messages[i].user === user){
+          console.log(messages[i].message)
+          userCli = messages[i].message;
         }
-      });
+      }
     },
-    userMess : function(){
-      return userCli;
+    clickUser : function(user){
+
     },
   };
 }])
