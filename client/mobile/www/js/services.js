@@ -80,6 +80,12 @@ angular.module('crptFit.services', [])
     addTrainer: function(trainer){
       // This function needs the proper AJAX request
       trainers.push(trainer);
+    },
+    searchResultsList: function(username){
+      $http({
+        method: 'GET',
+        url: 'auth/users/search' + username
+      });
     }
   };
 }])

@@ -1,4 +1,4 @@
-angular.module('crptFit.controllers', [])
+angular.module('crptFit.controllers', ['ionic'])
 
 .controller('ProfileCtrl', ['Social', function(Social) {
   var self = this;
@@ -128,7 +128,7 @@ angular.module('crptFit.controllers', [])
 
   };
 }])
-.controller('SocialCtrl', ['Social', function(Social) {
+.controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
   var self = this;
   // Add a refreshing function here
   self.list = Social.friendsList();
@@ -144,4 +144,35 @@ angular.module('crptFit.controllers', [])
   self.showTrainers = function(){
     self.list = Social.trainersList();
   }
+
+  $scope.showPopup = function() {
+  $scope.data = {};
+
+  // An elaborate, custom popup
+  var myPopup = $ionicPopup.show({
+    template: '<form><input type="text" ng-model="data.wifi"></form>',
+    title: 'Search for a user',
+    scope: $scope,
+    buttons: [
+      { text: 'Cancel' },
+      {
+        text: '<b>Search</b>',
+        type: 'button-positive',
+        onTap: function(e) {
+          if (!$scope.data.wifi) {
+            //don't allow the user to close unless he enters wifi password
+            e.preventDefault();
+          } else {
+            return $scope.data.wifi;
+          }
+        }
+      }
+    ]
+  });
+  myPopup.then(function(res) {
+    console.log('Tapped!', res);
+    self.list = Social.searchResultsList(res);
+  });
+ };
+
 }])
