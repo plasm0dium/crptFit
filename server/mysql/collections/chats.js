@@ -2,11 +2,12 @@ var db = require('../config');
 
 require('../models/chat');
 
-var Clients = db.Collection.extend({
-  model: db.model('Chat')
-}, {
+var Chats = db.Collection.extend({
+  model: db.model('chat')
+}, 
+  {
   fetchByUser: function(userId) {
-    return db.collection('Clients')
+    return db.collection('Chats')
     .forge()
     .query(function(qb) {
       qb.where('user_id', '=', userId);
@@ -14,8 +15,10 @@ var Clients = db.Collection.extend({
     .fetch();
   },
   fetchAll: function () {
-    return db.collection('Clients').forge().fetch({withRelated: ['user']})
+    return db.collection('Chats').forge().fetch({withRelated: ['users']})
   }
 })
 
-module.exports = db.collection('Clients', Clients);
+module.exports = db.collection('Chats', Chats);
+
+

@@ -1,6 +1,8 @@
 angular.module('crptFit.controllers', ['ionic'])
 
+
 .controller('ProfileCtrl', ['Social', function(Social) {
+
   var self = this;
   // Add a refreshing function here
   self.friendCount = Social.getFriendsLength();
@@ -138,6 +140,7 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
   var self = this;
   // Add a refreshing function here
+  console.log("LIST OF FRIENDS", self);
   self.list = Social.friendsList();
   
   self.showFriends = function(){
