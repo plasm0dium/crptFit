@@ -8,6 +8,9 @@ var Chat = db.Model.extend({
   user: function () {
     return this.belongsTo('User');
   },
+  message: function() {
+    return this.hasMany('Message');
+  } 
 }, {
   newChat: function (options) {
     return new this(options);
@@ -15,7 +18,7 @@ var Chat = db.Model.extend({
   fetchById: function (id) {
     return new this({
       id: id
-    }).fetch({withRelated: ['user']})
+    }).fetch({withRelated: ['user', 'messages']})
   }
 })
 

@@ -1,6 +1,8 @@
 angular.module('crptFit.controllers', ['ionic'])
 
+
 .controller('ProfileCtrl', ['Social', function(Social) {
+
   var self = this;
   // Add a refreshing function here
   self.friendCount = Social.getFriendsLength();
@@ -122,18 +124,23 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('MessagesCtrl', ['Message', function(Message) {
   //post and get messages controls here
   var self = this;
-  self.messages = Message.messageList();
-  self.clickUser = Message.clickUser();
-  self.userCli = Message.userMess();
-  Message.clickUser();
-
-  self.refreshMessages = function(){
-
+  self.sendTo = {
+    val: ''
   };
+  self.messages = Message.messageList();
+  self.userMessages = function(user){
+    self.mess = Message.userMessages(user);
+  };
+  self.send = function(val){
+    self.Send = Message.sendMessage(val);
+    self.sendTo.val = '';
+  }
+  self.message = Message.retMess();
 }])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
   var self = this;
   // Add a refreshing function here
+  console.log("LIST OF FRIENDS", self);
   self.list = Social.friendsList();
   console.log('SELF.LIST :', self.list)
   self.showFriends = function(){
