@@ -122,10 +122,17 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('MessagesCtrl', ['Message', function(Message) {
   //post and get messages controls here
   var self = this;
+  self.sendTo = {
+    val: ''
+  };
   self.messages = Message.messageList();
   self.userMessages = function(user){
     self.mess = Message.userMessages(user);
   };
+  self.send = function(val){
+    self.Send = Message.sendMessage(val);
+    self.sendTo.val = '';
+  }
   self.message = Message.retMess();
 }])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
