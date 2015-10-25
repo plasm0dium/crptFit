@@ -147,7 +147,7 @@ angular.module('crptFit.controllers', ['ionic'])
   // Add a refreshing function here
   console.log("LIST OF FRIENDS", self);
   self.list = Social.friendsList();
-  
+
   self.showFriends = function(){
     self.list = Social.friendsList();
   };
