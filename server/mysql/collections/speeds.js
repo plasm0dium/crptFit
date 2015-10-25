@@ -5,7 +5,7 @@ require('../models/speed');
 var Speeds = db.Collection.extend({
   model: db.model('Speed')
 }, {
-  fetchByChat: function(userId) {
+  fetchByUser: function(userId) {
     return db.collection('Speeds')
     .forge()
     .query(function(qb) {
