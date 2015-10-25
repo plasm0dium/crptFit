@@ -78,7 +78,7 @@ db.knex.schema.hasTable('weights').then(function(exists) {
       t.increments('id').primary();
       t.integer('weight').references('id').inTable('users');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
     });
   }
 })
@@ -92,7 +92,7 @@ db.knex.schema.hasTable('benchpress').then(function(exists) {
       t.increments('id').primary();
       t.integer('benchpress').references('id').inTable('users');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
     });
   }
 })
@@ -106,7 +106,7 @@ db.knex.schema.hasTable('squats').then(function(exists) {
       t.increments('id').primary();
       t.integer('squat').references('id').inTable('users');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
     });
   }
 })
@@ -120,7 +120,7 @@ db.knex.schema.hasTable('deadlifts').then(function(exists) {
       t.increments('id').primary();
       t.integer('deadlift').references('id').inTable('users');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
     });
   }
 })
@@ -134,7 +134,7 @@ db.knex.schema.hasTable('speeds').then(function(exists) {
       t.increments('id').primary();
       t.integer('speed').references('id').inTable('users');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
     });
   }
 })
