@@ -193,8 +193,53 @@ app.get('/auth/chat/get:id', function (req, res){
   .then(function(chat) {
     console.log('THIS IS CHAT ROOM :', chat);
     res.json(chat.relations.message.models.toJSON());
-  })
-})
+  });
+});
+
+app.get('/auth/weight/:id', function (req, res){
+  var userId = req.params.id;
+  db.collection('Weights').fetchByUser(userId)
+  .then(function(user){
+    console.log('THIS IS YOUR WEIGHT: ', user);
+    res.json(user.toJSON());
+  });
+});
+
+app.get('/auth/benchpress/:id', function (req, res){
+  var userId = req.params.id;
+  db.collection('BenchPress').fetchByUser(userId)
+  .then(function(user){
+    console.log('THIS IS YOUR BENCHPRESS', user);
+    res.json(user.toJSON());
+  });
+});
+
+app.get('/auth/deadlift/:id', function (req, res){
+  var userId = req.params.id;
+  db.collection('DeadLifts').fetchByUser(userId)
+  .then(function(user){
+    console.log('THIS IS YOUR DEADLIFTS', user);
+    res.json(user.toJSON());
+  });
+});
+
+app.get('/auth/squats/:id', function (req, res){
+  var userId = req.params.id;
+  db.collection('Squats').fetchByUser(userId)
+  .then(function(user){
+    console.log('THIS IS YOUR SQUATS', user);
+    res.json(user.toJSON());
+  });
+});
+
+app.get('/auth/speeds/:id', function (req, res){
+  var userId = req.params.id;
+  db.collection('Speeds').fetchByUser(userId)
+  .then(function(user){
+    console.log('THIS IS YOUR SPEED', user);
+    res.json(user.toJSON());
+  });
+});
 
 // Add a New Task to User
 app.post('/auth/tasks/:taskname', function (req, res) {
