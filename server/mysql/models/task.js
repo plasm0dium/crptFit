@@ -4,7 +4,7 @@ require('./user');
 
 var Task = db.Model.extend({
   tableName: 'tasks',
-  hasTimeStamp: true,
+  hasTimeStamps: true,
   user: function () {
     return this.belongsTo('User');
   },
@@ -15,7 +15,10 @@ var Task = db.Model.extend({
       })
       .fetch()
       .then(function (result) {
-        result.save({complete: true}, {patch: true});
+        result.save({
+          complete: true,
+          updated_at: new Date()
+        }, {patch: true});
       })
       .then(function(update) {
         return update;

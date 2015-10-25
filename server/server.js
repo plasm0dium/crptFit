@@ -73,21 +73,19 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 });
 
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
-  console.log('GET REQ AUTHENTICATED', req.user);
   if(res.user) {
     res.json(req.user.toJSON());
   } else {
     res.redirect('/');
   }
 });
-// Get a User's Profile Pic
-app.get('/auth/picture', function(req, res){
-  db.model('User').fetchById({id: req.user.attributes.id})
-  .then(function(user){
-    res.json(user);
-  })
-})
 
+app.get('/auth/picture', function(req, res){
+ db.model('User').fetchById({id: req.user.attributes.id})
+ .then(function(user){
+   res.json(user);
+ });
+});
 
 // Logout User
 app.get('/logout', function(req, res){
@@ -127,6 +125,7 @@ app.get('/auth/friends', function (req, res) {
         storage = [];
       });
   });
+
 //Search a Friends Friends
   app.get('/auth/friends/:id', function (req, res) {
     db.collection('Friends').fetchByUser(req.params.id)
@@ -164,7 +163,7 @@ app.get('auth/users/search', function (req, res) {
 //     res.json(stats.toJSON());
 //   });
 // });
-  
+
 // Fetch a User's Clients
 app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
@@ -216,7 +215,7 @@ app.post('/auth/tasks/:taskname', function (req, res) {
 // Update User's Task to Complete
 app.post('/auth/task/complete/:id', function(req, res) {
   var taskId = req.params.id;
-  db.model('Task').completeTask(req.user.attributes.id)
+  db.model('Task').completeTask(taskId)
   .then(function () {
     console.log('TASK UPDATED TO COMPLETE :', db.model('Task').fetchByUser(req.user.attributes.id));
   })
@@ -225,43 +224,20 @@ app.post('/auth/task/complete/:id', function(req, res) {
   });
 });
 
-// Add a Friend to User
-// app.post('/auth/friends/add:id', function (req, res) {
-//   var userId = req.user.attributes.id;
-//   var friendId = req.params.id;
-//   db.model('Friend').newFriend({
-//     friends_id: friendId,
-//     user_id: userId
-//   })
-//   .save()
-//   .then(function() {
-//     db.model('Friend').newFriend({
-//       friends_id: userId,
-//       user_id: friendId
-//     })
-//     .save()
-//   })
-//   .then(function (newFriend) {
-//     console.log('ADDED NEW FRIEND', newFriend)
-//     return newFriend;
-//   })
-//   .catch(function (err) {
-//     return err;
-//   });
-// });
-
 // Confirm Client Request and adds Client to User
 app.post('/auth/confirmclient', function (req, res) {
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
    db.model('clientRequest').acceptClientRequest({
     user_id: userId,
-    client_id: clientId
+    client_id: clientId,
+    updated_at: new Date()
   })
   .then(function () {
     db.model('clientRequest').acceptClientRequest({
       user_id: clientId,
-      client_id: userId
+      client_id: userId,
+      updated_at: new Date()
     })
   })
   .then(function (){
@@ -294,14 +270,16 @@ app.post('/auth/clientreq/add:id', function (req, res){
   db.model('clientRequest').newClientRequest({
     client_id: clientId,
     user_id: userId,
-    status: 0
+    status: 0,
+    created_at: new Date()
   })
   .save()
   .then(function () {
     db.model('clientRequest').newClientRequest({
       client_id: userId,
       user_id: clientId,
-      status: 0
+      status: 0,
+      created_at: new Date()
     })
     .save()
   })
@@ -321,14 +299,16 @@ app.post('/auth/friendreq/add:id', function (req, res){
   db.model('friendRequest').newFriendRequest({
     friend_id: friendId,
     user_id: userId,
-    status: 0
+    status: 0,
+    created_at: new Date()
   })
   .save()
   .then(function (){
     db.model('friendRequest').newFriendRequest({
       friend_id: userId,
       user_id: friendId,
-      status: 0
+      status: 0,
+      created_at: new Date()
     })
     .save()
   })
@@ -348,13 +328,14 @@ app.post('/auth/confirmfriend/:id', function (req, res){
   var friendId = req.params.id;
   db.model('friendRequest').acceptFriendRequest({
     user_id: userId,
-    friend_id: friendId
-
+    friend_id: friendId,
+    updated_at: new Date()
   })
   .then(function () {
     db.model('friendRequest').acceptFriendRequest({
       user_id: friendId,
-      friend_id: userId
+      friend_id: userId,
+      updated_at: new Date()
     })
   })
   .then(function(){
@@ -386,19 +367,21 @@ app.post('/auth/chat/add:id', function (req, res){
   var userId2 = req.params.id;
   db.model('Chat').newChat({
     user_id: userId1,
-    user2_id: userId2
+    user2_id: userId2,
+    created_at: new Date()
   })
   .save()
   .then(function(){
     db.model('Chat').newChat({
       user_id: userId2,
-      user2_id: userId1
+      user2_id: userId1,
+      created_at: new Date()
     })
     .save()
   })
 });
 
-//Adds Chat Session
+//Adds Messages to chat session
 app.post('/auth/messages/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
@@ -406,10 +389,71 @@ app.post('/auth/messages/add:id', function (req, res){
   db.model('Message').newMessage({
     user_id: userId,
     chat_id: chatId,
-    text: message
+    text: message,
+    created_at: new Date()
   })
   .save()
-})
+});
+
+//Add Current Weight
+app.post('/auth/weight/:stat', function (req, res) {
+  var userId = req.user.attributes.id;
+  var currWeight = req.params.stat;
+  db.model('Weight').newWeight({
+    weight: currWeight,
+    user_id: userId,
+    created_at: new Date()
+  })
+  .save();
+});
+
+//Add Current Bench Press
+app.post('/auth/bench/:stat', function (req, res) {
+  var userId = req.user.attributes.id;
+  var currBench = req.params.stat;
+  db.model('benchpress').newBenchPress({
+    weight: currBench,
+    user_id: userId,
+    created_at: new Date()
+  })
+  .save();
+});
+
+//Add Current Squat
+app.post('/auth/squat/:stat', function (req, res) {
+  var userId = req.user.attributes.id;
+  var currSquat = req.params.stat;
+  db.model('Squat').newSquat({
+    weight: currSquat,
+    user_id: userId,
+    created_at: new Date()
+  })
+  .save();
+});
+
+// Current Deadlift
+app.post('/auth/deadlift/:stat', function (req, res) {
+  var userId = req.user.attributes.id;
+  var currDeadLift = req.params.stat;
+  db.model('Deadlift').newDeadLift({
+    weight: currDeadLift,
+    user_id: userId,
+    created_at: new Date()
+  })
+  .save();
+});
+
+// Update Current Speed
+app.post('/auth/speed/:stat', function (req, res) {
+  var userId = req.user.attributes.id;
+  var currSpeed = req.params.stat;
+  db.model('Speed').newSpeed({
+    weight: currSpeed,
+    user_id: userId,
+    created_at: new Date()
+  })
+  .save();
+});
 
 function ensureAuthenticated(req, res, next) {
   console.log('AUTHENTICATED FUNCTION')
