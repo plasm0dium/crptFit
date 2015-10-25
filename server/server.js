@@ -79,14 +79,13 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
     res.redirect('/');
   }
 });
-// Get a User's Profile Pic
-app.get('/auth/picture', function(req, res){
-  db.model('User').fetchById({id: req.user.attributes.id})
-  .then(function(user){
-    res.json(user);
-  })
-})
 
+app.get('/auth/picture', function(req, res){
+ db.model('User').fetchById({id: req.user.attributes.id})
+ .then(function(user){
+   res.json(user);
+ });
+});
 
 // Logout User
 app.get('/logout', function(req, res){
@@ -432,7 +431,7 @@ app.post('/auth/squat/:stat', function (req, res) {
   .save();
 });
 
-//Add Current Deadlift
+// Current Deadlift
 app.post('/auth/deadlift/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currDeadLift = req.params.stat;
@@ -444,7 +443,7 @@ app.post('/auth/deadlift/:stat', function (req, res) {
   .save();
 });
 
-// Add Current Speed
+// Update Current Speed
 app.post('/auth/speed/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSpeed = req.params.stat;
