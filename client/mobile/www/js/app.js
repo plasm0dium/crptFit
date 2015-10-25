@@ -110,11 +110,20 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         }
       }
     })
-    .state('tab.group', {
+    .state('tab.social', {
       url: '/social',
       views: {
         'social-tab': {
           templateUrl: 'templates/social-tab.html',
+          controller: 'SocialCtrl'
+        }
+      }
+    })
+    .state('tab.userProfile', {
+      url: '/viewuser',
+      views: {
+        'social-tab': {
+          templateUrl: 'templates/profile-view.html',
           controller: 'SocialCtrl'
         }
       }
