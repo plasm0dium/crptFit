@@ -72,7 +72,6 @@ app.get('/auth/facebook/callback', function (req, res, next) {
     })(req, res, next);
 });
 
-
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   console.log('GET REQ AUTHENTICATED', req.user);
   if(res.user) {
@@ -81,6 +80,14 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
     res.redirect('/');
   }
 });
+// Get a User's Profile Pic
+app.get('/auth/picture', function(req, res){
+  db.model('User').fetchById({id: req.user.attributes.id})
+  .then(function(user){
+    res.json(user);
+  })
+})
+
 
 // Logout User
 app.get('/logout', function(req, res){
