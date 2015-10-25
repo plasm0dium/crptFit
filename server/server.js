@@ -85,8 +85,8 @@ app.get('/auth/picture', function(req, res){
   db.model('User').fetchById({id: req.user.attributes.id})
   .then(function(user){
     res.json(user);
-  })
-})
+  });
+});
 
 
 // Logout User

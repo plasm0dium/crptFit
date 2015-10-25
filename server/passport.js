@@ -43,7 +43,7 @@ module.exports = function (passport) {
           gender: profile._json.gender
         }).save()
       } else {
-        console.log('IN CALLBACK: USER ALREADY EXISTS')
+        console.log('IN CALLBACK: USER ALREADY EXISTS');
         return user;
       }
     }).then(function(user) {
