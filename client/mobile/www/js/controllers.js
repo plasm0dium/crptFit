@@ -1,36 +1,29 @@
 angular.module('crptFit.controllers', ['ionic'])
 
 
-.controller('ProfileCtrl', ['Social', '$http', function(Social, $http) {
+.controller('ProfileCtrl', ['Social', '$http','Tasks', function(Social, $http, Tasks) {
 
   var self = this;
   self.pic;
   self.username;
+  self.feed = Tasks.tasksList();
+  self.friendCount = Social.getFriendsLength();
+  self.trainerCount = Social.getTrainersLength();
+  self.clientCount = Social.getClientsLength();
+  // Helper function for extracting profile info dynamically
   var setUserInfo = function(picUrl, username){
      self.pic = picUrl;
      self.username = username;
   }
-
   $http({
     method: 'GET',
     url: '/auth/picture'
   }).then(function(response){
-    console.log("this is the request object for a user", response.data.profile_pic);
-      var picUrl = response.data.profile_pic;
-      var userName = response.data.username;
-    console.log("this is the request object for a user", response.data.username);
-      setUserInfo(picUrl, userName);
+    var picUrl = response.data.profile_pic;
+    var userName = response.data.username;
+    setUserInfo(picUrl, userName);
   });
   // Add a refreshing function here
-  self.friendCount = Social.getFriendsLength();
-  self.trainerCount = Social.getTrainersLength();
-  self.clientCount = Social.getClientsLength();
-
-  self.feed = [
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'}
-  ];
  }])
 .controller('HomeCtrl', ['Social', function(Social) {
   var self = this;
