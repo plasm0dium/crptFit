@@ -20,6 +20,7 @@ angular.module('crptFit.services', [])
         url: '/auth/friends'
       })
       .then(function(response){
+        console.log(response.data)
         friends = response.data;
       }, function(error){
         console.log(error);
@@ -95,7 +96,7 @@ angular.module('crptFit.services', [])
 //get user message table from db
   return {
     messageList : function(){
-      return messages;
+      return currChat;
     },
     makeChat: function(userId){
       console.log(userId);
@@ -105,7 +106,7 @@ angular.module('crptFit.services', [])
       })
       .then(function(){});
     },
-    getMessage : function(){
+    getMessage : function(chatId){
       $http({
         method: 'GET',
         url: '/auth/chat/'
@@ -116,11 +117,11 @@ angular.module('crptFit.services', [])
         console.log(error);
       });
     },
-    sendMessage : function(val){
+    sendMessage : function(chatId, val){
       console.log(val);
       $http({
         method: 'POST',
-        url: '/auth/chat',
+        url: '/auth/messages' + chatId,
         data: val
       });
     }

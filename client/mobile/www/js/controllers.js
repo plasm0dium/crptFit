@@ -136,15 +136,46 @@ angular.module('crptFit.controllers', ['ionic'])
   };
   self.finishTask = function(task){
     self.finish = Task.finishTask(task);
-  }
+  };
 }])
-.controller('MessagesCtrl', ['Message', function(Message) {
+.controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
   var self = this;
+  self.search = Social.friendsList();
+  self.showMessages = function(friends){
+    for(var i = 0; i < friends.length; i++){
+      console.log(friends.chats);
+      return friends.chats;
+    }
+  };
+  self.messageToPage = self.showMessages(self.search);
+  self.searchFriends = function(){
+    self.search = Social.friendsList();
+  };
   self.makeChat = function(userId){
-    console.log('clicked')
+    console.log('clicked');
     // Message.getFriendIds();
     self.chat = Message.makeChat(userId);
-  }
+  };
+  self.sendMessage = function(chatId, val){
+    self.send = Message.sendMessage(chatId, val);
+  };
+  $scope.showPopup = function() {
+  $scope.data = {};
+  // An elaborate, custom popup
+  var myPopup = $ionicPopup.show({
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href="#/tab/message">{{friend.username}}</a></div></div></div>',
+    title: 'Create a message',
+    scope: $scope,
+    buttons: [
+      { text: 'Cancel' },
+    ]
+  });
+  myPopup.then(function(res) {
+    console.log('Tapped!', res);
+    self.list = Social.searchResultsList(res);
+  });
+ };
+
 }])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
   var self = this;

@@ -10,7 +10,7 @@
           <div class="item-input-wrapper">
             <input class="messageInput" type="text" placeholder="Type here..." ng-model="ctrl.sendTo.val">
           </div>
-          <button type="submit" class="button button-small" ng-click="ctrl.send(ctrl.sendTo.val)">
+          <button type="submit" class="button button-small" ng-click="ctrl.sendMessage(ctrl.chatId ,ctrl.sendTo.val)">
             Send
           </button>
         </div>
