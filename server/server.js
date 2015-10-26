@@ -80,6 +80,38 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   }
 });
 
+// Fetch a Specific User by Id
+app.get('/auth/user/:id', function (req, res) {
+  var userId = req.params.id;
+  db.model('User').fetchById({
+    id: userId
+  })
+  .then(function(result) {
+    res.json(result.toJSON())
+  })
+})
+
+//News Feed Pulls Latest Completed Tasks of Friends
+// app.get('/auth/newsfeed', function (req, res) {
+//   db.collection('Friends').fetchByUser(req.user.attributes.id)
+//   .then(function(friends) {
+//     var friendsArray = friends.models;
+//     for(var i = 0; i < friendsArray.length; i++ ) {
+//       db.model('User').fetchById({
+//         id: friendsArray[i].attributes.friends_id
+//       })
+//       .then(function(result) {
+//         storage.push(result);
+//       })
+//     }})
+//       .then(function() {
+//         console.log('RES>JSON :', storage)
+//         return res.json(storage);
+//       }).then(function () {
+//         storage = [];
+//       })
+//   })
+
 app.get('/auth/picture', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
@@ -148,21 +180,19 @@ app.get('/auth/friends', function (req, res) {
     });
 
 //Search All Users to Add as Friend
-app.get('auth/users/search', function (req, res) {
-  db.collection('Users').fetchAll()
-  .then(function(allFriends) {
-    res.json(allFriends.toJSON());
+app.get('auth/users/search:username', function (req, res) {
+  var Username = req.params.username;
+  db.collection('Users').searchByUsername(Username)
+  .then(function(friend) {
+    res.json(friend.toJSON());
   })
 });
 
-// Get Collection of User's Stats
-// app.get('/auth/stats', ensureAuthenticated, function (req, res) {
-//   db.collection('Stats').fetchByUser(req.user.attributes.id)
-//   .then(function(stats) {
-//     console.log('THESE ARE USER STATS: ', stats);
-//     res.json(stats.toJSON());
-//   });
-// });
+db.collection('Users').searchByUsername('ted')
+  .then(function(allFriends) {
+    console.log("THIS IS WHAT I'M LOOKING FOR: ", allFriends.models);
+});
+
 
 // Fetch a User's Clients
 app.get('/auth/clients', ensureAuthenticated,function (req, res) {
@@ -416,14 +446,6 @@ app.post('/auth/chat/add:id', function (req, res){
     created_at: new Date()
   })
   .save()
-  .then(function(){
-    db.model('Chat').newChat({
-      user_id: userId2,
-      user2_id: userId1,
-      created_at: new Date()
-    })
-    .save()
-  })
 });
 
 //Adds Messages to chat session
@@ -502,14 +524,14 @@ app.post('/auth/speed/:stat', function (req, res) {
 });
 
 function ensureAuthenticated(req, res, next) {
-  console.log('AUTHENTICATED FUNCTION')
+  console.log('AUTHENTICATED FUNCTION');
   if(req.isAuthenticated()) {
-    return next()
+    return next();
   } else {
-    res.redirect('/')
+    res.redirect('/');
   }
 }
 
 app.listen(port, function(){
   console.log('listening on port...', port);
-})
+});

@@ -4,12 +4,12 @@ require('./user');
 
 var Friend = db.Model.extend({
   tableName: 'friends',
-  hasTimeStamp: true,
+  hasTimestamps: true,
   user: function () {
     return this.belongsTo('User');
   },
   users: function () {
-    this.hasMany('User')
+    this.hasMany('User');
   }
 }, {
   newFriend: function (options) {
@@ -20,6 +20,6 @@ var Friend = db.Model.extend({
       user_id: id
     }).fetch({withRelated: ['user']})
   }
-})
+});
 
 module.exports = db.model('Friend', Friend);
