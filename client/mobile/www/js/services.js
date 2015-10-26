@@ -1,14 +1,17 @@
 angular.module('crptFit.services', [])
 // Start of Tasks Factory ====================================================
 .factory('Tasks', ['$http', function($http){
-  var tasks = [];
+  var tasks;
+  var setTasks = function(tasksList){
+    tasks = tasksList;
+  }
   return {
-    tasksList: function(){
+    getTasksList: function(){
       $http({
         method: 'GET',
         url: '/auth/tasks'
       }).then(function(response){
-        tasks = response.data;
+        setTasks(response.data);
         console.log("Tasks returned from server:", response.data);
       })
       return tasks;

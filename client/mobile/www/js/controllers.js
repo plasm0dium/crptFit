@@ -6,15 +6,28 @@ angular.module('crptFit.controllers', ['ionic'])
   var self = this;
   self.pic;
   self.username;
-  self.feed = Tasks.tasksList();
+  self.feed;
   self.friendCount = Social.getFriendsLength();
   self.trainerCount = Social.getTrainersLength();
   self.clientCount = Social.getClientsLength();
-  // Helper function for extracting profile info dynamically
+  // Helper function for extracting profile info dynamically and setting it in the controller
   var setUserInfo = function(picUrl, username){
      self.pic = picUrl;
      self.username = username;
+  };
+
+  var setTasks = function(tasks){
+    self.feed = tasks;
   }
+  // Grab a users tasks - extract into a factory later
+  $http({
+    method: 'GET',
+    url: '/auth/tasks'
+  }).then(function(response){
+    setTasks(response.data);
+    console.log("Tasks returned from server:", response.data);
+  })
+  // Grab a users profile information - extract into a factory later
   $http({
     method: 'GET',
     url: '/auth/picture'
@@ -142,7 +155,6 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
   var self = this;
   // Add a refreshing function here
-  console.log("LIST OF FRIENDS", self);
   self.list = Social.friendsList();
 
   self.showFriends = function(){
