@@ -39,6 +39,7 @@ angular.module('crptFit.services', [])
       })
       .then(function(response){
         friends = response.data;
+        console.log("FRIENDS :",response.data)
       }, function(error){
         console.log(error);
       });
