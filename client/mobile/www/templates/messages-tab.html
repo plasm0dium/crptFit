@@ -1,7 +1,7 @@
-<ion-view title="Messages" ng-controller="MessagesCtrl as ctrl">
+<ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.showMessages()">
   <ion-content has-header="true" padding="true">
-    <div ng-repeat="messages in ctrl.messageToPage" ng-click="ctrl.userMessages(messages.user)">
-      <a class="item item-icon-right icon ion-email userMessage" href="#/tab/message">{{messages.chats}}<i class="icon ion-chevron-right icon-accessory"></i></a>
+    <div ng-repeat="messages in ctrl.messageToPage">
+      <a class="item item-icon-right icon ion-email userMessage" href="#/tab/message">{{messages}}<i class="icon ion-chevron-right icon-accessory"></i></a>
     </div>
     <div class="list messageFoot2">
       <button class="button button-dark" ng-click="showPopup();">Create Message</button>

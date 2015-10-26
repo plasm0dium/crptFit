@@ -141,13 +141,10 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
   var self = this;
   self.search = Social.friendsList();
-  self.showMessages = function(friends){
-    for(var i = 0; i < friends.length; i++){
-      console.log(friends.chats);
-      return friends.chats;
-    }
+  self.showMessages = function(){
+   Message.getMessage();
   };
-  self.messageToPage = self.showMessages(self.search);
+  self.messageToPage = Message.messageList();
   self.searchFriends = function(){
     self.search = Social.friendsList();
   };

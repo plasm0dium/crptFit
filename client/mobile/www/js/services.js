@@ -96,23 +96,23 @@ angular.module('crptFit.services', [])
 //get user message table from db
   return {
     messageList : function(){
-      return currChat;
+      return messages;
     },
     makeChat: function(userId){
-      console.log(userId);
       $http({
         method: 'POST',
         url: '/auth/chat/add'+userId
       })
       .then(function(){});
     },
-    getMessage : function(chatId){
+    getMessage : function(){
       $http({
         method: 'GET',
-        url: '/auth/chat/'
+        url: '/auth/picture'
       }).then(function(response){
-        console.log('recieved message', response);
-        messages.push(response);
+        for(var x = 0; x < response.data.chats.length; x++){
+          messages.push(response.data.chats[x]);
+        }
       }, function(error){
         console.log(error);
       });
