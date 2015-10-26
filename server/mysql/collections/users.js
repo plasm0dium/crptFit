@@ -5,14 +5,18 @@ require('../models/user');
 var Users = db.Collection.extend({
   model: db.model('User')
 }, {
-  searchByUsername: function (searchTerm) {
-    db.collection('Users')
+  searchByUsername: function (searchUser) {
+    // var selectRaw = "SELECT * FROM users WHERE username LIKE '%' " + searchUser + " '%' ";
+    return db.collection('Users')
     .forge()
-    .query('whereRaw', 'MATCH (username) AGAINST(' + searchTerm + ')')
-    .fetch()
+    .query(function(qb){
+      // qb.column('username').select().from('users').where('')
+      qb.select('username', 'id').from('users').where('username', 'like', '%' + searchUser + '%')
+    })
+    .fetch();
   },
   fetchAll: function () {
-    return db.collection('Users').forge().fetch({withRelated: ['tasks']});
+    return db.collection('Users').forge().fetch({withRelated: ['user']});
   }
 });
 
