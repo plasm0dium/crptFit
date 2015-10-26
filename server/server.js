@@ -80,6 +80,38 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   }
 });
 
+// Fetch a Specific User by Id
+app.get('/auth/user/:id', function (req, res) {
+  var userId = req.params.id;
+  db.model('User').fetchById({
+    id: userId
+  })
+  .then(function(result) {
+    res.json(result.toJSON())
+  })
+})
+
+//News Feed Pulls Latest Completed Tasks of Friends
+// app.get('/auth/newsfeed', function (req, res) {
+//   db.collection('Friends').fetchByUser(req.user.attributes.id)
+//   .then(function(friends) {
+//     var friendsArray = friends.models;
+//     for(var i = 0; i < friendsArray.length; i++ ) {
+//       db.model('User').fetchById({
+//         id: friendsArray[i].attributes.friends_id
+//       })
+//       .then(function(result) {
+//         storage.push(result);
+//       })
+//     }})
+//       .then(function() {
+//         console.log('RES>JSON :', storage)
+//         return res.json(storage);
+//       }).then(function () {
+//         storage = [];
+//       })
+//   })
+
 app.get('/auth/picture', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
@@ -416,14 +448,6 @@ app.post('/auth/chat/add:id', function (req, res){
     created_at: new Date()
   })
   .save()
-  .then(function(){
-    db.model('Chat').newChat({
-      user_id: userId2,
-      user2_id: userId1,
-      created_at: new Date()
-    })
-    .save()
-  })
 });
 
 //Adds Messages to chat session

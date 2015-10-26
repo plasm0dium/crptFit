@@ -7,6 +7,7 @@ angular.module('crptFit.controllers', ['ionic'])
   self.pic;
   self.username;
   self.feed = Tasks.tasksList();
+  console.log(self.feed)
   self.friendCount = Social.getFriendsLength();
   self.trainerCount = Social.getTrainersLength();
   self.clientCount = Social.getClientsLength();
