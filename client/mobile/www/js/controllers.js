@@ -138,7 +138,7 @@ angular.module('crptFit.controllers', ['ionic'])
   var self = this;
   self.makeChat = function(userId){
     console.log('clicked')
-    Message.getFriendIds();
+    // Message.getFriendIds();
     self.chat = Message.makeChat(userId);
   }
 }])

@@ -98,6 +98,7 @@ angular.module('crptFit.services', [])
       return messages;
     },
     makeChat: function(userId){
+      console.log(userId);
       $http({
         method: 'POST',
         url: '/auth/chat/add'+userId
