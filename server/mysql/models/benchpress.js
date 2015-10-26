@@ -4,7 +4,7 @@ require('./user');
 
 var Benchpress = db.Model.extend({
   tableName: 'benchpress',
-  hasTimeStamp: true,
+  hasTimestamps: true,
   user: function () {
     return this.belongsTo('User');
   },
