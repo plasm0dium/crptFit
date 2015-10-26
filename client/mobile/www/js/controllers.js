@@ -1,36 +1,44 @@
 angular.module('crptFit.controllers', ['ionic'])
 
 
-.controller('ProfileCtrl', ['Social', '$http', function(Social, $http) {
+.controller('ProfileCtrl', ['Social', '$http','Tasks', function(Social, $http, Tasks) {
 
   var self = this;
   self.pic;
   self.username;
+  self.feed = Tasks.tasksList();
+  self.feed;
+
+  self.friendCount = Social.getFriendsLength();
+  self.trainerCount = Social.getTrainersLength();
+  self.clientCount = Social.getClientsLength();
+  // Helper function for extracting profile info dynamically and setting it in the controller
   var setUserInfo = function(picUrl, username){
      self.pic = picUrl;
      self.username = username;
-  }
+  };
 
+  var setTasks = function(tasks){
+    self.feed = tasks;
+  }
+  // Grab a users tasks - extract into a factory later
+  $http({
+    method: 'GET',
+    url: '/auth/tasks'
+  }).then(function(response){
+    setTasks(response.data);
+    console.log("Tasks returned from server:", response.data);
+  })
+  // Grab a users profile information - extract into a factory later
   $http({
     method: 'GET',
     url: '/auth/picture'
   }).then(function(response){
-    console.log("this is the request object for a user", response.data.profile_pic);
-      var picUrl = response.data.profile_pic;
-      var userName = response.data.username;
-    console.log("this is the request object for a user", response.data.username);
-      setUserInfo(picUrl, userName);
+    var picUrl = response.data.profile_pic;
+    var userName = response.data.username;
+    setUserInfo(picUrl, userName);
   });
   // Add a refreshing function here
-  self.friendCount = Social.getFriendsLength();
-  self.trainerCount = Social.getTrainersLength();
-  self.clientCount = Social.getClientsLength();
-
-  self.feed = [
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'}
-  ];
  }])
 .controller('HomeCtrl', ['Social', function(Social) {
   var self = this;
@@ -149,7 +157,6 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
   var self = this;
   // Add a refreshing function here
-  console.log("LIST OF FRIENDS", self);
   self.list = Social.friendsList();
 
   self.showFriends = function(){

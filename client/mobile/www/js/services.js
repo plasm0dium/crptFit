@@ -1,5 +1,23 @@
 angular.module('crptFit.services', [])
-
+// Start of Tasks Factory ====================================================
+.factory('Tasks', ['$http', function($http){
+  var tasks;
+  var setTasks = function(tasksList){
+    tasks = tasksList;
+  }
+  return {
+    getTasksList: function(){
+      $http({
+        method: 'GET',
+        url: '/auth/tasks'
+      }).then(function(response){
+        setTasks(response.data);
+        console.log("Tasks returned from server:", response.data);
+      })
+      return tasks;
+    }
+  };
+}])
 // Start of Social Factory ====================================================
 .factory('Social', ['$http', function($http){
   // Set up functions for ajax
@@ -21,6 +39,7 @@ angular.module('crptFit.services', [])
       })
       .then(function(response){
         friends = response.data;
+        console.log("FRIENDS :",response.data)
       }, function(error){
         console.log(error);
       });

@@ -16,7 +16,7 @@ require('./speed');
 var User = db.Model.extend({
   //User Properties
   tableName: 'users',
-  hasTimeStamps: true,
+  hasTimestamps: true,
   tasks: function () {
     return this.hasMany('Task');
   },
