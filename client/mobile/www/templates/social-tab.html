@@ -18,7 +18,7 @@
       </div>
       <!-- Start of social list -->
       <div ng-repeat="person in ctrl.list">
-        <a class="item item-avatar" href="#/tab/viewuser">
+        <a class="item item-avatar" href="#/tab/viewuser" ng-click="renderUserProfile({{fbId}})">
           <img src="https://healthhabits.files.wordpress.com/2008/09/body_builder.gif"/>
           <h3>{{person.username}}</h3>
           <p>{{person.update}}</p>
