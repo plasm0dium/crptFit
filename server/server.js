@@ -158,6 +158,27 @@ app.get('/auth/friends', function (req, res) {
       });
   });
 
+// Fetch a User's Clients
+var Cstorage = [];
+app.get('/auth/clients', ensureAuthenticated,function (req, res) {
+  db.collection('Clients').fetchByUser(req.user.attributes.id)
+  .then(function(clients) {
+    var clientsArray = clients.models;
+    for(var i = 0; i < clientsArray.length; i++ ) {
+      db.model('User').fetchById({
+        id: clientsArray[i].attributes.clients_id
+      })
+      .then(function(result) {
+        Cstorage.push(result);
+      })
+    }})
+      .then(function() {
+        console.log('RES>JSON :', Cstorage);
+        return res.json(Cstorage);
+      }).then(function () {
+        Cstorage = [];
+      });
+});
 //Search a Friends Friends
   app.get('/auth/friends/:id', function (req, res) {
     db.collection('Friends').fetchByUser(req.params.id)
@@ -194,14 +215,6 @@ db.collection('Users').searchByUsername('ted')
 });
 
 
-// Fetch a User's Clients
-app.get('/auth/clients', ensureAuthenticated,function (req, res) {
-  db.collection('Clients').fetchByUser(req.user.attributes.id)
-  .then(function(clients) {
-    console.log('THESE ARE USER CLIENTS :', clients);
-    res.json(clients.toJSON());
-  });
-});
 
 //Fetch a User's Trainers
 app.get('/auth/trainers', function (req, res) {
