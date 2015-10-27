@@ -153,7 +153,6 @@ app.get('/auth/friends', function (req, res) {
       })
     }})
       .then(function() {
-        console.log('RES>JSON :', storage);
         return res.json(storage);
       }).then(function () {
         storage = [];
@@ -175,7 +174,6 @@ app.get('/auth/clients', ensureAuthenticated,function (req, res) {
       })
     }})
       .then(function() {
-        console.log('RES>JSON :', Cstorage);
         return res.json(Cstorage);
       }).then(function () {
         Cstorage = [];
@@ -196,7 +194,6 @@ app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
       })
     }})
       .then(function() {
-        console.log('RES>JSON :', Tstorage);
         return res.json(Tstorage);
       }).then(function () {
         Tstorage = [];
@@ -216,7 +213,6 @@ app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
         })
       }})
         .then(function() {
-          console.log('RES>JSON :', storage)
           return res.json(storage);
         }).then(function () {
           storage = [];
@@ -234,11 +230,7 @@ app.get('auth/users/search:username', function (req, res) {
 
 db.collection('Users').searchByUsername('ted')
   .then(function(allFriends) {
-    console.log("THIS IS WHAT I'M LOOKING FOR: ", allFriends.models);
 });
-
-
-
 
 //Add a new Stat
 // app.post('/auth/stat/add', function (req, res) {
