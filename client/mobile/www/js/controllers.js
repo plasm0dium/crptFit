@@ -228,7 +228,7 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.data = {};
   // An elaborate, custom popup
   var myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href="#/tab/message>{{friend.username}}</a></div></div></div>',
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href="#/tab/message">{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [

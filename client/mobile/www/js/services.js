@@ -45,6 +45,7 @@ angular.module('crptFit.services', [])
       }, function(error){
         console.log(error);
       });
+      console.log(friends, 'this is friends')
       return friends;
     },
     getFriendsLength: function(){
