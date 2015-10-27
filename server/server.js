@@ -91,6 +91,40 @@ app.get('/auth/user/:id', function (req, res) {
   })
 })
 
+var filterTasks = function(tasks) {
+  var filtered = [];
+  for(var i = 0; i < tasks.length; i++) {
+    console.log(tasks[i])
+    if(tasks[i].attributes.complete === 1) {
+      filtered.push(tasks[i])
+    }
+  }
+  return filtered
+}
+
+db.collection('Friends').fetchByUser(1)
+.then(function(friends) {
+  var friendsArray = friends.models;
+  for(var i = 0; i < friendsArray.length; i++ ) {
+    db.model('User').fetchById({
+      id: friendsArray[i].attributes.friends_id
+    })
+    .then(function(results) {
+      var result = filterTasks(results.relations.tasks.models)
+      console.log('THIS IS RESULT', result)
+      return result
+    })
+  }})
+  .then(function(result) {
+    storage.push(result);
+  })
+    .then(function() {
+      console.log('line 114 RES JSON :', storage);
+      ;
+    }).then(function () {
+      storage = [];
+    });
+
 //News Feed Pulls Latest Completed Tasks of Friends
 // app.get('/auth/newsfeed', function (req, res) {
 //   db.collection('Friends').fetchByUser(req.user.attributes.id)
@@ -99,6 +133,14 @@ app.get('/auth/user/:id', function (req, res) {
 //     for(var i = 0; i < friendsArray.length; i++ ) {
 //       db.model('User').fetchById({
 //         id: friendsArray[i].attributes.friends_id
+//       })
+//       .then(function(result) {
+//         result.filter(function(item) {
+//           console.log(item.relations.tasks.models)
+//           if(item.relations.tasks.models) {
+//
+//           }
+//         })
 //       })
 //       .then(function(result) {
 //         storage.push(result);
@@ -458,7 +500,7 @@ app.post('/auth/messages/add:id', function (req, res){
   db.model('Message').newMessage({
     user_id: userId,
     chat_id: chatId,
-    text: message,
+    text: body,
     created_at: new Date()
   })
   .save()
