@@ -8,6 +8,7 @@ var port = process.env.PORT || 8100;
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
+require('./mysql/models/trainer');
 require('./mysql/models/task');
 require('./mysql/models/user');
 require('./mysql/models/friend_request');
@@ -22,6 +23,7 @@ require('./mysql/models/speed');
 
 require('./mysql/collections/clients');
 require('./mysql/collections/friends');
+require('./mysql/collections/trainers');
 require('./mysql/collections/tasks');
 require('./mysql/collections/users');
 require('./mysql/collections/friend_requests');
@@ -80,6 +82,38 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   }
 });
 
+// Fetch a Specific User by Id
+app.get('/auth/user/:id', function (req, res) {
+  var userId = req.params.id;
+  db.model('User').fetchById({
+    id: userId
+  })
+  .then(function(result) {
+    res.json(result.toJSON())
+  })
+})
+
+//News Feed Pulls Latest Completed Tasks of Friends
+// app.get('/auth/newsfeed', function (req, res) {
+//   db.collection('Friends').fetchByUser(req.user.attributes.id)
+//   .then(function(friends) {
+//     var friendsArray = friends.models;
+//     for(var i = 0; i < friendsArray.length; i++ ) {
+//       db.model('User').fetchById({
+//         id: friendsArray[i].attributes.friends_id
+//       })
+//       .then(function(result) {
+//         storage.push(result);
+//       })
+//     }})
+//       .then(function() {
+//         console.log('RES>JSON :', storage)
+//         return res.json(storage);
+//       }).then(function () {
+//         storage = [];
+//       })
+//   })
+
 app.get('/auth/picture', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
@@ -119,13 +153,52 @@ app.get('/auth/friends', function (req, res) {
       })
     }})
       .then(function() {
-        console.log('RES>JSON :', storage);
         return res.json(storage);
       }).then(function () {
         storage = [];
       });
   });
 
+// Fetch a User's Clients
+var Cstorage = [];
+app.get('/auth/clients', ensureAuthenticated,function (req, res) {
+  db.collection('Clients').fetchByUser(req.user.attributes.id)
+  .then(function(clients) {
+    var clientsArray = clients.models;
+    for(var i = 0; i < clientsArray.length; i++ ) {
+      db.model('User').fetchById({
+        id: clientsArray[i].attributes.clients_id
+      })
+      .then(function(result) {
+        Cstorage.push(result);
+      })
+    }})
+      .then(function() {
+        return res.json(Cstorage);
+      }).then(function () {
+        Cstorage = [];
+      });
+});
+//Fetch a User's Trainers
+var Tstorage = [];
+app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
+  db.collection('Trainers').fetchByUser(req.user.attributes.id)
+  .then(function(trainers) {
+    var trainersArray = trainers.models;
+    for(var i = 0; i < trainersArray.length; i++ ) {
+      db.model('User').fetchById({
+        id: trainersArray[i].attributes.trainer_id
+      })
+      .then(function(result) {
+        Tstorage.push(result);
+      })
+    }})
+      .then(function() {
+        return res.json(Tstorage);
+      }).then(function () {
+        Tstorage = [];
+      });
+});
 //Search a Friends Friends
   app.get('/auth/friends/:id', function (req, res) {
     db.collection('Friends').fetchByUser(req.params.id)
@@ -140,7 +213,6 @@ app.get('/auth/friends', function (req, res) {
         })
       }})
         .then(function() {
-          console.log('RES>JSON :', storage)
           return res.json(storage);
         }).then(function () {
           storage = [];
@@ -173,10 +245,6 @@ app.get('/auth/trainers', function (req, res) {
     res.json(trainers.toJSON());
   })
 })
-
-//Add a new Stat
-// app.post('/auth/stat/add', function (req, res) {
-// }
 
 // Fetch Chatroom
 app.get('/auth/chat/get:id', function (req, res){
@@ -408,14 +476,6 @@ app.post('/auth/chat/add:id', function (req, res){
     created_at: new Date()
   })
   .save()
-  .then(function(){
-    db.model('Chat').newChat({
-      user_id: userId2,
-      user2_id: userId1,
-      created_at: new Date()
-    })
-    .save()
-  })
 });
 
 //Adds Messages to chat session

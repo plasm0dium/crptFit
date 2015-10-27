@@ -23,14 +23,16 @@ angular.module('crptFit.services', [])
   // Set up functions for ajax
   var friends = [];
   var clients = [];
-  var trainers = [
-    // The data inside of this array will come from a user's trainers table
-    // Right now, it is static information but will be pulled from the database
-    {username: 'Chris Castillo'},
-    {username: 'Paul Keller'}
-  ];
+  var trainers = [];
+  var savedUserID;
 
   return {
+    userViewerSet: function(userID){
+      savedUserID = userID;
+    },
+    getUserID: function(){
+      return savedUserID;
+    },
     friendsList: function(){
       // Grab friends and store it in the friends array above (refactor - DRY)
       $http({
@@ -67,7 +69,7 @@ angular.module('crptFit.services', [])
       })
       .then(function(response){
         clients = response.data;
-        console.log(friends);
+        console.log("CLIENTS :", response.data);
       }, function(error){
         console.log(error);
       });
@@ -86,6 +88,16 @@ angular.module('crptFit.services', [])
     },
     trainersList: function(){
       // This function needs the proper AJAX request
+      $http({
+        method: 'GET',
+        url: '/auth/trainers'
+      })
+      .then(function(response){
+        trainers = response.data;
+        console.log("Trainers :", response.data);
+      }, function(error){
+        console.log(error);
+      });
       return trainers;
     },
     getTrainersLength: function(){

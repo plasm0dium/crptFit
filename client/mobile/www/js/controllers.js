@@ -1,12 +1,45 @@
 angular.module('crptFit.controllers', ['ionic'])
 
+.controller('ViewProfileCtrl', ['$http', 'Social', function($http, Social){
+  var self = this;
+  self.pic;
+  self.username;
+  self.feed;            // PLEASE REFACTOR
+  self.friendCount;
+  self.trainerCount;
+  self.clientCount;
 
-.controller('ProfileCtrl', ['Social', '$http','Tasks', function(Social, $http, Tasks) {
+  var setProfileInfo = function(picUrl, username, friends, trainers, clients, activityFeed){
+    self.pic = picUrl;
+    self.username = username;
+    self.friendCount = friends;
+    self.trainerCount = trainers;
+    self.clientCount = clients;
+    self.feed = activityFeed;
+  }
+
+  $http({
+    method: 'GET',
+    url: '/auth/user/' + Social.getUserID() // This self.savedID variable is passed down from the parent controller 'Social Ctrl'
+  }).then(function(response){
+    console.log("Inside ViewProfileCtrl:", response.data);
+    var pic = response.data.profile_pic;
+    var userName = response.data.username;
+    var friends = response.data.friends.length;
+    var trainers = response.data.trainers.length;
+    var clients = response.data.clients.length;
+    var tasks = response.data.tasks;
+    setProfileInfo(pic, userName, friends, trainers, clients, tasks);
+  })
+}])
+// Start of Profile Controller =======================================================
+.controller('ProfileCtrl', ['Social', '$http', function(Social, $http) {
 
   var self = this;
   self.pic;
   self.username;
   self.feed;
+
   self.friendCount = Social.getFriendsLength();
   self.trainerCount = Social.getTrainersLength();
   self.clientCount = Social.getClientsLength();
@@ -25,7 +58,6 @@ angular.module('crptFit.controllers', ['ionic'])
     url: '/auth/tasks'
   }).then(function(response){
     setTasks(response.data);
-    console.log("Tasks returned from server:", response.data);
   })
   // Grab a users profile information - extract into a factory later
   $http({
@@ -38,6 +70,7 @@ angular.module('crptFit.controllers', ['ionic'])
   });
   // Add a refreshing function here
  }])
+// Start of HomeCtrl Controller =======================================================
 .controller('HomeCtrl', ['Social', function(Social) {
   var self = this;
   // Add a refreshing function here
@@ -52,7 +85,9 @@ angular.module('crptFit.controllers', ['ionic'])
     {username: 'Ricky Walker', update: 'Did 5000 squats!'}
   ];
  }])
+// Start of Menu Controller =======================================================
 .controller('MenuCtrl', [function() { }])
+// Start of Progress Controller =======================================================
 .controller('ProgressCtrl', ['$scope', 'Progress', function($scope, Progress) {
   var self = this;
  }])
@@ -83,6 +118,7 @@ angular.module('crptFit.controllers', ['ionic'])
      loading: false
     };
   }])
+// Start of Progress Speed Controller =======================================================
   .controller('ProgressCtrlSpd', ['$scope', 'Progress', function($scope, Progress) {
     var self = this;
     self.timeSpd = {
@@ -110,6 +146,7 @@ angular.module('crptFit.controllers', ['ionic'])
         loading: false
     };
   }])
+// Start of Progress Weight Controller =======================================================
   .controller('ProgressCtrlWgt', ['$scope', 'Progress', function($scope, Progress) {
     var self = this;
     self.weight = {
@@ -134,6 +171,7 @@ angular.module('crptFit.controllers', ['ionic'])
       loading: false
     };
   }])
+// Start of Progress Task Controller =======================================================
 .controller('ProgressCtrlTask', ['Task', function(Task){
   var self = this;
   self.tasks = Task.taskFunc();
@@ -144,6 +182,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.finish = Task.finishTask(task);
   }
 }])
+// Start of Messages Controller =======================================================
 .controller('MessagesCtrl', ['Message', function(Message) {
   var self = this;
   self.makeChat = function(userId){
@@ -152,10 +191,16 @@ angular.module('crptFit.controllers', ['ionic'])
     self.chat = Message.makeChat(userId);
   }
 }])
+// Start of Social Controller =======================================================
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
   var self = this;
   // Add a refreshing function here
   self.list = Social.friendsList();
+
+  self.saveUserID = function(facebookID){
+    console.log("inside of SaveUserID", facebookID);
+    Social.userViewerSet(facebookID);
+  }
 
   self.showFriends = function(){
     self.list = Social.friendsList();
@@ -169,34 +214,34 @@ angular.module('crptFit.controllers', ['ionic'])
     self.list = Social.trainersList();
   }
 
-  $scope.showPopup = function() {
-  $scope.data = {};
+  $scope.showPopup = function(){
+    $scope.data = {};
 
-  // An elaborate, custom popup
-  var myPopup = $ionicPopup.show({
-    template: '<form><input type="text" ng-model="data.wifi"></form>',
-    title: 'Search for a user',
-    scope: $scope,
-    buttons: [
-      { text: 'Cancel' },
-      {
-        text: '<b>Search</b>',
-        type: 'button-positive',
-        onTap: function(e) {
-          if (!$scope.data.wifi) {
-            //don't allow the user to close unless he enters wifi password
-            e.preventDefault();
-          } else {
-            return $scope.data.wifi;
+    // An elaborate, custom popup
+    var myPopup = $ionicPopup.show({
+      template: '<form><input type="text" ng-model="data.wifi"></form>',
+      title: 'Search for a user',
+      scope: $scope,
+      buttons: [
+        { text: 'Cancel' },
+        {
+          text: '<b>Search</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.data.wifi) {
+              //don't allow the user to close unless he enters wifi password
+              e.preventDefault();
+            } else {
+              return $scope.data.wifi;
+            }
           }
         }
-      }
-    ]
-  });
-  myPopup.then(function(res) {
-    console.log('Tapped!', res);
-    self.list = Social.searchResultsList(res);
-  });
- };
+      ]
+    });
+    myPopup.then(function(res) {
+      console.log('Tapped!', res);
+      self.list = Social.searchResultsList(res);
+    });
+  };
 
 }])
