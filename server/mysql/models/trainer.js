@@ -4,7 +4,7 @@ require('./user');
 
 var Trainer = db.Model.extend({
   tableName: 'trainers',
-  hasTimestamps: true,
+  
   user: function () {
     return this.belongsTo('User');
   },

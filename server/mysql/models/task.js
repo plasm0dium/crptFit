@@ -4,7 +4,6 @@ require('./user');
 
 var Task = db.Model.extend({
   tableName: 'tasks',
-  hasTimestamps: true,
   user: function () {
     return this.belongsTo('User');
   },

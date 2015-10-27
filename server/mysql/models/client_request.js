@@ -4,7 +4,6 @@ require('./user');
 
 var clientRequest = db.Model.extend({
   tableName: 'client_request',
-  hasTimestamps: true,
   user: function () {
     return this.belongsTo('User');
   }
@@ -16,11 +15,8 @@ var clientRequest = db.Model.extend({
     return new this(options)
     .fetch()
     .then(function(result) {
+      console.log('THIS IS IN CLIENT REQUEST', result)
       result.save({status: 1}, {patch: true});
-    })
-    .then(function (update) {
-      console.log(update);
-      return update;
     })
   },
   fetchById: function (id) {

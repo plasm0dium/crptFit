@@ -4,7 +4,6 @@ require('./user');
 
 var Friend = db.Model.extend({
   tableName: 'friends',
-  hasTimestamps: true,
   user: function () {
     return this.belongsTo('User');
   },
