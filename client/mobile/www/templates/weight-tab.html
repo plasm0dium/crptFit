@@ -1,9 +1,9 @@
 <ion-view title="Weight" ng-controller="ProgressCtrlWgt as ctrl">
   <ion-content has-header="true">
     <highchart id="chart1" config="chartConfig"></highchart>
-    <form name="wgtForm" ng-submit="ctrl.checkMe()">
+    <form name="wgtForm" ng-submit="ctrl.checkMe(ctrl.uId)">
     <label class="item item-input weight-body">
-      <input type="number" placeholder="How much do you weigh today?" ng-model="ctrl.weight.val">Kilopascals
+      <input type="number" placeholder="How much do you weigh today?" ng-model="ctrl.weight.weight">Kilopascals
     </label>
     <input type="submit" value="Submit">
   </form>

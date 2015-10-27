@@ -5,7 +5,7 @@ require('../models/squat');
 var Squats = db.Collection.extend({
   model: db.model('Squat')
 }, {
-  fetchByChat: function(userId) {
+  fetchByUser: function(userId) {
     return db.collection('Squats')
     .forge()
     .query(function(qb) {

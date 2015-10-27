@@ -5,6 +5,7 @@ require('../models/task');
 var Tasks = db.Collection.extend({
   model: db.model('Task')
 }, {
+
   fetchByUser: function(userId) {
     return db.collection('Tasks')
     .forge()
