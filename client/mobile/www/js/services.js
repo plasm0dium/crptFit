@@ -219,7 +219,6 @@ angular.module('crptFit.services', [])
       return strength;
     },
     getBnch : function(){
-      console.log(bench)
       return bench;
     },
     getDed : function(){
@@ -235,7 +234,6 @@ angular.module('crptFit.services', [])
       return weight;
     },
     getSelf : function(){
-      console.log(selfUid, 'this is self uid')
       return selfUid;
     },
     //all functions below here need to be tested and found working
@@ -257,10 +255,11 @@ angular.module('crptFit.services', [])
         url: '/auth/squat/'+stat,
       });
     },
-    postSpd : function(stat){
+    postSpd : function(stat1, stat2){
+      var calcStat = ((stat1/stat2)*60);
       $http({
         method: 'POST',
-        url: '/auth/speed/'+stat,
+        url: '/auth/speed/'+calcStat,
       });
     },
     postWgt : function(stat){
@@ -289,9 +288,15 @@ angular.module('crptFit.services', [])
     queryDed : function(uId){
       $http({
         method: 'GET',
-        url: '/auth/deadlift/:'+uId
+        url: '/auth/deadlift/'+uId
       }).then(function(response){
-        dead.push(response.data);
+        if(dead.length === 0){
+          for(var i = 0; i < response.data.length; i++){
+            dead.push(response.data[i].deadlift);
+          }
+        }else{
+          dead.push(response.data[response.data.length-1].deadlift);
+        }
       }, function(error){
         console.log('Something went wrong : ', error);
       });
@@ -299,9 +304,15 @@ angular.module('crptFit.services', [])
     querySqu : function(uId){
       $http({
         method: 'GET',
-        url: '/auth/squats/:'+uId
+        url: '/auth/squats/'+uId
       }).then(function(response){
-        squat.push(response.data);
+        if(squat.length === 0){
+          for(var i = 0; i < response.data.length; i++){
+            squat.push(response.data[i].squat);
+          }
+        }else{
+          squat.push(response.data[response.data.length-1].squat);
+        }
       }, function(error){
         console.log('Something went wrong : ', error);
       });
@@ -309,9 +320,15 @@ angular.module('crptFit.services', [])
     querySpd : function(uId){
       $http({
         method: 'GET',
-        url: '/auth/speeds/:'+uId
+        url: '/auth/speeds/'+uId
       }).then(function(response){
-        speed.push(response.data);
+        if(speed.length === 0){
+          for(var i = 0; i < response.data.length; i++){
+            speed.push(response.data[i].speed);
+          }
+        }else{
+          speed.push(response.data[response.data.length-1].speed);
+        }
       }, function(error){
         console.log('Something went wrong : ', error);
       });
@@ -319,9 +336,15 @@ angular.module('crptFit.services', [])
     queryWgt : function(uId){
       $http({
         method: 'GET',
-        url: '/auth/weight/:'+uId
+        url: '/auth/weight/'+uId
       }).then(function(response){
-        weight.push(response.data);
+        if(weight.length === 0){
+          for(var i = 0; i < response.data.length; i++){
+            weight.push(response.data[i].weight);
+          }
+        }else{
+          weight.push(response.data[response.data.length-1].weight);
+        }
       }, function(error){
         console.log('Something went wrong : ', error);
       });

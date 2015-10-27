@@ -527,7 +527,7 @@ app.post('/auth/squat/:stat', function (req, res) {
 app.post('/auth/deadlift/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currDeadLift = req.params.stat;
-  db.model('Deadlift').newDeadLift({
+  db.model('DeadLift').newDeadLift({
     deadlift: currDeadLift,
     user_id: userId,
     created_at: new Date()

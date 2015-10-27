@@ -138,15 +138,31 @@ angular.module('crptFit.controllers', ['ionic'])
         };
   }])
 // Start of Progress Deadlift Controller ====================================================
-  .controller('ProgressCtrlDead', ['$scope', 'Progress', function($scope, Progress){
+  .controller('ProgressCtrlDead', ['$scope','$http', 'Progress', function($scope, $http, Progress){
     var self = this;
+    self.getUid = function(){
+        $http({
+          method: 'GET',
+          url: '/auth/picture'
+        }).then(function(response){
+          console.log(response.data.id)
+        self.uId = response.data.id;
+        });
+    };
+    self.uId = null;
+    self.getUid();
     self.deadData = {
          weight: null,
          reps: null,
        };
        self.Dead = Progress.getDed();
-       self.checkMe = function(){
+
+       self.checkMe = function(val){
+         console.log('in the checkme', val, 'THIS SHOULD BE 1')
          self.check = Progress.postDed(self.deadData.weight);
+         self.deadData.weight = null;
+         Progress.queryDed(val);
+         self.Dead = Progress.getDed();
        };
        $scope.chartConfig = {
          options: {
@@ -164,15 +180,31 @@ angular.module('crptFit.controllers', ['ionic'])
         };
   }])
 // Start of Progress Squat Controller =======================================================
-.controller('ProgressCtrlSquats', ['$scope', 'Progress', function($scope, Progress){
+.controller('ProgressCtrlSquats', ['$scope', '$http', 'Progress', function($scope, $http, Progress){
   var self = this;
+  self.getUid = function(){
+      $http({
+        method: 'GET',
+        url: '/auth/picture'
+      }).then(function(response){
+        console.log(response.data.id)
+      self.uId = response.data.id;
+      });
+  };
+  self.uId = null;
+  self.getUid();
   self.squatData = {
        weight: null,
        reps: null,
      };
      self.Squat = Progress.getSqu();
-     self.checkMe = function(){
+
+     self.checkMe = function(val){
+       console.log('in the checkme', val, 'THIS SHOULD BE 1')
        self.check = Progress.postSqu(self.squatData.weight);
+       self.squatData.weight = null;
+       Progress.querySqu(val);
+       self.Squat = Progress.getSqu();
      };
      $scope.chartConfig = {
        options: {
@@ -190,7 +222,7 @@ angular.module('crptFit.controllers', ['ionic'])
       };
 }])
 // Start of Progress Speed Controller =======================================================
-  .controller('ProgressCtrlSpd', ['$scope', 'Progress', function($scope, Progress) {
+  .controller('ProgressCtrlSpd', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
     var self = this;
     self.timeSpd = {
       val: null
@@ -198,9 +230,24 @@ angular.module('crptFit.controllers', ['ionic'])
     self.distance={
       val: null
     };
+    self.getUid = function(){
+        $http({
+          method: 'GET',
+          url: '/auth/picture'
+        }).then(function(response){
+          console.log(response.data.id)
+        self.uId = response.data.id;
+        });
+    };
+    self.uId = null;
+    self.getUid();
     self.Speed = Progress.getSpd();
-    self.checkMe = function(){
-      self.check = Progress.postSpd(self.timeSpd.val, self.distance.val);
+    self.checkMe = function(val){
+      self.check = Progress.postSpd(self.distance.val, self.timeSpd.val);
+      self.timeSpd.val = null;
+      self.distance.val = null;
+      Progress.querySpd(val);
+      self.Speed = Progress.getSpd();
     };
     $scope.chartConfig = {
       options: {
@@ -218,15 +265,31 @@ angular.module('crptFit.controllers', ['ionic'])
     };
   }])
 // Start of Progress Weight Controller =======================================================
-  .controller('ProgressCtrlWgt', ['$scope', 'Progress', function($scope, Progress) {
+  .controller('ProgressCtrlWgt', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
     var self = this;
+    self.getUid = function(){
+        $http({
+          method: 'GET',
+          url: '/auth/picture'
+        }).then(function(response){
+          console.log(response.data.id)
+        self.uId = response.data.id;
+        });
+    };
+    self.uId = null;
+    self.getUid();
     self.weight = {
-      val: null
-    };
-    self.Weight = Progress.getWgt();
-    self.checkMe = function(){
-      self.check = Progress.postWgt(self.weight.val);
-    };
+         weight: null,
+       };
+       self.Weight = Progress.getWgt();
+
+       self.checkMe = function(val){
+         console.log('in the checkme', val, 'THIS SHOULD BE 1')
+         self.check = Progress.postWgt(self.weight.weight);
+         self.weight.weight = null;
+         Progress.queryWgt(val);
+         self.Weight = Progress.getWgt();
+       };
     $scope.chartConfig = {
       options: {
         chart: {
