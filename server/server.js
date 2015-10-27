@@ -94,25 +94,26 @@ app.get('/auth/user/:id', function (req, res) {
 })
 
 //News Feed Pulls Latest Completed Tasks of Friends
-// app.get('/auth/newsfeed', function (req, res) {
-//   db.collection('Friends').fetchByUser(req.user.attributes.id)
-//   .then(function(friends) {
-//     var friendsArray = friends.models;
-//     for(var i = 0; i < friendsArray.length; i++ ) {
-//       db.model('User').fetchById({
-//         id: friendsArray[i].attributes.friends_id
-//       })
-//       .then(function(result) {
-//         storage.push(result);
-//       })
-//     }})
-//       .then(function() {
-//         console.log('RES>JSON :', storage)
-//         return res.json(storage);
-//       }).then(function () {
-//         storage = [];
-//       })
-//   })
+app.get('/auth/newsfeed', function (req, res) {
+  db.collection('Friends').fetchByUser(1)
+  .then(function(users) {
+    Promise.all(users.models.map(function(friend) {
+      db.model('User').fetchById({
+        id: friend.attributes.friends_id
+      }).then(function(result) {
+        Promise.all(result.relations.tasks.models.map(function(task) {
+          if(task.attributes.complete === 1) {
+            return task
+          }
+        })).then(function(filteredTasks) {
+          res.json(filteredTasks)
+        }).catch(function(err) {
+          return err
+        })
+      })
+    }))
+  })
+})
 
 app.get('/auth/picture', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
@@ -228,21 +229,13 @@ app.get('auth/users/search:username', function (req, res) {
   })
 });
 
-db.collection('Users').searchByUsername('ted')
-  .then(function(allFriends) {
-});
-
-//Add a new Stat
-// app.post('/auth/stat/add', function (req, res) {
-// }
-
 // Fetch Chatroom
 app.get('/auth/chat/get:id', function (req, res){
   var chatId = req.params.id;
   db.model('Chat').fetchById(chatId)
   .then(function(chat) {
     console.log('THIS IS CHAT ROOM :', chat);
-    res.json(chat.relations.message.models.toJSON());
+    res.json(chat.relations.message.models);
   });
 });
 
@@ -476,7 +469,7 @@ app.post('/auth/messages/add:id', function (req, res){
   db.model('Message').newMessage({
     user_id: userId,
     chat_id: chatId,
-    text: message,
+    text: body,
     created_at: new Date()
   })
   .save()
