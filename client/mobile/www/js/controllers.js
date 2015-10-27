@@ -6,7 +6,6 @@ angular.module('crptFit.controllers', ['ionic'])
   var self = this;
   self.pic;
   self.username;
-  self.feed = Tasks.tasksList();
   self.feed;
 
   self.friendCount = Social.getFriendsLength();
@@ -166,9 +165,11 @@ angular.module('crptFit.controllers', ['ionic'])
   var self = this;
   // Add a refreshing function here
   self.list = Social.friendsList();
+  self.savedID;
+  console.log(self.savedID);
 
-  self.renderUserProfile = function(facebookID){
-
+  self.saveUserID = function(facebookID){
+    self.savedID = facebookID;
   }
 
   self.showFriends = function(){
