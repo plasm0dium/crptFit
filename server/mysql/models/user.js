@@ -17,7 +17,7 @@ require('./chatstore');
 var User = db.Model.extend({
   //User Properties
   tableName: 'users',
-  hasTimestamps: true,
+
   tasks: function () {
     return this.hasMany('Task');
   },

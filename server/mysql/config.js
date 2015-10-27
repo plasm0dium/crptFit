@@ -22,7 +22,6 @@ db.knex.schema.hasTable('users').then(function(exists) {
       t.string('birthday', 20);
       t.string('email', 30);
       t.string('gender', 10);
-      t.timestamps();
       t.text('profile');
     });
   }
@@ -38,7 +37,8 @@ db.knex.schema.hasTable('tasks').then(function(exists) {
       t.string('description', 100);
       t.boolean('complete');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -50,7 +50,7 @@ db.knex.schema.hasTable('clients').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('clients', function(t) {
       t.increments('id').primary();
-      t.integer('clients_id');
+      t.integer('client_id');
       t.integer('user_id').references('id').inTable('users');
     });
   }
@@ -72,6 +72,82 @@ db.knex.schema.hasTable('trainers').then(function(exists) {
   console.log('created table:', t);
 });
 
+db.knex.schema.hasTable('friends').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('friends', function(t) {
+      t.string('status', 50);
+      t.integer('friends_id').references('id').inTable('users');
+      t.integer('user_id').references('id').inTable('users');
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('chats').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('chats', function(t) {
+      t.increments('id').primary();
+      t.integer('user_id').references('id').inTable('users');
+      t.integer('user2_id').references('id').inTable('users');
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('messages').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('messages', function(t) {
+      t.increments('id').primary();
+      t.integer('chat_id').references('id').inTable('chats');
+      t.integer('user_id').references('id').inTable('user');
+      t.string('text', 200);
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('friend_request').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('friend_request', function(t) {
+      t.increments('id').primary();
+      t.integer('friend_id');
+      t.integer('user_id');
+      t.integer('status', 10);
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('client_request').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('client_request', function(t) {
+      t.increments('id').primary();
+      t.integer('client_id');
+      t.integer('user_id');
+      t.integer('status', 10);
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
 db.knex.schema.hasTable('weights').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('weights', function(t) {
@@ -86,12 +162,39 @@ db.knex.schema.hasTable('weights').then(function(exists) {
   console.log('created table:', t);
 });
 
+db.knex.schema.hasTable('chat').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('chat', function(t) {
+      t.increments('id').primary();
+      t.integer('user_id').references('id').inTable('users');
+      t.integer('user2_id').references('id').inTable('users');
+      t.timestamps();
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('chats').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('chat', function(t) {
+      t.integer('chat_id').references('id').inTable('chat');
+      t.integer('user_id').references('id').inTable('users');
+      t.integer('user2_id').references('id').inTable('users');
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+
 db.knex.schema.hasTable('benchpress').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('benchpress', function(t) {
       t.increments('id').primary();
       t.integer('benchpress').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
       t.timestamps();
     });
   }
@@ -134,93 +237,6 @@ db.knex.schema.hasTable('speeds').then(function(exists) {
       t.increments('id').primary();
       t.integer('speed').references('id').inTable('users');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
-    });
-  }
-})
-.then(function(t) {
-  console.log('created table:', t);
-});
-
-db.knex.schema.hasTable('friends').then(function(exists) {
-  if (!exists) {
-    return db.knex.schema.createTable('friends', function(t) {
-      t.string('status', 50);
-      t.integer('friends_id').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
-    });
-  }
-})
-.then(function(t) {
-  console.log('created table:', t);
-});
-
-db.knex.schema.hasTable('chat').then(function(exists) {
-  if (!exists) {
-    return db.knex.schema.createTable('chat', function(t) {
-      t.increments('id').primary();
-      t.integer('user_id').references('id').inTable('users');
-      t.integer('user2_id').references('id').inTable('users');
-      t.timestamps();
-    });
-  }
-})
-.then(function(t) {
-  console.log('created table:', t);
-});
-
-db.knex.schema.hasTable('chats').then(function(exists) {
-  if (!exists) {
-    return db.knex.schema.createTable('chats', function(t) {
-      t.increments('id').primary();
-      t.integer('chat_id').references('id').inTable('chat');
-      t.integer('user_id').references('id').inTable('users');
-      t.integer('user2_id').references('id').inTable('users');
-      t.timestamps();
-    });
-  }
-})
-.then(function(t) {
-  console.log('created table:', t);
-});
-
-db.knex.schema.hasTable('messages').then(function(exists) {
-  if (!exists) {
-    return db.knex.schema.createTable('messages', function(t) {
-      t.increments('id').primary();
-      t.integer('chat_id').references('id').inTable('chats');
-      t.integer('user_id').references('id').inTable('user');
-      t.string('text', 200);
-      t.timestamps();
-    });
-  }
-})
-.then(function(t) {
-  console.log('created table:', t);
-});
-
-db.knex.schema.hasTable('friend_request').then(function(exists) {
-  if (!exists) {
-    return db.knex.schema.createTable('friend_request', function(t) {
-      t.increments('id').primary();
-      t.integer('friend_id');
-      t.integer('user_id');
-      t.integer('status', 10);
-      t.timestamps();
-    });
-  }
-})
-.then(function(t) {
-  console.log('created table:', t);
-});
-
-db.knex.schema.hasTable('client_request').then(function(exists) {
-  if (!exists) {
-    return db.knex.schema.createTable('client_request', function(t) {
-      t.increments('id').primary();
-      t.integer('client_id');
-      t.integer('user_id');
-      t.integer('status', 10);
       t.timestamps();
     });
   }
