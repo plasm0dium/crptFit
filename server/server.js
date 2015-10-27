@@ -249,8 +249,8 @@ app.get('/auth/chat/get:id', function (req, res){
   var chatId = req.params.id;
   db.model('Chat').fetchById(chatId)
   .then(function(chat) {
-    console.log('THIS IS CHAT ROOM :', chat);
-    res.json(chat.relations.message.models.toJSON());
+    console.log('THIS IS CHAT ROOM 2:', chat);
+    res.json(chat.relations.message.models);
   });
 });
 

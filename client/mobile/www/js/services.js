@@ -119,6 +119,7 @@ angular.module('crptFit.services', [])
   var messages = [];
 //get user message table from db
   var capChat;
+  var capMessage = {};
   return {
     messageList : function(){
       return messages;
@@ -126,6 +127,10 @@ angular.module('crptFit.services', [])
     capturedChatID: function(){
       console.log(capChat);
       return capChat;
+    },
+    captureMessages: function(){
+      console.log(capMessage, 'made it to cap mess');
+      return capMessage;
     },
     makeChat: function(userId){
       $http({
@@ -152,7 +157,10 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/chat/get' + chatId
       }).then(function(response){
-        console.log('made it here in getroom');
+        console.log('made it here in getroom', response.data);
+        for(var i = 0; i < response.data.length; i++){
+          capMessage[response.data[i]] = response.data[i].text;
+        }
       });
     },
     sendMessage: function(id, val){
@@ -162,10 +170,10 @@ angular.module('crptFit.services', [])
         url: '/auth/messages/add' + id,
         data: {message: val}
       }).then(function(data){
-        console.log(data)
+        console.log(data);
       }, function(error){
-        console.log(error)
-      })
+        console.log(error);
+      });
     },
     // getMessageContent: function(chatId){
     //   console.log('made it here in get message ocntent')

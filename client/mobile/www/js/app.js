@@ -96,7 +96,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'messages-tab': {
           templateUrl: 'templates/messages-tab.html',
-          controller: 'MessagesCtrl'
         }
       }
     })
@@ -105,7 +104,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'messages-tab': {
           templateUrl: 'templates/messages-send-tab.html',
-          controller: 'MessagesCtrl'
         }
       }
     })

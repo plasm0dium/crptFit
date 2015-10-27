@@ -169,6 +169,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   self.capture = Message.capturedChatID();
+  self.captureMessages = Message.captureMessages();
 
   self.makeChat = function(userId){
     console.log('clicked');
@@ -217,6 +218,7 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.showFriends = function(){
     self.list = Social.friendsList();
+    console.log(self.list);
   };
 
   self.showClients = function(){
