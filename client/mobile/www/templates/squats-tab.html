@@ -1,0 +1,13 @@
+<ion-view title="Squats" ng-controller="ProgressCtrlSquats as ctrl">
+  <ion-content has-header="true">
+    <highchart id="chart1" config="chartConfig"></highchart>
+    <div class="list list-inset">
+      <form name="squForm" ng-submit="ctrl.checkMe(ctrl.uId)">
+      <label class="item item-input squat-weight">
+        <input type="number" placeholder="How much did you squat?" ng-model="ctrl.squatData.weight">Lbs.
+      </label>
+      <input type="submit" value="Submit">
+    </form>
+    </div>
+  </ion-content>
+</ion-view>

@@ -40,10 +40,12 @@ angular.module('crptFit.services', [])
         url: '/auth/friends'
       })
       .then(function(response){
+        console.log(response.data)
         friends = response.data;
       }, function(error){
         console.log(error);
       });
+      console.log(friends, 'this is friends')
       return friends;
     },
     getFriendsLength: function(){
@@ -123,9 +125,20 @@ angular.module('crptFit.services', [])
 .factory('Message', ['$http', function($http){
   var messages = [];
 //get user message table from db
+  var capChat;
+  var capMessage = {};
   return {
     messageList : function(){
       return messages;
+    },
+    clearCap: function(){
+      capMessage = {};
+    },
+    capturedChatID: function(){
+      return capChat;
+    },
+    captureMessages: function(){
+      return capMessage;
     },
     makeChat: function(userId){
       $http({
@@ -137,45 +150,57 @@ angular.module('crptFit.services', [])
     getMessage : function(){
       $http({
         method: 'GET',
-        url: '/auth/chat/'
+        url: '/auth/picture'
       }).then(function(response){
-        console.log('recieved message', response);
-        messages.push(response);
+        console.log(response, 'response data')
+        for(var x = 0; x < response.data.chats.length; x++){
+          messages.push(response.data.chats[x]);
+        }
       }, function(error){
         console.log(error);
       });
     },
-    sendMessage : function(val){
+    getRoom: function(chatId){
+      capChat = chatId;
+      $http({
+        method: 'GET',
+        url: '/auth/chat/get' + chatId
+      }).then(function(response){
+        for(var i = 0; i < response.data.length; i++){
+          capMessage[response.data[i].id] = response.data[i].text;
+        }
+      });
+    },
+    sendMessage: function(id, val){
       console.log(val);
       $http({
         method: 'POST',
-        url: '/auth/chat',
-        data: val
+        url: '/auth/messages/add' + id,
+        data: {message: val}
+      }).then(function(data){
+        console.log(data);
+      }, function(error){
+        console.log(error);
       });
-    }
+    },
+    // getMessageContent: function(chatId){
+    //   console.log('made it here in get message ocntent')
+    //   $http({
+    //     method: 'GET',
+    //     url: '/auth/messages/get'+ chatId
+    //   }).then(function(response){
+    //     console.log(response.data, 'in the data content resp');
+    //   });
+    // }
   };
 }])
 .factory('Progress', ['$http', function($http){
-  var strength = [
-    //the data in this array will come from a users stats table
-     10,
-     20,
-     30,
-     50,
-     75
-  ];
-  var weight = [
-    //the data in this array will come from a users stats table
-     745,
-     600,
-     300,
-     200,
-     190
-  ];
-  var speed = [
-    //the data in this array will come from a users stats table and be modified before entry
-    14,19,2,40,3,90
-  ];
+  var strength = [];
+  var weight = [];
+  var speed = [];
+  var bench = [];
+  var dead = [];
+  var squat = [];
   //all functions need integration with db
   return {
     // checkMeStr : function(strong){
@@ -193,74 +218,133 @@ angular.module('crptFit.services', [])
     getStr : function(){
       return strength;
     },
+    getBnch : function(){
+      return bench;
+    },
+    getDed : function(){
+      return dead;
+    },
+    getSqu : function(){
+      return squat;
+    },
     getSpd : function(){
       return speed;
     },
     getWgt : function(){
       return weight;
     },
+    getSelf : function(){
+      return selfUid;
+    },
     //all functions below here need to be tested and found working
-    postStr : function(val){
+    postBnch: function(stat){
       $http({
         method: 'POST',
-        url: '/auth/stats',
-        data: val
-      }).then(function(data){
-        console.log(data);
-        queryStr();
+        url: '/auth/bench/'+stat
       });
     },
-    postSpd : function(val){
-      //this function needs the proper AJAX request
+    postDed: function(stat){
       $http({
         method: 'POST',
-        url: '/auth/stats',
-        data: val
-      }).then(function(data){
-        console.log(data);
-        querySpd();
+        url: '/auth/deadlift/'+stat,
       });
     },
-    postWgt : function(val){
-      //this function needs the proper AJAX request
+    postSqu: function(stat){
       $http({
         method: 'POST',
-        url: '/auth/stats',
-        data: val
-      }).then(function(data){
-        console.log(data);
-        queryWgt();
+        url: '/auth/squat/'+stat,
       });
     },
-    queryStr : function(){
+    postSpd : function(stat1, stat2){
+      var calcStat = ((stat1/stat2)*60);
+      $http({
+        method: 'POST',
+        url: '/auth/speed/'+calcStat,
+      });
+    },
+    postWgt : function(stat){
+      $http({
+        method: 'POST',
+        url: '/auth/weight/'+stat,
+      });
+    },
+    queryBnch : function(val){
       $http({
         method: 'GET',
-        url: '/auth/stats'
+        url: '/auth/benchpress/'+val
       }).then(function(response){
-        stat = response.data;
-        strength.push(stat);
+        console.log(response.data, 'this is the bench db query');
+        if(bench.length === 0){
+          for(var i = 0; i < response.data.length; i++){
+            bench.push(response.data[i].benchpress);
+          }
+        }else{
+          bench.push(response.data[response.data.length-1].benchpress);
+        }
       }, function(error){
         console.log('Something went wrong : ', error);
       });
     },
-    querySpd : function(){
+    queryDed : function(uId){
       $http({
         method: 'GET',
-        url: '/auth/stats'
+        url: '/auth/deadlift/'+uId
       }).then(function(response){
-        stat = response.data;
-        speed.push(stat);
+        if(dead.length === 0){
+          for(var i = 0; i < response.data.length; i++){
+            dead.push(response.data[i].deadlift);
+          }
+        }else{
+          dead.push(response.data[response.data.length-1].deadlift);
+        }
       }, function(error){
         console.log('Something went wrong : ', error);
       });
     },
-    queryWgt : function(){
+    querySqu : function(uId){
       $http({
         method: 'GET',
-        url: '/auth/stats'
+        url: '/auth/squats/'+uId
       }).then(function(response){
-        stat = response.data;
-        weight.push(stat);
+        if(squat.length === 0){
+          for(var i = 0; i < response.data.length; i++){
+            squat.push(response.data[i].squat);
+          }
+        }else{
+          squat.push(response.data[response.data.length-1].squat);
+        }
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
+    },
+    querySpd : function(uId){
+      $http({
+        method: 'GET',
+        url: '/auth/speeds/'+uId
+      }).then(function(response){
+        if(speed.length === 0){
+          for(var i = 0; i < response.data.length; i++){
+            speed.push(response.data[i].speed);
+          }
+        }else{
+          speed.push(response.data[response.data.length-1].speed);
+        }
+      }, function(error){
+        console.log('Something went wrong : ', error);
+      });
+    },
+    queryWgt : function(uId){
+      $http({
+        method: 'GET',
+        url: '/auth/weight/'+uId
+      }).then(function(response){
+        if(weight.length === 0){
+          for(var i = 0; i < response.data.length; i++){
+            weight.push(response.data[i].weight);
+          }
+        }else{
+          weight.push(response.data[response.data.length-1].weight);
+        }
       }, function(error){
         console.log('Something went wrong : ', error);
       });
