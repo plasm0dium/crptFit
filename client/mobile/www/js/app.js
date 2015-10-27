@@ -88,7 +88,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'homepage-tab': {
           templateUrl: 'templates/homepage-tab.html',
-          controller: 'HomeCtrl'
         }
       }
     })
@@ -115,7 +114,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'social-tab': {
           templateUrl: 'templates/social-tab.html',
-          controller: 'SocialCtrl'
         }
       }
     })

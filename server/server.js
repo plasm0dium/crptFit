@@ -8,6 +8,7 @@ var port = process.env.PORT || 8100;
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
+require('./mysql/models/trainer');
 require('./mysql/models/task');
 require('./mysql/models/user');
 require('./mysql/models/friend_request');
@@ -22,6 +23,7 @@ require('./mysql/models/speed');
 
 require('./mysql/collections/clients');
 require('./mysql/collections/friends');
+require('./mysql/collections/trainers');
 require('./mysql/collections/tasks');
 require('./mysql/collections/users');
 require('./mysql/collections/friend_requests');
@@ -158,6 +160,48 @@ app.get('/auth/friends', function (req, res) {
       });
   });
 
+// Fetch a User's Clients
+var Cstorage = [];
+app.get('/auth/clients', ensureAuthenticated,function (req, res) {
+  db.collection('Clients').fetchByUser(req.user.attributes.id)
+  .then(function(clients) {
+    var clientsArray = clients.models;
+    for(var i = 0; i < clientsArray.length; i++ ) {
+      db.model('User').fetchById({
+        id: clientsArray[i].attributes.clients_id
+      })
+      .then(function(result) {
+        Cstorage.push(result);
+      })
+    }})
+      .then(function() {
+        console.log('RES>JSON :', Cstorage);
+        return res.json(Cstorage);
+      }).then(function () {
+        Cstorage = [];
+      });
+});
+//Fetch a User's Trainers
+var Tstorage = [];
+app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
+  db.collection('Trainers').fetchByUser(req.user.attributes.id)
+  .then(function(trainers) {
+    var trainersArray = trainers.models;
+    for(var i = 0; i < trainersArray.length; i++ ) {
+      db.model('User').fetchById({
+        id: trainersArray[i].attributes.trainer_id
+      })
+      .then(function(result) {
+        Tstorage.push(result);
+      })
+    }})
+      .then(function() {
+        console.log('RES>JSON :', Tstorage);
+        return res.json(Tstorage);
+      }).then(function () {
+        Tstorage = [];
+      });
+});
 //Search a Friends Friends
   app.get('/auth/friends/:id', function (req, res) {
     db.collection('Friends').fetchByUser(req.params.id)
@@ -194,23 +238,7 @@ db.collection('Users').searchByUsername('ted')
 });
 
 
-// Fetch a User's Clients
-app.get('/auth/clients', ensureAuthenticated,function (req, res) {
-  db.collection('Clients').fetchByUser(req.user.attributes.id)
-  .then(function(clients) {
-    console.log('THESE ARE USER CLIENTS :', clients);
-    res.json(clients.toJSON());
-  });
-});
 
-//Fetch a User's Trainers
-app.get('/auth/trainers', function (req, res) {
-  db.collection('Trainers').fetchByUser(req.user.attributes.id)
-  .then(function(trainers) {
-    console.log('GET: THESE ARE USER TRAINERS :', trainers);
-    res.json(trainers.toJSON());
-  })
-})
 
 //Add a new Stat
 // app.post('/auth/stat/add', function (req, res) {
