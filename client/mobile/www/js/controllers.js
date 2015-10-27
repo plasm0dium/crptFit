@@ -91,33 +91,104 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('ProgressCtrl', ['$scope', 'Progress', function($scope, Progress) {
   var self = this;
  }])
- .controller('ProgressCtrlStr', ['$scope', 'Progress', function($scope, Progress) {
-   var self = this;
-   self.strong = {
-     val: null
-   };
-   self.Strength = Progress.getStr();
-   self.checkMe = function(){
-     self.check = Progress.postStr(self.strong.val);
-   };
-   $scope.chartConfig = {
-     options: {
-       chart: {
-         type: 'spline'
-       }
-     },
-     series: [{
-       data: self.Strength
-     }],
-     xAxis: {
-       tickInterval: 5
-     },
-     title: {
-       text: ''
-     },
-     loading: false
-    };
+  .controller('ProgressCtrlStr', ['$scope', 'Progress', function($scope, Progress) {
+    var self = this;
   }])
+// Start of Progress Benchpress Controller ==================================================
+  .controller('ProgressCtrlBench', ['$scope', '$http', 'Progress', 'Social', function($scope, $http, Progress, Social){
+    var self = this;
+
+    self.getUid = function(){
+        $http({
+          method: 'GET',
+          url: '/auth/picture'
+        }).then(function(response){
+          console.log(response.data.id)
+        self.uId = response.data.id;
+        });
+    };
+    self.uId = null;
+    self.getUid();
+    self.benchData = {
+         weight: null,
+         reps: null,
+       };
+       self.Bench = Progress.getBnch();
+
+       self.checkMe = function(val){
+         console.log('in the checkme', val, 'THIS SHOULD BE 1')
+         self.check = Progress.postBnch(self.benchData.weight);
+         self.benchData.weight = null;
+         Progress.queryBnch(val);
+         self.Bench = Progress.getBnch();
+       };
+       $scope.chartConfig = {
+         options: {
+           chart: {
+             type: 'spline'
+           }
+         },
+         series: [{
+           data: self.Bench
+         }],
+         title: {
+           text: 'Benchpress'
+         },
+         loading: false
+        };
+  }])
+// Start of Progress Deadlift Controller ====================================================
+  .controller('ProgressCtrlDead', ['$scope', 'Progress', function($scope, Progress){
+    var self = this;
+    self.deadData = {
+         weight: null,
+         reps: null,
+       };
+       self.Dead = Progress.getDed();
+       self.checkMe = function(){
+         self.check = Progress.postDed(self.deadData.weight);
+       };
+       $scope.chartConfig = {
+         options: {
+           chart: {
+             type: 'spline'
+           }
+         },
+         series: [{
+           data: self.Dead
+         }],
+         title: {
+           text: 'Deadlift'
+         },
+         loading: false
+        };
+  }])
+// Start of Progress Squat Controller =======================================================
+.controller('ProgressCtrlSquats', ['$scope', 'Progress', function($scope, Progress){
+  var self = this;
+  self.squatData = {
+       weight: null,
+       reps: null,
+     };
+     self.Squat = Progress.getSqu();
+     self.checkMe = function(){
+       self.check = Progress.postSqu(self.squatData.weight);
+     };
+     $scope.chartConfig = {
+       options: {
+         chart: {
+           type: 'spline'
+         }
+       },
+       series: [{
+         data: self.Squat
+       }],
+       title: {
+         text: 'Squats'
+       },
+       loading: false
+      };
+}])
 // Start of Progress Speed Controller =======================================================
   .controller('ProgressCtrlSpd', ['$scope', 'Progress', function($scope, Progress) {
     var self = this;

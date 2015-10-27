@@ -258,6 +258,7 @@ app.get('/auth/weight/:id', function (req, res){
 });
 
 app.get('/auth/benchpress/:id', function (req, res){
+  console.log('YOU ARE IN THE GET', req.params.id);
   var userId = req.params.id;
   db.collection('BenchPress').fetchByUser(userId)
   .then(function(user){
@@ -499,10 +500,11 @@ app.post('/auth/weight/:stat', function (req, res) {
 
 //Add Current Bench Press
 app.post('/auth/bench/:stat', function (req, res) {
+  console.log('MADE IT HERE IN BENCH', req.user)
   var userId = req.user.attributes.id;
   var currBench = req.params.stat;
-  db.model('benchpress').newBenchPress({
-    weight: currBench,
+  db.model('Benchpress').newBenchPress({
+    benchpress: currBench,
     user_id: userId,
     created_at: new Date()
   })
@@ -514,7 +516,7 @@ app.post('/auth/squat/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSquat = req.params.stat;
   db.model('Squat').newSquat({
-    weight: currSquat,
+    squat: currSquat,
     user_id: userId,
     created_at: new Date()
   })
@@ -526,7 +528,7 @@ app.post('/auth/deadlift/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currDeadLift = req.params.stat;
   db.model('Deadlift').newDeadLift({
-    weight: currDeadLift,
+    deadlift: currDeadLift,
     user_id: userId,
     created_at: new Date()
   })
@@ -538,7 +540,7 @@ app.post('/auth/speed/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSpeed = req.params.stat;
   db.model('Speed').newSpeed({
-    weight: currSpeed,
+    speed: currSpeed,
     user_id: userId,
     created_at: new Date()
   })

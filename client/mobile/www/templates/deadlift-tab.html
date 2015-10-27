@@ -1,0 +1,13 @@
+<ion-view title="Deadlift" ng-controller="ProgressCtrlDead as ctrl">
+  <ion-content has-header="true">
+    <highchart id="chart1" config="chartConfig"></highchart>
+    <div class="list list-inset">
+      <form name="dedForm" ng-submit="ctrl.checkMe()">
+      <label class="item item-input dead-weight">
+        <input type="number" placeholder="How much did you deadlift?" ng-model="ctrl.deadData.weight">Lbs.
+      </label>
+      <input type="submit" value="Submit">
+    </form>
+    </div>
+  </ion-content>
+</ion-view>
