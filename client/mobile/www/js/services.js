@@ -111,9 +111,13 @@ angular.module('crptFit.services', [])
       trainers.push(trainer);
     },
     searchResultsList: function(username){
+      console.log(typeof username);
       $http({
         method: 'GET',
-        url: 'auth/users/search' + username
+        url: 'auth/users/' + username
+      })
+      .then(function(response){
+        return response.data;
       });
     }
   };

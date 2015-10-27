@@ -221,11 +221,11 @@ app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
     });
 
 //Search All Users to Add as Friend
-app.get('auth/users/search:username', function (req, res) {
+app.get('auth/users/:username', function (req, res) {
   var Username = req.params.username;
   db.collection('Users').searchByUsername(Username)
   .then(function(friend) {
-    res.json(friend.toJSON());
+    res.json(friend.models.toJSON);
   })
 });
 

@@ -8,6 +8,14 @@ angular.module('crptFit.controllers', ['ionic'])
   self.friendCount;
   self.trainerCount;
   self.clientCount;
+  self.userID = Social.getUserID();
+
+  self.sendFriendRequest = function(){
+    $http({
+      method: 'POST',
+      url: '/auth/friendreq/add:' + self.userID;
+    })
+  };
 
   var setProfileInfo = function(picUrl, username, friends, trainers, clients, activityFeed){
     self.pic = picUrl;
@@ -57,6 +65,7 @@ angular.module('crptFit.controllers', ['ionic'])
     method: 'GET',
     url: '/auth/tasks'
   }).then(function(response){
+    console.log("inside of the ProfileCtrl call:", response);
     setTasks(response.data);
   })
   // Grab a users profile information - extract into a factory later
