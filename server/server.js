@@ -259,6 +259,7 @@ app.get('/auth/weight/:id', function (req, res){
 });
 
 app.get('/auth/benchpress/:id', function (req, res){
+  console.log('YOU ARE IN THE GET', req.params.id);
   var userId = req.params.id;
   db.collection('BenchPress').fetchByUser(userId)
   .then(function(user){
@@ -471,12 +472,13 @@ app.post('/auth/chat/add:id', function (req, res){
   })
   .save()
 });
-
 //Adds Messages to chat session
 app.post('/auth/messages/add:id', function (req, res){
+  console.log('REQ>BODY', req.body, 'REQ>CHATID', req.params.id)
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
   var body = req.body.message;
+  console.log(chatId, 'this is chatID', userId, 'this is user id', body, 'this is body')
   db.model('Message').newMessage({
     user_id: userId,
     chat_id: chatId,
@@ -500,6 +502,7 @@ app.post('/auth/weight/:stat', function (req, res) {
 
 //Add Current Bench Press
 app.post('/auth/bench/:stat', function (req, res) {
+  console.log('MADE IT HERE IN BENCH', req.user)
   var userId = req.user.attributes.id;
   var currBench = req.params.stat;
   db.model('Benchpress').newBenchPress({
@@ -515,7 +518,7 @@ app.post('/auth/squat/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSquat = req.params.stat;
   db.model('Squat').newSquat({
-    weight: currSquat,
+    squat: currSquat,
     user_id: userId,
     created_at: new Date()
   })
@@ -526,8 +529,8 @@ app.post('/auth/squat/:stat', function (req, res) {
 app.post('/auth/deadlift/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currDeadLift = req.params.stat;
-  db.model('Deadlift').newDeadLift({
-    weight: currDeadLift,
+  db.model('DeadLift').newDeadLift({
+    deadlift: currDeadLift,
     user_id: userId,
     created_at: new Date()
   })
@@ -539,7 +542,7 @@ app.post('/auth/speed/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSpeed = req.params.stat;
   db.model('Speed').newSpeed({
-    weight: currSpeed,
+    speed: currSpeed,
     user_id: userId,
     created_at: new Date()
   })

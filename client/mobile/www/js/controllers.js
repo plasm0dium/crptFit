@@ -91,35 +91,140 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('ProgressCtrl', ['$scope', 'Progress', function($scope, Progress) {
   var self = this;
  }])
- .controller('ProgressCtrlStr', ['$scope', 'Progress', function($scope, Progress) {
-   var self = this;
-   self.strong = {
-     val: null
-   };
-   self.Strength = Progress.getStr();
-   self.checkMe = function(){
-     self.check = Progress.postStr(self.strong.val);
-   };
-   $scope.chartConfig = {
-     options: {
-       chart: {
-         type: 'spline'
-       }
-     },
-     series: [{
-       data: self.Strength
-     }],
-     xAxis: {
-       tickInterval: 5
-     },
-     title: {
-       text: ''
-     },
-     loading: false
-    };
+  .controller('ProgressCtrlStr', ['$scope', 'Progress', function($scope, Progress) {
+    var self = this;
   }])
+// Start of Progress Benchpress Controller ==================================================
+  .controller('ProgressCtrlBench', ['$scope', '$http', 'Progress', 'Social', function($scope, $http, Progress, Social){
+    var self = this;
+    self.getUid = function(){
+        $http({
+          method: 'GET',
+          url: '/auth/picture'
+        }).then(function(response){
+          console.log(response.data.id)
+        self.uId = response.data.id;
+        self.checkMe(self.uId);
+        });
+    };
+    self.uId = null;
+    self.getUid();
+    self.benchData = {
+         weight: null,
+         reps: null,
+       };
+       self.Bench = Progress.getBnch();
+
+       self.checkMe = function(val){
+         console.log('in the checkme', val, 'THIS SHOULD BE 1')
+         self.check = Progress.postBnch(self.benchData.weight);
+         self.benchData.weight = null;
+         Progress.queryBnch(val);
+         self.Bench = Progress.getBnch();
+       };
+       $scope.chartConfig = {
+         options: {
+           chart: {
+             type: 'spline'
+           }
+         },
+         series: [{
+           data: self.Bench
+         }],
+         title: {
+           text: 'Benchpress'
+         },
+         loading: false
+        };
+  }])
+// Start of Progress Deadlift Controller ====================================================
+  .controller('ProgressCtrlDead', ['$scope','$http', 'Progress', function($scope, $http, Progress){
+    var self = this;
+    self.getUid = function(){
+        $http({
+          method: 'GET',
+          url: '/auth/picture'
+        }).then(function(response){
+          console.log(response.data.id)
+        self.uId = response.data.id;
+        self.checkMe(self.uId);
+        });
+    };
+    self.uId = null;
+    self.getUid();
+    self.deadData = {
+         weight: null,
+         reps: null,
+       };
+       self.Dead = Progress.getDed();
+
+       self.checkMe = function(val){
+         console.log('in the checkme', val, 'THIS SHOULD BE 1')
+         self.check = Progress.postDed(self.deadData.weight);
+         self.deadData.weight = null;
+         Progress.queryDed(val);
+         self.Dead = Progress.getDed();
+       };
+       $scope.chartConfig = {
+         options: {
+           chart: {
+             type: 'spline'
+           }
+         },
+         series: [{
+           data: self.Dead
+         }],
+         title: {
+           text: 'Deadlift'
+         },
+         loading: false
+        };
+  }])
+// Start of Progress Squat Controller =======================================================
+.controller('ProgressCtrlSquats', ['$scope', '$http', 'Progress', function($scope, $http, Progress){
+  var self = this;
+  self.getUid = function(){
+      $http({
+        method: 'GET',
+        url: '/auth/picture'
+      }).then(function(response){
+        console.log(response.data.id)
+      self.uId = response.data.id;
+      self.checkMe(self.uId);
+      });
+  };
+  self.uId = null;
+  self.getUid();
+  self.squatData = {
+       weight: null,
+       reps: null,
+     };
+     self.Squat = Progress.getSqu();
+
+     self.checkMe = function(val){
+       console.log('in the checkme', val, 'THIS SHOULD BE 1')
+       self.check = Progress.postSqu(self.squatData.weight);
+       self.squatData.weight = null;
+       Progress.querySqu(val);
+       self.Squat = Progress.getSqu();
+     };
+     $scope.chartConfig = {
+       options: {
+         chart: {
+           type: 'spline'
+         }
+       },
+       series: [{
+         data: self.Squat
+       }],
+       title: {
+         text: 'Squats'
+       },
+       loading: false
+      };
+}])
 // Start of Progress Speed Controller =======================================================
-  .controller('ProgressCtrlSpd', ['$scope', 'Progress', function($scope, Progress) {
+  .controller('ProgressCtrlSpd', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
     var self = this;
     self.timeSpd = {
       val: null
@@ -127,9 +232,25 @@ angular.module('crptFit.controllers', ['ionic'])
     self.distance={
       val: null
     };
+    self.getUid = function(){
+        $http({
+          method: 'GET',
+          url: '/auth/picture'
+        }).then(function(response){
+          console.log(response.data.id)
+        self.uId = response.data.id;
+        self.checkMe(self.uId);
+        });
+    };
+    self.uId = null;
+    self.getUid();
     self.Speed = Progress.getSpd();
-    self.checkMe = function(){
-      self.check = Progress.postSpd(self.timeSpd.val, self.distance.val);
+    self.checkMe = function(val){
+      self.check = Progress.postSpd(self.distance.val, self.timeSpd.val);
+      self.timeSpd.val = null;
+      self.distance.val = null;
+      Progress.querySpd(val);
+      self.Speed = Progress.getSpd();
     };
     $scope.chartConfig = {
       options: {
@@ -147,15 +268,32 @@ angular.module('crptFit.controllers', ['ionic'])
     };
   }])
 // Start of Progress Weight Controller =======================================================
-  .controller('ProgressCtrlWgt', ['$scope', 'Progress', function($scope, Progress) {
+  .controller('ProgressCtrlWgt', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
     var self = this;
+    self.getUid = function(){
+        $http({
+          method: 'GET',
+          url: '/auth/picture'
+        }).then(function(response){
+          console.log(response.data.id)
+        self.uId = response.data.id;
+        self.checkMe(self.uId);
+        });
+    };
+    self.uId = null;
+    self.getUid();
     self.weight = {
-      val: null
-    };
-    self.Weight = Progress.getWgt();
-    self.checkMe = function(){
-      self.check = Progress.postWgt(self.weight.val);
-    };
+         weight: null,
+       };
+       self.Weight = Progress.getWgt();
+
+       self.checkMe = function(val){
+         console.log('in the checkme', val, 'THIS SHOULD BE 1')
+         self.check = Progress.postWgt(self.weight.weight);
+         self.weight.weight = null;
+         Progress.queryWgt(val);
+         self.Weight = Progress.getWgt();
+       };
     $scope.chartConfig = {
       options: {
         chart: {
@@ -180,16 +318,67 @@ angular.module('crptFit.controllers', ['ionic'])
   };
   self.finishTask = function(task){
     self.finish = Task.finishTask(task);
-  }
+  };
 }])
-// Start of Messages Controller =======================================================
-.controller('MessagesCtrl', ['Message', function(Message) {
+
+.controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
+//NOTE Refactor me
   var self = this;
+
+  self.search = Social.friendsList();
+
+  self.showMessageContent = function(){
+    Message.captureMessages();
+  };
+  self.clearContent = function(){
+    console.log('why cap no null')
+      Message.clearCap();
+  };
+  self.showMessages = function(){
+   Message.getMessage();
+  };
+
+  self.messageToPage = Message.messageList();
+
+  self.searchFriends = function(){
+    self.search = Social.friendsList();
+  };
+
+  self.capture = Message.capturedChatID();
+  self.captureMessages = Message.captureMessages();
+
   self.makeChat = function(userId){
-    console.log('clicked')
-    Message.getFriendIds();
+    console.log('clicked');
+    // Message.getFriendIds();
     self.chat = Message.makeChat(userId);
-  }
+  };
+  self.sendMessage = function(chatId, val){
+    self.send = Message.sendMessage(chatId, val);
+     self.sendTo.val = null;
+  };
+  self.capChatId = function(chatId){
+    Message.getRoom(chatId);
+  };
+
+  // self.messageCapture = Message.getMessageContent(Message.capChat);
+
+  $scope.showPopup = function() {
+  $scope.data = {};
+  // An elaborate, custom popup
+  var myPopup = $ionicPopup.show({
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href="#/tab/message">{{friend.username}}</a></div></div></div>',
+    title: 'Create a message',
+    scope: $scope,
+    buttons: [
+      { text: 'Cancel' },
+    ]
+  });
+  myPopup.then(function(res) {
+    console.log('Tapped!', res);
+    self.list = Social.searchResultsList(res);
+  });
+ };
+
 }])
 // Start of Social Controller =======================================================
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
@@ -204,6 +393,7 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.showFriends = function(){
     self.list = Social.friendsList();
+    console.log(self.list);
   };
 
   self.showClients = function(){
