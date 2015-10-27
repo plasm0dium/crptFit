@@ -113,7 +113,7 @@ angular.module('crptFit.services', [])
     searchResultsList: function(username){
       $http({
         method: 'GET',
-        url: 'auth/users/search' + username
+        url: 'auth/search/' + username
       });
     }
   };

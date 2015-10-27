@@ -155,10 +155,25 @@ db.knex.schema.hasTable('friends').then(function(exists) {
   console.log('created table:', t);
 });
 
+db.knex.schema.hasTable('chat').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('chat', function(t) {
+      t.increments('id').primary();
+      t.integer('user_id').references('id').inTable('users');
+      t.integer('user2_id').references('id').inTable('users');
+      t.timestamps();
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
 db.knex.schema.hasTable('chats').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('chats', function(t) {
       t.increments('id').primary();
+      t.integer('chat_id').references('id').inTable('chat');
       t.integer('user_id').references('id').inTable('users');
       t.integer('user2_id').references('id').inTable('users');
       t.timestamps();
