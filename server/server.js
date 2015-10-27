@@ -90,18 +90,17 @@ app.get('/auth/user/:id', function (req, res) {
     res.json(result.toJSON())
   })
 })
-
+var filtered = []
 var filterTasks = function(tasks) {
-  var filtered = [];
   for(var i = 0; i < tasks.length; i++) {
-    console.log(tasks[i])
     if(tasks[i].attributes.complete === 1) {
+      console.log('FILTERED :', filtered)
       filtered.push(tasks[i])
     }
   }
-  return filtered
 }
 
+var newStorage = [];
 db.collection('Friends').fetchByUser(1)
 .then(function(friends) {
   var friendsArray = friends.models;
@@ -110,19 +109,21 @@ db.collection('Friends').fetchByUser(1)
       id: friendsArray[i].attributes.friends_id
     })
     .then(function(results) {
+      console.log(results.relations.tasks.models)
       var result = filterTasks(results.relations.tasks.models)
-      console.log('THIS IS RESULT', result)
-      return result
+      console.log('RESULT', filtered)
+      return filterTasks(results.relations.tasks.models)
     })
   }})
   .then(function(result) {
-    storage.push(result);
+    newStorage.push(result);
+    console.log('line 116 RES JSON :', newStorage);
   })
     .then(function() {
-      console.log('line 114 RES JSON :', storage);
+      console.log('RES JSON :', newStorage);
       ;
     }).then(function () {
-      storage = [];
+      newStorage = [];
     });
 
 //News Feed Pulls Latest Completed Tasks of Friends
@@ -250,13 +251,6 @@ app.get('auth/users/search:username', function (req, res) {
     res.json(friend.toJSON());
   })
 });
-
-db.collection('Users').searchByUsername('ted')
-  .then(function(allFriends) {
-    console.log("THIS IS WHAT I'M LOOKING FOR: ", allFriends.models);
-});
-
-
 
 //Fetch a User's Trainers
 app.get('/auth/trainers', function (req, res) {
