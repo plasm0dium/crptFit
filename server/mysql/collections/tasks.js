@@ -7,9 +7,9 @@ var Tasks = db.Collection.extend({
 }, {
   fetchByTime: function () {
 
-    'SELECT TOP 5 dose, FROM table_id GROUP BY dose ORDER BY max(time) desc'
+    'SELECT TOP 5 dose, FROM table_id GROUP BY dose ORDER BY max(time) desc';
 
-  }
+  },
   fetchByUser: function(userId) {
     return db.collection('Tasks')
     .forge()

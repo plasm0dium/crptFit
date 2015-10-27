@@ -148,14 +148,21 @@ angular.module('crptFit.controllers', ['ionic'])
 }])
 .controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
   var self = this;
+
   self.search = Social.friendsList();
+
   self.showMessages = function(){
    Message.getMessage();
   };
+
   self.messageToPage = Message.messageList();
+
   self.searchFriends = function(){
     self.search = Social.friendsList();
   };
+
+  self.capture = Message.capturedChatID();
+
   self.makeChat = function(userId){
     console.log('clicked');
     // Message.getFriendIds();
@@ -163,12 +170,19 @@ angular.module('crptFit.controllers', ['ionic'])
   };
   self.sendMessage = function(chatId, val){
     self.send = Message.sendMessage(chatId, val);
+     self.sendTo.val = null;
   };
+  self.capChatId = function(chatId){
+    Message.getRoom(chatId);
+  };
+
+  // self.messageCapture = Message.getMessageContent(Message.capChat);
+
   $scope.showPopup = function() {
   $scope.data = {};
   // An elaborate, custom popup
   var myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href="#/tab/message">{{friend.username}}</a></div></div></div>',
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href="#/tab/message>{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [

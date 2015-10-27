@@ -113,9 +113,14 @@ angular.module('crptFit.services', [])
 .factory('Message', ['$http', function($http){
   var messages = [];
 //get user message table from db
+  var capChat;
   return {
     messageList : function(){
       return messages;
+    },
+    capturedChatID: function(){
+      console.log(capChat);
+      return capChat;
     },
     makeChat: function(userId){
       $http({
@@ -136,14 +141,36 @@ angular.module('crptFit.services', [])
         console.log(error);
       });
     },
-    sendMessage : function(chatId, val){
+    getRoom: function(chatId){
+      capChat = chatId;
+      $http({
+        method: 'GET',
+        url: '/auth/chat/get' + chatId
+      }).then(function(response){
+        console.log('made it here in getroom');
+      });
+    },
+    sendMessage: function(id, val){
       console.log(val);
       $http({
         method: 'POST',
-        url: '/auth/messages' + chatId,
-        data: val
-      });
-    }
+        url: '/auth/messages/add' + id,
+        data: {message: val}
+      }).then(function(data){
+        console.log(data)
+      }, function(error){
+        console.log(error)
+      })
+    },
+    // getMessageContent: function(chatId){
+    //   console.log('made it here in get message ocntent')
+    //   $http({
+    //     method: 'GET',
+    //     url: '/auth/messages/get'+ chatId
+    //   }).then(function(response){
+    //     console.log(response.data, 'in the data content resp');
+    //   });
+    // }
   };
 }])
 .factory('Progress', ['$http', function($http){
