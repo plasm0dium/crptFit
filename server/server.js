@@ -84,6 +84,7 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
 });
 
 // Fetch a Specific User by Id
+
 app.get('/auth/user/:id', function (req, res) {
   var userId = req.params.id;
   db.model('User').fetchById({
@@ -96,25 +97,25 @@ app.get('/auth/user/:id', function (req, res) {
 
 //News Feed Pulls Latest Completed Tasks of Friends
 app.get('/auth/newsfeed', function (req, res) {
-  db.collection('Friends').fetchByUser(1)
+  db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(users) {
-    Promise.all(users.models.map(function(friend) {
+    return Promise.all(users.models.map(function(friend) {
       db.model('User').fetchById({
         id: friend.attributes.friends_id
       }).then(function(result) {
-        Promise.all(result.relations.tasks.models.map(function(task) {
+        return Promise.all(result.relations.tasks.models.map(function(task) {
           if(task.attributes.complete === 1) {
-            return task
-          }
+            return task;
+          };
         })).then(function(filteredTasks) {
-          res.json(filteredTasks)
+          res.json(filteredTasks);
         }).catch(function(err) {
-          return err
-        })
-      })
-    }))
-  })
-})
+          return err;
+        });
+      });
+    }));
+  });
+});
 
 app.get('/auth/picture', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
@@ -161,14 +162,13 @@ app.get('/auth/friends', function (req, res) {
   });
 
 // Fetch a User's Clients
-var Cstorage = [];
 app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
   .then(function(clients) {
     var clientsArray = clients.models;
     for(var i = 0; i < clientsArray.length; i++ ) {
       db.model('User').fetchById({
-        id: clientsArray[i].attributes.clients_id
+        id: clientsArray[i].attributes.client_id
       })
       .then(function(result) {
         Cstorage.push(result);
@@ -320,7 +320,8 @@ app.post('/auth/task/complete/:id', function(req, res) {
   });
 });
 
-// Confirm Client Request and adds Client to User
+//Confirm Client Request and adds Client to User
+
 app.post('/auth/confirmclient', function (req, res) {
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
@@ -344,7 +345,7 @@ app.post('/auth/confirmclient', function (req, res) {
   .save()
   })
   .then(function (){
-  db.model('Trainer').newClient({
+  db.model('Trainer').newTrainer({
     trainer_id: clientId,
     user_id: user_id
   })
@@ -420,14 +421,14 @@ app.post('/auth/confirmfriend/:id', function (req, res){
   var userId = req.user.attributes.id;
   var friendId = req.params.id;
   db.model('friendRequest').acceptFriendRequest({
-    user_id: userId,
     friend_id: friendId,
+    user_id: userId,
     updated_at: new Date()
   })
   .then(function () {
     db.model('friendRequest').acceptFriendRequest({
-      user_id: friendId,
       friend_id: userId,
+      user_id: friendId,
       updated_at: new Date()
     })
   })

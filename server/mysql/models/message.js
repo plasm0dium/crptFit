@@ -4,7 +4,7 @@ require('./chat');
 
 var Message = db.Model.extend({
   tableName: 'messages',
-  hasTimestamps: true,
+  
   chat: function () {
     return this.belongsTo('Chat');
   },
