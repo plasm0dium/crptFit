@@ -1,6 +1,7 @@
 var db = require('../config.js');
 
 require('./user');
+require('./message')
 
 var Chat = db.Model.extend({
   tableName: 'chats',

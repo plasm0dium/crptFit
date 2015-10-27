@@ -83,6 +83,13 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
 });
 
 // Fetch a Specific User by Id
+db.model('User').fetchById({
+  id: 1
+})
+.then(function(result) {
+  console.log("THIS IS USER", result.relations.chats.models)
+})
+
 app.get('/auth/user/:id', function (req, res) {
   var userId = req.params.id;
   db.model('User').fetchById({
@@ -95,7 +102,7 @@ app.get('/auth/user/:id', function (req, res) {
 
 //News Feed Pulls Latest Completed Tasks of Friends
 app.get('/auth/newsfeed', function (req, res) {
-  db.collection('Friends').fetchByUser(1)
+  db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(users) {
     Promise.all(users.models.map(function(friend) {
       db.model('User').fetchById({
