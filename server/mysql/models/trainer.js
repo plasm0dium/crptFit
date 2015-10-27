@@ -4,7 +4,7 @@ require('./user');
 
 var Trainer = db.Model.extend({
   tableName: 'trainers',
-  hasTimeStamp: true,
+  hasTimestamps: true,
   user: function () {
     return this.belongsTo('User');
   },
@@ -17,6 +17,6 @@ var Trainer = db.Model.extend({
       id: id
     }).fetch({withRelated: ['user']})
   }
-})
+});
 
 module.exports = db.model('Trainer', Trainer);

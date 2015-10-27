@@ -200,6 +200,27 @@ app.get('/auth/friends', function (req, res) {
       });
   });
 
+// Fetch a User's Clients
+var Cstorage = [];
+app.get('/auth/clients', ensureAuthenticated,function (req, res) {
+  db.collection('Clients').fetchByUser(req.user.attributes.id)
+  .then(function(clients) {
+    var clientsArray = clients.models;
+    for(var i = 0; i < clientsArray.length; i++ ) {
+      db.model('User').fetchById({
+        id: clientsArray[i].attributes.clients_id
+      })
+      .then(function(result) {
+        Cstorage.push(result);
+      })
+    }})
+      .then(function() {
+        console.log('RES>JSON :', Cstorage);
+        return res.json(Cstorage);
+      }).then(function () {
+        Cstorage = [];
+      });
+});
 //Search a Friends Friends
   app.get('/auth/friends/:id', function (req, res) {
     db.collection('Friends').fetchByUser(req.params.id)
@@ -222,30 +243,20 @@ app.get('/auth/friends', function (req, res) {
     });
 
 //Search All Users to Add as Friend
-app.get('auth/users/search', function (req, res) {
-  db.collection('Users').fetchAll()
-  .then(function(allFriends) {
-    res.json(allFriends.toJSON());
+app.get('auth/users/search:username', function (req, res) {
+  var Username = req.params.username;
+  db.collection('Users').searchByUsername(Username)
+  .then(function(friend) {
+    res.json(friend.toJSON());
   })
 });
 
-// Get Collection of User's Stats
-// app.get('/auth/stats', ensureAuthenticated, function (req, res) {
-//   db.collection('Stats').fetchByUser(req.user.attributes.id)
-//   .then(function(stats) {
-//     console.log('THESE ARE USER STATS: ', stats);
-//     res.json(stats.toJSON());
-//   });
-// });
-
-// Fetch a User's Clients
-app.get('/auth/clients', ensureAuthenticated,function (req, res) {
-  db.collection('Clients').fetchByUser(req.user.attributes.id)
-  .then(function(clients) {
-    console.log('THESE ARE USER CLIENTS :', clients);
-    res.json(clients.toJSON());
-  });
+db.collection('Users').searchByUsername('ted')
+  .then(function(allFriends) {
+    console.log("THIS IS WHAT I'M LOOKING FOR: ", allFriends.models);
 });
+
+
 
 //Fetch a User's Trainers
 app.get('/auth/trainers', function (req, res) {
@@ -567,14 +578,14 @@ app.post('/auth/speed/:stat', function (req, res) {
 });
 
 function ensureAuthenticated(req, res, next) {
-  console.log('AUTHENTICATED FUNCTION')
+  console.log('AUTHENTICATED FUNCTION');
   if(req.isAuthenticated()) {
-    return next()
+    return next();
   } else {
-    res.redirect('/')
+    res.redirect('/');
   }
 }
 
 app.listen(port, function(){
   console.log('listening on port...', port);
-})
+});
