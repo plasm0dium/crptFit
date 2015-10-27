@@ -3,6 +3,7 @@ var db = require('./mysql/config');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var morgan = require('morgan');
+var Promise = require('bluebird');
 var app = express();
 var port = process.env.PORT || 8100;
 
@@ -83,12 +84,6 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
 });
 
 // Fetch a Specific User by Id
-db.model('User').fetchById({
-  id: 1
-})
-.then(function(result) {
-  console.log("THIS IS USER", result.relations.chats.models)
-})
 
 app.get('/auth/user/:id', function (req, res) {
   var userId = req.params.id;
@@ -104,23 +99,23 @@ app.get('/auth/user/:id', function (req, res) {
 app.get('/auth/newsfeed', function (req, res) {
   db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(users) {
-    Promise.all(users.models.map(function(friend) {
+    return Promise.all(users.models.map(function(friend) {
       db.model('User').fetchById({
         id: friend.attributes.friends_id
       }).then(function(result) {
-        Promise.all(result.relations.tasks.models.map(function(task) {
+        return Promise.all(result.relations.tasks.models.map(function(task) {
           if(task.attributes.complete === 1) {
-            return task
-          }
+            return task;
+          };
         })).then(function(filteredTasks) {
-          res.json(filteredTasks)
+          res.json(filteredTasks);
         }).catch(function(err) {
-          return err
-        })
-      })
-    }))
-  })
-})
+          return err;
+        });
+      });
+    }));
+  });
+});
 
 app.get('/auth/picture', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
@@ -228,11 +223,19 @@ app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
     });
 
 //Search All Users to Add as Friend
-app.get('auth/users/search:username', function (req, res) {
+app.get('auth/users/:username', function (req, res) {
   var Username = req.params.username;
   db.collection('Users').searchByUsername(Username)
-  .then(function(friend) {
-    res.json(friend.toJSON());
+  .then(function (username) {
+    Promise.all(username.models.map(function(friend){
+      db.model('User').fetchById({
+        id: friend.attributes.id
+      })
+      .then(function (results){
+        res.json(results.toJSON());
+        console.log("THIS IS MY FRIEND: ", results);
+      })
+    }))
   })
 });
 
@@ -319,7 +322,8 @@ app.post('/auth/task/complete/:id', function(req, res) {
   });
 });
 
-// Confirm Client Request and adds Client to User
+//Confirm Client Request and adds Client to User
+
 app.post('/auth/confirmclient', function (req, res) {
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
@@ -343,7 +347,7 @@ app.post('/auth/confirmclient', function (req, res) {
   .save()
   })
   .then(function (){
-  db.model('Trainer').newClient({
+  db.model('Trainer').newTrainer({
     trainer_id: clientId,
     user_id: user_id
   })
@@ -422,14 +426,14 @@ app.post('/auth/confirmfriend/:id', function (req, res){
   var userId = req.user.attributes.id;
   var friendId = req.params.id;
   db.model('friendRequest').acceptFriendRequest({
-    user_id: userId,
     friend_id: friendId,
+    user_id: userId,
     updated_at: new Date()
   })
   .then(function () {
     db.model('friendRequest').acceptFriendRequest({
-      user_id: friendId,
       friend_id: userId,
+      user_id: friendId,
       updated_at: new Date()
     })
   })
@@ -498,8 +502,8 @@ app.post('/auth/weight/:stat', function (req, res) {
 app.post('/auth/bench/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currBench = req.params.stat;
-  db.model('benchpress').newBenchPress({
-    weight: currBench,
+  db.model('Benchpress').newBenchPress({
+    benchpress: currBench,
     user_id: userId,
     created_at: new Date()
   })

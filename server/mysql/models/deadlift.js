@@ -4,7 +4,6 @@ require('./user');
 
 var DeadLift = db.Model.extend({
   tableName: 'deadlifts',
-  hasTimestamps: true,
   user: function () {
     return this.belongsTo('User');
   },

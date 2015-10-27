@@ -1,13 +1,12 @@
 var db = require('../config.js');
 
 require('./user');
-require('./message')
+require('./message');
 
 var Chat = db.Model.extend({
   tableName: 'chats',
-  hasTimestamps: true,
   user: function () {
-    return this.belongsTo('User');
+    return this.belongsToMany('User');
   },
   message: function() {
     return this.hasMany('Message');
