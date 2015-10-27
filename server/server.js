@@ -3,6 +3,7 @@ var db = require('./mysql/config');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var morgan = require('morgan');
+var Promise = require('bluebird');
 var app = express();
 var port = process.env.PORT || 8100;
 
@@ -94,25 +95,26 @@ app.get('/auth/user/:id', function (req, res) {
 })
 
 //News Feed Pulls Latest Completed Tasks of Friends
-// app.get('/auth/newsfeed', function (req, res) {
-//   db.collection('Friends').fetchByUser(req.user.attributes.id)
-//   .then(function(friends) {
-//     var friendsArray = friends.models;
-//     for(var i = 0; i < friendsArray.length; i++ ) {
-//       db.model('User').fetchById({
-//         id: friendsArray[i].attributes.friends_id
-//       })
-//       .then(function(result) {
-//         storage.push(result);
-//       })
-//     }})
-//       .then(function() {
-//         console.log('RES>JSON :', storage)
-//         return res.json(storage);
-//       }).then(function () {
-//         storage = [];
-//       })
-//   })
+app.get('/auth/newsfeed', function (req, res) {
+  db.collection('Friends').fetchByUser(1)
+  .then(function(users) {
+    Promise.all(users.models.map(function(friend) {
+      db.model('User').fetchById({
+        id: friend.attributes.friends_id
+      }).then(function(result) {
+        Promise.all(result.relations.tasks.models.map(function(task) {
+          if(task.attributes.complete === 1) {
+            return task
+          }
+        })).then(function(filteredTasks) {
+          res.json(filteredTasks)
+        }).catch(function(err) {
+          return err
+        })
+      })
+    }))
+  })
+})
 
 app.get('/auth/picture', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
@@ -220,31 +222,21 @@ app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
     });
 
 //Search All Users to Add as Friend
-app.get('auth/users/search:username', function (req, res) {
+app.get('auth/users/:username', function (req, res) {
   var Username = req.params.username;
   db.collection('Users').searchByUsername(Username)
-  .then(function(friend) {
-    res.json(friend.toJSON());
+  .then(function (username) {
+    Promise.all(username.models.map(function(friend){
+      db.model('User').fetchById({
+        id: friend.attributes.id
+      })
+      .then(function (results){
+        res.json(results.toJSON());
+        console.log("THIS IS MY FRIEND: ", results);
+      })
+    }))
   })
 });
-
-// Fetch a User's Clients
-app.get('/auth/clients', ensureAuthenticated,function (req, res) {
-  db.collection('Clients').fetchByUser(req.user.attributes.id)
-  .then(function(clients) {
-    console.log('THESE ARE USER CLIENTS :', clients);
-    res.json(clients.toJSON());
-  });
-});
-
-//Fetch a User's Trainers
-app.get('/auth/trainers', function (req, res) {
-  db.collection('Trainers').fetchByUser(req.user.attributes.id)
-  .then(function(trainers) {
-    console.log('GET: THESE ARE USER TRAINERS :', trainers);
-    res.json(trainers.toJSON());
-  })
-})
 
 // Fetch Chatroom
 app.get('/auth/chat/get:id', function (req, res){
@@ -252,7 +244,7 @@ app.get('/auth/chat/get:id', function (req, res){
   db.model('Chat').fetchById(chatId)
   .then(function(chat) {
     console.log('THIS IS CHAT ROOM :', chat);
-    res.json(chat.relations.message.models.toJSON());
+    res.json(chat.relations.message.models);
   });
 });
 
@@ -486,7 +478,7 @@ app.post('/auth/messages/add:id', function (req, res){
   db.model('Message').newMessage({
     user_id: userId,
     chat_id: chatId,
-    text: message,
+    text: body,
     created_at: new Date()
   })
   .save()

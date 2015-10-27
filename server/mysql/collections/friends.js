@@ -5,11 +5,11 @@ require('../models/friend');
 var Friends = db.Collection.extend({
   model: db.model('Friend')
 }, {
-  fetchByUser: function(userId, friendId) {
+  fetchByUser: function(userId) {
     return db.collection('Friends')
     .forge()
     .query(function(qb) {
-      qb.select()
+      qb.where('user_id', '=', userId);
     })
     .fetch();
   },
