@@ -136,7 +136,6 @@ app.get('/logout', function(req, res){
 app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
   db.collection('Tasks').fetchByUser(req.user.attributes.id)
   .then(function(tasks) {
-    console.log('THIS IS A TASK :', tasks);
     res.json(tasks.toJSON());
   });
 });
@@ -163,13 +162,14 @@ app.get('/auth/friends', function (req, res) {
   });
 
 // Fetch a User's Clients
+var Cstorage = [];
 app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
   .then(function(clients) {
     var clientsArray = clients.models;
     for(var i = 0; i < clientsArray.length; i++ ) {
       db.model('User').fetchById({
-        id: clientsArray[i].attributes.client_id
+        id: clientsArray[i].attributes.clients_id
       })
       .then(function(result) {
         Cstorage.push(result);
@@ -222,20 +222,19 @@ app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
     });
 
 //Search All Users to Add as Friend
-app.get('auth/users/:username', function (req, res) {
-  var Username = req.params.username;
-  db.collection('Users').searchByUsername(Username)
-  .then(function (username) {
-    Promise.all(username.models.map(function(friend){
-      db.model('User').fetchById({
-        id: friend.attributes.id
-      })
-      .then(function (results){
-        res.json(results.toJSON());
-        console.log("THIS IS MY FRIEND: ", results);
-      })
-    }))
-  })
+app.get('/auth/search/:id', function (req, res) {
+ var username = req.params.id;
+ db.collection('Users').searchByUsername(username)
+ .then(function (username) {
+   return Promise.all(username.models.map(function(friend){
+     return db.model('User').fetchById({
+       id: friend.attributes.id
+     })
+   }))
+     .then(function (results){
+       return res.json(results);
+     })
+ })
 });
 
 // Fetch Chatroom
@@ -366,6 +365,7 @@ app.post('/auth/confirmclient', function (req, res) {
 app.post('/auth/clientreq/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
+  console.log("After the route is called", clientId)
   db.model('clientRequest').newClientRequest({
     client_id: clientId,
     user_id: userId,
@@ -381,10 +381,6 @@ app.post('/auth/clientreq/add:id', function (req, res){
       created_at: new Date()
     })
     .save()
-  })
-  .then(function (clientreq) {
-    console.log('ADD CLIENT REQUEST', clientreq);
-    return clientreq;
   })
   .catch(function (err){
     return err;

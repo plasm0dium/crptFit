@@ -24,6 +24,7 @@ angular.module('crptFit.services', [])
   var friends = [];
   var clients = [];
   var trainers = [];
+  var searchResults = [];
   var savedUserID;
 
   return {
@@ -115,7 +116,15 @@ angular.module('crptFit.services', [])
     searchResultsList: function(username){
       $http({
         method: 'GET',
-        url: 'auth/users/search' + username
+        url: '/auth/search/' + username
+      })
+      .then(function(response){
+        console.log("inside of the service calling SRL:", response.data)
+        return response.data;
+      }).then(function(response){
+        console.log("final part of SRL from service:", response);
+        searchResults = response;
+        return searchResults;
       });
     }
   };

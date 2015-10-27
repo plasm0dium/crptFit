@@ -8,7 +8,21 @@ angular.module('crptFit.controllers', ['ionic'])
   self.friendCount;
   self.trainerCount;
   self.clientCount;
+  self.userID = Social.getUserID();
+  console.log("inside ViewProfileCtrl:", self.userID)
 
+  self.sendFriendRequest = function(){
+    $http({
+      method: 'POST',
+      url: '/auth/friendreq/add:' + self.userID
+    })
+  };
+  self.sendClientRequest = function(){
+    $http({
+      method: 'POST',
+      url: '/auth/clientreq/add:' + self.userID
+    })
+  };
   var setProfileInfo = function(picUrl, username, friends, trainers, clients, activityFeed){
     self.pic = picUrl;
     self.username = username;
@@ -57,6 +71,7 @@ angular.module('crptFit.controllers', ['ionic'])
     method: 'GET',
     url: '/auth/tasks'
   }).then(function(response){
+    console.log("inside of the ProfileCtrl call:", response);
     setTasks(response.data);
   })
   // Grab a users profile information - extract into a factory later
@@ -430,7 +445,10 @@ angular.module('crptFit.controllers', ['ionic'])
     });
     myPopup.then(function(res) {
       console.log('Tapped!', res);
-      self.list = Social.searchResultsList(res);
+      return Promise.resolve(Social.searchResultsList(res));
+    }).then(function(result){
+      console.log("this is the result", result)
+      self.list = result;
     });
   };
 

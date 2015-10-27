@@ -24,8 +24,12 @@
         </li>
       </ul>
     </div>
-
-    <button class="stats button icon-left ion-arrow-graph-up-right button-positive">  Stats</button>
+    <div class="row">
+      <button class="stats button icon-left ion-plus-circled button-positive" ng-click="ctrl.sendFriendRequest()">F</button>
+      <button class="stats button icon-left ion-plus-circled button-positive" ng-click="ctrl.sendClientRequest()">C</button>
+      <button class="stats button icon-left ion-plus-circled button-positive">Stats</button>
+    </div>
+      <!-- <button class="stats button icon-left ion-arrow-graph-up-right button-positive">  Stats</button> -->
 
     <div class="recent-activity">
       <div ng-repeat="update in ctrl.feed" >
