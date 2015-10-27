@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Unconfined/crptFit#readme",
   "dependencies": {
+    "bluebird": "^3.0.0",
     "body-parser": "~1.13.2",
     "bookshelf": "^0.8.2",
     "chai": "^3.4.0",

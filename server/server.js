@@ -3,6 +3,7 @@ var db = require('./mysql/config');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var morgan = require('morgan');
+var Promise = require('bluebird');
 var app = express();
 var port = process.env.PORT || 8100;
 
@@ -221,11 +222,19 @@ app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
     });
 
 //Search All Users to Add as Friend
-app.get('auth/users/search:username', function (req, res) {
+app.get('auth/users/:username', function (req, res) {
   var Username = req.params.username;
   db.collection('Users').searchByUsername(Username)
-  .then(function(friend) {
-    res.json(friend.toJSON());
+  .then(function (username) {
+    Promise.all(username.models.map(function(friend){
+      db.model('User').fetchById({
+        id: friend.attributes.id
+      })
+      .then(function (results){
+        res.json(results.toJSON());
+        console.log("THIS IS MY FRIEND: ", results);
+      })
+    }))
   })
 });
 
