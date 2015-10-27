@@ -163,6 +163,7 @@ app.get('/auth/friends', function (req, res) {
   });
 
 // Fetch a User's Clients
+var Cstorage = [];
 app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
   .then(function(clients) {
