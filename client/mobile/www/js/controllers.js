@@ -153,11 +153,18 @@ angular.module('crptFit.controllers', ['ionic'])
 }])
 
 .controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
-
+//NOTE Refactor me
   var self = this;
 
   self.search = Social.friendsList();
 
+  self.showMessageContent = function(){
+    Message.captureMessages();
+  };
+  self.clearContent = function(){
+    console.log('why cap no null')
+      Message.clearCap();
+  };
   self.showMessages = function(){
    Message.getMessage();
   };

@@ -1,4 +1,4 @@
-<ion-view title="Messages" ng-controller="MessagesCtrl as ctrl">
+<ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.showMessageContent()">
   <ion-content has-header="true" padding="true">
     <div class="messageBubble" ng-repeat="message in ctrl.captureMessages">
       {{message}}
@@ -10,7 +10,7 @@
           <div class="item-input-wrapper">
             <input class="messageInput" type="text" placeholder="Type here..." ng-model="ctrl.sendTo.val">
           </div>
-          <button type="submit" class="button button-small" ng-click="ctrl.sendMessage(ctrl.capture, ctrl.sendTo.val)">
+          <button type="submit" class="button button-small" ng-click="ctrl.sendMessage(ctrl.capture, ctrl.sendTo.val); ctrl.showMessages()">
             Send
           </button>
         </div>

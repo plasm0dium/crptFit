@@ -124,12 +124,13 @@ angular.module('crptFit.services', [])
     messageList : function(){
       return messages;
     },
+    clearCap: function(){
+      capMessage = {};
+    },
     capturedChatID: function(){
-      console.log(capChat);
       return capChat;
     },
     captureMessages: function(){
-      console.log(capMessage, 'made it to cap mess');
       return capMessage;
     },
     makeChat: function(userId){
@@ -144,6 +145,7 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/picture'
       }).then(function(response){
+        console.log(response, 'response data')
         for(var x = 0; x < response.data.chats.length; x++){
           messages.push(response.data.chats[x]);
         }
@@ -157,9 +159,8 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/chat/get' + chatId
       }).then(function(response){
-        console.log('made it here in getroom', response.data);
         for(var i = 0; i < response.data.length; i++){
-          capMessage[response.data[i]] = response.data[i].text;
+          capMessage[response.data[i].id] = response.data[i].text;
         }
       });
     },
