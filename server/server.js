@@ -156,12 +156,6 @@ app.get('auth/users/search:username', function (req, res) {
   })
 });
 
-db.collection('Users').searchByUsername('ted')
-  .then(function(allFriends) {
-    console.log("THIS IS WHAT I'M LOOKING FOR: ", allFriends.models);
-});
-
-
 // Fetch a User's Clients
 app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
