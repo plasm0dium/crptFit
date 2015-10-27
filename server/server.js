@@ -3,6 +3,7 @@ var db = require('./mysql/config');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var morgan = require('morgan');
+var Promise = require('bluebird');
 var app = express();
 var port = process.env.PORT || 8100;
 
@@ -134,7 +135,6 @@ app.get('/logout', function(req, res){
 app.get('/auth/tasks', ensureAuthenticated, function (req,res) {
   db.collection('Tasks').fetchByUser(req.user.attributes.id)
   .then(function(tasks) {
-    console.log('THIS IS A TASK :', tasks);
     res.json(tasks.toJSON());
   });
 });
@@ -221,12 +221,19 @@ app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
     });
 
 //Search All Users to Add as Friend
-app.get('auth/users/:username', function (req, res) {
-  var Username = req.params.username;
-  db.collection('Users').searchByUsername(Username)
-  .then(function(friend) {
-    res.json(friend.models.toJSON);
-  })
+app.get('/auth/search/:id', function (req, res) {
+ var username = req.params.id;
+ db.collection('Users').searchByUsername(username)
+ .then(function (username) {
+   return Promise.all(username.models.map(function(friend){
+     return db.model('User').fetchById({
+       id: friend.attributes.id
+     })
+   }))
+     .then(function (results){
+       return res.json(results);
+     })
+ })
 });
 
 // Fetch Chatroom
@@ -355,6 +362,7 @@ app.post('/auth/confirmclient', function (req, res) {
 app.post('/auth/clientreq/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
+  console.log("After the route is called", clientId)
   db.model('clientRequest').newClientRequest({
     client_id: clientId,
     user_id: userId,
@@ -370,10 +378,6 @@ app.post('/auth/clientreq/add:id', function (req, res){
       created_at: new Date()
     })
     .save()
-  })
-  .then(function (clientreq) {
-    console.log('ADD CLIENT REQUEST', clientreq);
-    return clientreq;
   })
   .catch(function (err){
     return err;
