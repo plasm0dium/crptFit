@@ -24,8 +24,15 @@ angular.module('crptFit.services', [])
   var friends = [];
   var clients = [];
   var trainers = [];
+  var savedUserID;
 
   return {
+    userViewerSet: function(userID){
+      savedUserID = userID;
+    },
+    getUserID: function(){
+      return savedUserID;
+    },
     friendsList: function(){
       // Grab friends and store it in the friends array above (refactor - DRY)
       $http({
@@ -35,7 +42,6 @@ angular.module('crptFit.services', [])
       .then(function(response){
         console.log(response.data)
         friends = response.data;
-        console.log("FRIENDS :",response.data)
       }, function(error){
         console.log(error);
       });
