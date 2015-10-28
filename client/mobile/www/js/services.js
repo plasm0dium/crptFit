@@ -134,6 +134,7 @@ angular.module('crptFit.services', [])
 .factory('Message', ['$http', function($http){
   var messages = [];
 //get user message table from db
+ var meCap;
   var capChat;
   var capMessage = {};
   return {
@@ -162,6 +163,7 @@ angular.module('crptFit.services', [])
         url: '/auth/picture'
       }).then(function(response){
         console.log(response, 'response data')
+        var meCap = response.data.id;
         for(var x = 0; x < response.data.chats.length; x++){
           messages.push(response.data.chats[x]);
         }

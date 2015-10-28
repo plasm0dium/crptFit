@@ -353,13 +353,11 @@ angular.module('crptFit.controllers', ['ionic'])
   var self = this;
 
   self.search = Social.friendsList();
-
   self.showMessageContent = function(){
     Message.captureMessages();
   };
   self.clearContent = function(){
-    console.log('why cap no null')
-      Message.clearCap();
+    Message.clearCap();
   };
   self.showMessages = function(){
    Message.getMessage();
@@ -405,7 +403,6 @@ angular.module('crptFit.controllers', ['ionic'])
     self.list = Social.searchResultsList(res);
   });
  };
-
 }])
 // Start of Social Controller =======================================================
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
