@@ -351,22 +351,29 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
 //NOTE Refactor me
   var self = this;
+
   self.showId =function(val){
-    console.log(val, 'this should be my room key')
     Message.capturedChatID(val);
   };
   self.search = Social.friendsList();
   self.showMessageContent = function(){
     Message.captureMessages();
   };
-  self.clearContent = function(){
-    Message.clearCap();
-  };
+  // self.clearContent = function(){
+  //   Message.clearCap();
+  // };
   self.showMessages = function(){
    Message.getMessage();
   };
   Message.messageList();
+
   self.messageToPage = Message.captureMessages();
+
+  self.returnMessage = Message.messageToPage();
+
+  self.getMessagesById = function(){
+    self.sendHelp = Message.clearCap();
+  };
 
   self.searchFriends = function(){
     self.search = Social.friendsList();

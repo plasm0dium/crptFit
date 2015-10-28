@@ -136,21 +136,30 @@ angular.module('crptFit.services', [])
 
 // Start of Messages Factory ====================================================
 .factory('Message', ['$http', function($http){
-  var messages = [];
+  var messages = {};
+  var messageReturn = [];
 //get user message table from db
   var room_ids = {};
   var capChat;
   return {
+    messageToPage : function(){
+      newRet = messageReturn;
+      messageReturn = [];
+      return newRet;
+    },
     messageList : function(){
-      console.log(messages, 'this should be an object of joy')
-      return messages;
+      messageReturn = [];
+      for(var key in messages){
+        if(messages[key] === parseInt(capChat)){
+          messageReturn.push(key);
+        }
+      }
     },
     clearCap: function(){
-      capMessage = {};
+      return capChat;
     },
     capturedChatID: function(val){
-      capChat = val
-      console.log(capChat, 'THIS IS THE VALUE AT THE BOTTOM, captured')
+      capChat = val;
     },
     captureMessages: function(){
       return room_ids;
@@ -170,7 +179,7 @@ angular.module('crptFit.services', [])
           response.data.forEach(function(y){
               room_ids[y.id] = y.id;
             y.message.forEach(function(z){
-              messages.push(z.text);
+              messages[z.text] = y.id;
               console.log(z.user_id, 'this should be a number');
             });
           });
