@@ -119,7 +119,6 @@ angular.module('crptFit.controllers', ['ionic'])
         }).then(function(response){
           console.log(response.data.id)
         self.uId = response.data.id;
-        self.checkMe(self.uId);
         });
     };
     self.uId = null;
@@ -162,7 +161,6 @@ angular.module('crptFit.controllers', ['ionic'])
         }).then(function(response){
           console.log(response.data.id)
         self.uId = response.data.id;
-        self.checkMe(self.uId);
         });
     };
     self.uId = null;
@@ -205,7 +203,6 @@ angular.module('crptFit.controllers', ['ionic'])
       }).then(function(response){
         console.log(response.data.id)
       self.uId = response.data.id;
-      self.checkMe(self.uId);
       });
   };
   self.uId = null;
@@ -254,7 +251,6 @@ angular.module('crptFit.controllers', ['ionic'])
         }).then(function(response){
           console.log(response.data.id)
         self.uId = response.data.id;
-        self.checkMe(self.uId);
         });
     };
     self.uId = null;
@@ -292,7 +288,6 @@ angular.module('crptFit.controllers', ['ionic'])
         }).then(function(response){
           console.log(response.data.id)
         self.uId = response.data.id;
-        self.checkMe(self.uId);
         });
     };
     self.uId = null;
