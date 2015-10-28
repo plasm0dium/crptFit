@@ -138,7 +138,6 @@ app.get('/logout', function(req, res){
 app.get('/auth/tasks', function (req,res) {
   db.collection('Tasks').fetchByUser(req.user.attributes.id)
   .then(function(tasks) {
-    console.log('THIS IS A TASK :', tasks);
     res.json(tasks.toJSON());
   });
 });
@@ -166,13 +165,13 @@ app.get('/auth/friends', function (req, res) {
 
 // Fetch a User's Clients
 var Cstorage = [];
-app.get('/auth/clients',function (req, res) {
+app.get('/auth/clients', ensureAuthenticated,function (req, res) {
   db.collection('Clients').fetchByUser(req.user.attributes.id)
   .then(function(clients) {
     var clientsArray = clients.models;
     for(var i = 0; i < clientsArray.length; i++ ) {
       db.model('User').fetchById({
-        id: clientsArray[i].attributes.client_id
+        id: clientsArray[i].attributes.clients_id
       })
       .then(function(result) {
         Cstorage.push(result);
@@ -227,18 +226,18 @@ app.get('/auth/trainers', ensureAuthenticated, function (req, res) {
 
 //Search All Users to Add as Friend
 app.get('/auth/search/:id', function (req, res) {
-  var username = req.params.id;
-  db.collection('Users').searchByUsername(username)
-  .then(function (username) {
-    return Promise.all(username.models.map(function(friend){
-      return db.model('User').fetchById({
-        id: friend.attributes.id
-      })
-    }))
-      .then(function (results){
-        return res.json(results);
-      })
-  })
+ var username = req.params.id;
+ db.collection('Users').searchByUsername(username)
+ .then(function (username) {
+   return Promise.all(username.models.map(function(friend){
+     return db.model('User').fetchById({
+       id: friend.attributes.id
+     })
+   }))
+     .then(function (results){
+       return res.json(results);
+     })
+ })
 });
 
 // Fetch Chatroom
@@ -261,11 +260,9 @@ app.get('/auth/weight/:id', function (req, res){
 });
 
 app.get('/auth/benchpress/:id', function (req, res){
-  console.log('YOU ARE IN THE GET', req.params.id);
   var userId = req.params.id;
   db.collection('BenchPress').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR BENCHPRESS', user);
     res.json(user.toJSON());
   });
 });
@@ -369,6 +366,7 @@ app.post('/auth/confirmclient', function (req, res) {
 app.post('/auth/clientreq/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
+  console.log("After the route is called", clientId)
   db.model('clientRequest').newClientRequest({
     client_id: clientId,
     user_id: userId,
@@ -384,10 +382,6 @@ app.post('/auth/clientreq/add:id', function (req, res){
       created_at: new Date()
     })
     .save()
-  })
-  .then(function (clientreq) {
-    console.log('ADD CLIENT REQUEST', clientreq);
-    return clientreq;
   })
   .catch(function (err){
     return err;
@@ -523,7 +517,6 @@ app.post('/auth/weight/:stat', function (req, res) {
 
 //Add Current Bench Press
 app.post('/auth/bench/:stat', function (req, res) {
-  console.log('MADE IT HERE IN BENCH', req.user)
   var userId = req.user.attributes.id;
   var currBench = req.params.stat;
   db.model('Benchpress').newBenchPress({
