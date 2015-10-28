@@ -15,7 +15,9 @@ var friendRequest = db.Model.extend({
     return new this(options)
     .fetch()
     .then(function(result) {
-      result.save({status: 1}, {patch: true});
+      result.save({status: 1,
+      updated_at: new Date()
+    }, {patch: true});
     })
     .then(function (update) {
       console.log(update);
