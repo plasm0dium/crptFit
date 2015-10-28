@@ -248,14 +248,31 @@ app.get('/auth/friendrequests', function (req, res) {
     return Promise.all(friendRequests.models.map(function(filtered) {
       if(result.attributes.status === 0) {
         console.log('this is the result', filtered)
-        return filtered
+        return filtered;
       }
     })).then(function(result) {
       console.log('this is the finalresult of friend_requests :', result)
-      res.json(result)
-    })
-  })
-})
+      res.json(result);
+    });
+  });
+});
+
+//Notifications for Pending Friend Requests
+app.get('/auth/clientrequests', function (req, res) {
+  var userId = req.user.attributes.id;
+  db.collection('clientRequests').fetchByUser(userId)
+  .then(function(clientRequests) {
+    return Promise.all(clientRequests.models.map(function(filtered) {
+      if(result.attributes.status === 0) {
+        console.log('this is the result', filtered)
+        return filtered;
+      }
+    })).then(function(result) {
+      console.log('this is the finalresult of client_requests :', result)
+      res.json(result);
+    });
+  });
+});
 
 // Fetch a User's Chat Sessions
 app.get('auth/chatsessions', function(req, res) {
@@ -372,14 +389,12 @@ app.post('/auth/confirmclient', function (req, res) {
   var clientId = req.params.id;
    db.model('clientRequest').acceptClientRequest({
     user_id: userId,
-    client_id: clientId,
-    updated_at: new Date()
+    client_id: clientId
   })
   .then(function () {
     db.model('clientRequest').acceptClientRequest({
       user_id: clientId,
-      client_id: userId,
-      updated_at: new Date()
+      client_id: userId
     })
   })
   .then(function (){
