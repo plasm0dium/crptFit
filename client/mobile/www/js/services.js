@@ -282,12 +282,12 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/benchpress/'+val
       }).then(function(response){
-        console.log(response.data, 'this is the bench db query');
         if(bench.length === 0){
-          for(var i = 0; i < response.data.length; i++){
+          for(var i = response.data.length-8; i < response.data.length; i++){
             bench.push(response.data[i].benchpress);
           }
         }else{
+          bench.shift();
           bench.push(response.data[response.data.length-1].benchpress);
         }
       }, function(error){

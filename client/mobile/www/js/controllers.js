@@ -117,7 +117,6 @@ angular.module('crptFit.controllers', ['ionic'])
           method: 'GET',
           url: '/auth/picture'
         }).then(function(response){
-          console.log(response.data.id)
         self.uId = response.data.id;
         });
     };
@@ -130,7 +129,6 @@ angular.module('crptFit.controllers', ['ionic'])
        self.Bench = Progress.getBnch();
 
        self.checkMe = function(val){
-         console.log('in the checkme', val, 'THIS SHOULD BE 1')
          self.check = Progress.postBnch(self.benchData.weight);
          self.benchData.weight = null;
          Progress.queryBnch(val);

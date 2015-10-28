@@ -257,11 +257,9 @@ app.get('/auth/weight/:id', function (req, res){
 });
 
 app.get('/auth/benchpress/:id', function (req, res){
-  console.log('YOU ARE IN THE GET', req.params.id);
   var userId = req.params.id;
   db.collection('BenchPress').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR BENCHPRESS', user);
     res.json(user.toJSON());
   });
 });
@@ -497,7 +495,6 @@ app.post('/auth/weight/:stat', function (req, res) {
 
 //Add Current Bench Press
 app.post('/auth/bench/:stat', function (req, res) {
-  console.log('MADE IT HERE IN BENCH', req.user)
   var userId = req.user.attributes.id;
   var currBench = req.params.stat;
   db.model('Benchpress').newBenchPress({
