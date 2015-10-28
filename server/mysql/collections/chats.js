@@ -1,18 +1,23 @@
 var db = require('../config');
 
 require('../models/chat');
+require('../models/message')
 
 var Chats = db.Collection.extend({
-  model: db.model('chat')
-}, 
+  model: db.model('Chat'),
+
+  messages: function () {
+    return this.hasMany('Message')
+  }
+},
   {
   fetchByUser: function(userId) {
     return db.collection('Chats')
     .forge()
     .query(function(qb) {
-      qb.where('user_id', '=', userId);
+      qb.where('id', '=', userId);
     })
-    .fetch();
+    .fetch({withRelated: ['user', 'messages']});
   },
   fetchAll: function () {
     return db.collection('Chats').forge().fetch({withRelated: ['user']});
@@ -20,5 +25,3 @@ var Chats = db.Collection.extend({
 });
 
 module.exports = db.collection('Chats', Chats);
-
-

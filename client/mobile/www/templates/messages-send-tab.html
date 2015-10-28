@@ -1,6 +1,6 @@
-<ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.showMessageContent()">
+<ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getMessagesById()">
   <ion-content has-header="true" padding="true">
-    <div class="messageBubble" ng-repeat="message in ctrl.captureMessages">
+    <div class="messageBubble" ng-repeat="message in ctrl.returnMessage track by $index">
       {{message}}
     </div>
   </ion-content>
@@ -10,7 +10,7 @@
           <div class="item-input-wrapper">
             <input class="messageInput" type="text" placeholder="Type here..." ng-model="ctrl.sendTo.val">
           </div>
-          <button type="submit" class="button button-small" ng-click="ctrl.sendMessage(ctrl.capture, ctrl.sendTo.val); ctrl.showMessages()">
+          <button type="submit" class="button button-small" ng-click="ctrl.sendMessage(ctrl.sendHelp, ctrl.sendTo.val); ctrl.showMessages()">
             Send
           </button>
         </div>

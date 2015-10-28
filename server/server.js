@@ -21,6 +21,7 @@ require('./mysql/models/benchpress');
 require('./mysql/models/squat');
 require('./mysql/models/deadlift');
 require('./mysql/models/speed');
+require('./mysql/models/chatstore');
 
 require('./mysql/collections/clients');
 require('./mysql/collections/friends');
@@ -36,6 +37,7 @@ require('./mysql/collections/Benchpress');
 require('./mysql/collections/squats');
 require('./mysql/collections/deadlifts');
 require('./mysql/collections/speeds');
+require('./mysql/collections/chatstores');
 
 var session = require("express-session");
 
@@ -183,7 +185,7 @@ app.get('/auth/clients', ensureAuthenticated,function (req, res) {
 });
 //Fetch a User's Trainers
 var Tstorage = [];
-app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
+app.get('/auth/trainers', ensureAuthenticated, function (req, res) {
   db.collection('Trainers').fetchByUser(req.user.attributes.id)
   .then(function(trainers) {
     var trainersArray = trainers.models;
@@ -201,6 +203,7 @@ app.get('/auth/trainers', ensureAuthenticated,function (req, res) {
         Tstorage = [];
       });
 });
+
 //Search a Friends Friends
   app.get('/auth/friends/:id', function (req, res) {
     db.collection('Friends').fetchByUser(req.params.id)
@@ -237,15 +240,24 @@ app.get('/auth/search/:id', function (req, res) {
  })
 });
 
-// Fetch Chatroom
-app.get('/auth/chat/get:id', function (req, res){
-  var chatId = req.params.id;
-  db.model('Chat').fetchById(chatId)
-  .then(function(chat) {
-    console.log('THIS IS CHAT ROOM :', chat);
-    res.json(chat.relations.message.models);
+// Fetch a User's Chat Sessions
+app.get('/auth/chatsessions', function(req, res) {
+var userId = req.user.attributes.id;
+db.model('User').fetchById({
+    id: userId
+  })
+  .then(function(result) {
+    console.log('THIS IS USER :', result.relations.chatstores.models);
+    return Promise.all(result.relations.chatstores.models.map(function(msg){
+      console.log('CHAT ID :', msg.attributes.chat_id)
+      return db.model('Chat').fetchById(msg.attributes.chat_id)
+    }))
+    .then(function (results){
+      console.log("PLEASE WORK::::::::>", results);
+      res.json(results);
+    })
   });
-});
+})
 
 app.get('/auth/weight/:id', function (req, res){
   var userId = req.params.id;
@@ -455,19 +467,39 @@ app.post('/auth/confirmfriend/:id', function (req, res){
 });
 
 //Creates a Chat Session
+
 app.post('/auth/chat/add:id', function (req, res){
+  var chatId;
   var userId1 = req.user.attributes.id;
   var userId2 = req.params.id;
   db.model('Chat').newChat({
-    user_id: userId1,
-    user2_id: userId2,
-    created_at: new Date()
-  })
-  .save()
+      created_at: new Date()
+    })
+    .save()
+    .then(function(result){
+      chatId = result.id;
+      console.log("THIS IS MY RESULT: ", result);
+      db.model('Chatstore').newChatStore({
+        chat_id: result.id,
+        user_id: userId1,
+        created_at: new Date()
+      })
+    .save()
+    })
+    .then(function(){
+      console.log("THIS IS MY SECOND RESULT: ", chatId);
+      db.model('Chatstore').newChatStore({
+        chat_id: chatId,
+        user_id: userId2,
+        created_at: new Date()
+      })
+      .save()
+    })
 });
+
 //Adds Messages to chat session
+
 app.post('/auth/messages/add:id', function (req, res){
-  console.log('REQ>BODY', req.body, 'REQ>CHATID', req.params.id)
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
   var body = req.body.message;
