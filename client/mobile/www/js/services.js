@@ -138,39 +138,42 @@ angular.module('crptFit.services', [])
 .factory('Message', ['$http', function($http){
   var messages = [];
 //get user message table from db
- var meCap;
+  var room_ids = {};
   var capChat;
-  var capMessage = {};
   return {
     messageList : function(){
+      console.log(messages, 'this should be an object of joy')
       return messages;
     },
     clearCap: function(){
       capMessage = {};
     },
-    capturedChatID: function(){
-      return capChat;
+    capturedChatID: function(val){
+      capChat = val
+      console.log(capChat, 'THIS IS THE VALUE AT THE BOTTOM, captured')
     },
     captureMessages: function(){
-      return capMessage;
+      return room_ids;
     },
     makeChat: function(userId){
       $http({
         method: 'POST',
         url: '/auth/chat/add'+userId
-      })
-      .then(function(){});
+      });
     },
     getMessage : function(){
       $http({
         method: 'GET',
-        url: '/auth/picture'
+        url: '/auth/chatsessions'
       }).then(function(response){
-        console.log(response, 'response data')
-        var meCap = response.data.id;
-        for(var x = 0; x < response.data.chats.length; x++){
-          messages.push(response.data.chats[x]);
-        }
+        console.log(response, 'response data');
+          response.data.forEach(function(y){
+              room_ids[y.id] = y.id;
+            y.message.forEach(function(z){
+              messages.push(z.text);
+              console.log(z.user_id, 'this should be a number');
+            });
+          });
       }, function(error){
         console.log(error);
       });
@@ -181,13 +184,11 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/chat/get' + chatId
       }).then(function(response){
-        for(var i = 0; i < response.data.length; i++){
-          capMessage[response.data[i].id] = response.data[i].text;
-        }
+
       });
     },
     sendMessage: function(id, val){
-      console.log(val);
+      console.log(id);
       $http({
         method: 'POST',
         url: '/auth/messages/add' + id,
@@ -198,15 +199,6 @@ angular.module('crptFit.services', [])
         console.log(error);
       });
     },
-    // getMessageContent: function(chatId){
-    //   console.log('made it here in get message ocntent')
-    //   $http({
-    //     method: 'GET',
-    //     url: '/auth/messages/get'+ chatId
-    //   }).then(function(response){
-    //     console.log(response.data, 'in the data content resp');
-    //   });
-    // }
   };
 }])
 .factory('Progress', ['$http', function($http){

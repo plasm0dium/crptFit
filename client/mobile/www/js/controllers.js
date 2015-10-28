@@ -351,7 +351,10 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
 //NOTE Refactor me
   var self = this;
-
+  self.showId =function(val){
+    console.log(val, 'this should be my room key')
+    Message.capturedChatID(val);
+  };
   self.search = Social.friendsList();
   self.showMessageContent = function(){
     Message.captureMessages();
@@ -362,15 +365,14 @@ angular.module('crptFit.controllers', ['ionic'])
   self.showMessages = function(){
    Message.getMessage();
   };
-
-  self.messageToPage = Message.messageList();
+  Message.messageList();
+  self.messageToPage = Message.captureMessages();
 
   self.searchFriends = function(){
     self.search = Social.friendsList();
   };
 
-  self.capture = Message.capturedChatID();
-  self.captureMessages = Message.captureMessages();
+  self.captureMessages = Message.messageList();
 
   self.makeChat = function(userId){
     console.log('clicked');
@@ -378,6 +380,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.chat = Message.makeChat(userId);
   };
   self.sendMessage = function(chatId, val){
+    console.log(chatId)
     self.send = Message.sendMessage(chatId, val);
      self.sendTo.val = null;
   };
@@ -391,7 +394,7 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.data = {};
   // An elaborate, custom popup
   var myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href="#/tab/message">{{friend.username}}</a></div></div></div>',
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href=#/tab/message>{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [

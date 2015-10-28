@@ -241,8 +241,8 @@ app.get('/auth/search/:id', function (req, res) {
 });
 
 // Fetch a User's Chat Sessions
-app.get('auth/chatsessions', function(req, res) {
-var userId = req.user.attributes.id
+app.get('/auth/chatsessions', function(req, res) {
+var userId = req.user.attributes.id;
 db.model('User').fetchById({
     id: userId
   })
@@ -253,8 +253,8 @@ db.model('User').fetchById({
       return db.model('Chat').fetchById(msg.attributes.chat_id)
     }))
     .then(function (results){
-      console.log("PLEASE WORK::::::::>", results[0].relations.message.models);
-      res.json(results[0].relations.message.models);
+      console.log("PLEASE WORK::::::::>", results);
+      res.json(results);
     })
   });
 })
