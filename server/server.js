@@ -246,14 +246,26 @@ app.get('/auth/chat/get:id', function (req, res){
   var chatId = req.params.id;
   db.model('Chat').fetchById(chatId)
   .then(function(chat) {
-    console.log('THIS IS CHAT ROOM :', chat);
+    console.log('THIS IS CHAT ROOM :', chat.relations.chats.model);
     // res.json(chat.relations.message.models);
   })
 });
 
-// db.model('Chat').fetchById(1)
-//   .then(function(chat) {
-//     console.log('THIS IS CHAT ROOM :', chat.relations.message.models);
+// db.model('User').fetchById({
+//     id: 3
+//   })
+//   .then(function(result) {
+//     console.log('THIS IS USER :', result.relations.chatstores); 
+//     return Promise.all(result.relations.chatstores.models.map(function(msg){
+//       return db.model('Chat').fetchById({
+//         id: msg.attributes.chat_id
+//       }).then(function(result) {
+//           console.log("this is a result ", result.relations.message.models);
+//       })
+//     }))
+//     .then(function (results){
+//       console.log("PLEASE WORK::::::::>", results);
+//     }) 
 //     // res.json(chat.relations.message.models);
 //   });
 
@@ -470,25 +482,58 @@ app.post('/auth/confirmfriend/:id', function (req, res){
 });
 
 //Creates a Chat Session
+var chatId;
 app.post('/auth/chat/add:id', function (req, res){
   var userId1 = req.user.attributes.id;
   var userId2 = req.params.id;
-  db.model('Chatstore').newChatStore({
-    user_id: userId1,
-    user2_id: userId2,
+  db.model('Chat').newChat({
     created_at: new Date()
   })
   .save()
   .then(function(result){
-    db.model('Chat').newChat({
+    chatId = result.id;
+    console.log("THIS IS MY RESULT: ", result);
+    db.model('Chatstore').newChatStore({
       chat_id: result.id,
-      user_id: userId2,
-      user2_id: userId1,
+      user_id: 1,
       created_at: new Date()
     })
   .save()
   })
+  .then(function(){
+    console.log("THIS IS MY SECOND RESULT: ", chatId);
+    db.model('Chatstore').newChatStore({
+      chat_id: chatId,
+      user_id: 2,
+      created_at: new Date()
+    })
+    .save()
+  })
 });
+
+// db.model('Chat').newChat({
+//     created_at: new Date()
+//   })
+//   .save()
+//   .then(function(result){
+//     chatId = result.id;
+//     console.log("THIS IS MY RESULT: ", result);
+//     db.model('Chatstore').newChatStore({
+//       chat_id: result.id,
+//       user_id: 1,
+//       created_at: new Date()
+//     })
+//   .save()
+//   })
+//   .then(function(){
+//     console.log("THIS IS MY SECOND RESULT: ", chatId);
+//     db.model('Chatstore').newChatStore({
+//       chat_id: chatId,
+//       user_id: 3,
+//       created_at: new Date()
+//     })
+//     .save()
+//   })
 
 //Adds Messages to chat session
 app.post('/auth/messages/add:id', function (req, res){
@@ -505,6 +550,14 @@ app.post('/auth/messages/add:id', function (req, res){
   })
   .save()
 });
+
+// db.model('Message').newMessage({
+//     user_id: 1,
+//     chat_id: 2,
+//     text: 'HELLO PLEASE WORK PLEASE PLEASE! WORK WORK ',
+//     created_at: new Date()
+//   })
+//   .save()
 
 //Add Current Weight
 app.post('/auth/weight/:stat', function (req, res) {

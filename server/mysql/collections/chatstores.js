@@ -3,7 +3,7 @@ var db = require('../config');
 require('../models/chatstore');
 
 var Chatstores = db.Collection.extend({
-  model: db.model('chatstore')
+  model: db.model('Chatstore')
 }, 
   {
   fetchByUser: function(userId) {

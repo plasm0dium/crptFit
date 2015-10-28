@@ -1,16 +1,16 @@
 var db = require('../config.js');
 
+require('./chat');
 require('./user');
-require('./message');
 
 var Chatstore = db.Model.extend({
-  tableName: 'chat',
+  tableName: 'chatstore',
   hasTimestamps: true,
   user: function () {
     return this.belongsTo('User');
   },
-  message: function() {
-    return this.hasMany('Message');
+  chat: function() {
+    return this.belongsTo('Chat');
   }
 }, {
   newChatStore: function (options) {
@@ -19,7 +19,7 @@ var Chatstore = db.Model.extend({
   fetchById: function (id) {
     return new this({
       id: id
-    }).fetch({withRelated: ['user', 'message']});
+    }).fetch({withRelated: ['user', 'chat']});
   }
 });
 

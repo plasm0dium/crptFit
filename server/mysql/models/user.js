@@ -30,9 +30,6 @@ var User = db.Model.extend({
   trainers: function() {
     return this.hasMany('Trainer');
   },
-  chats: function() {
-    return this.hasMany('Chat');
-  },
   weights: function() {
     return this.hasMany('Weight');
   },
@@ -54,17 +51,17 @@ var User = db.Model.extend({
 }, {
   //User Class Methods
 fetchById: function(options) {
-  return new this(options).fetch({withRelated: ['tasks', 'clients', 'friends', 'chats', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores']});
+  return new this(options).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores']});
   },
 fetchByUsername: function (username) {
   return this({
     username: username,
-  }).fetch({withRelated: ['tasks', 'clients', 'friends', 'chats', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores']});
+  }).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores']});
 },
 fetchByName: function (name) {
   return this({
     name: name
-    }).fetch({withRelated: ['tasks', 'clients', 'friends', 'chats', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores']});
+    }).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores']});
   },
 newUser: function (options) {
   return new this(options);

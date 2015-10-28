@@ -85,27 +85,12 @@ db.knex.schema.hasTable('friends').then(function(exists) {
   console.log('created table:', t);
 });
 
-db.knex.schema.hasTable('chats').then(function(exists) {
-  if (!exists) {
-    return db.knex.schema.createTable('chats', function(t) {
-      t.increments('id').primary();
-      t.integer('user_id').references('id').inTable('users');
-      t.integer('user2_id').references('id').inTable('users');
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
-    });
-  }
-})
-.then(function(t) {
-  console.log('created table:', t);
-});
-
 db.knex.schema.hasTable('messages').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('messages', function(t) {
       t.increments('id').primary();
-      t.integer('chat_id').references('id').inTable('chats');
-      t.integer('user_id').references('id').inTable('user');
+      t.integer('chat_id');
+      t.integer('user_id').references('id').inTable('users');
       t.string('text', 200);
       t.timestamp('created_at');
       t.timestamp('updated_at');
@@ -154,7 +139,8 @@ db.knex.schema.hasTable('weights').then(function(exists) {
       t.increments('id').primary();
       t.integer('weight').references('id').inTable('users');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -166,9 +152,8 @@ db.knex.schema.hasTable('chat').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('chat', function(t) {
       t.increments('id').primary();
-      t.integer('user_id').references('id').inTable('users');
-      t.integer('user2_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -176,12 +161,14 @@ db.knex.schema.hasTable('chat').then(function(exists) {
   console.log('created table:', t);
 });
 
-db.knex.schema.hasTable('chats').then(function(exists) {
+db.knex.schema.hasTable('chatstore').then(function(exists) {
   if (!exists) {
-    return db.knex.schema.createTable('chat', function(t) {
-      t.integer('chat_id').references('id').inTable('chat');
+    return db.knex.schema.createTable('chatstore', function(t) {
+      t.increments('id').primary();
       t.integer('user_id').references('id').inTable('users');
-      t.integer('user2_id').references('id').inTable('users');
+      t.integer('chat_id').references('id').inTable('chat');
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -195,7 +182,9 @@ db.knex.schema.hasTable('benchpress').then(function(exists) {
     return db.knex.schema.createTable('benchpress', function(t) {
       t.increments('id').primary();
       t.integer('benchpress').references('id').inTable('users');
-      t.timestamps();
+      t.integer('user_id').references('id').inTable('users');
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -209,7 +198,8 @@ db.knex.schema.hasTable('squats').then(function(exists) {
       t.increments('id').primary();
       t.integer('squat').references('id').inTable('users');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -223,7 +213,8 @@ db.knex.schema.hasTable('deadlifts').then(function(exists) {
       t.increments('id').primary();
       t.integer('deadlift').references('id').inTable('users');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
@@ -237,7 +228,8 @@ db.knex.schema.hasTable('speeds').then(function(exists) {
       t.increments('id').primary();
       t.integer('speed').references('id').inTable('users');
       t.integer('user_id').references('id').inTable('users');
-      t.timestamps();
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
     });
   }
 })
