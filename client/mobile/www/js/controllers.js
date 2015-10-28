@@ -97,7 +97,6 @@ angular.module('crptFit.controllers', ['ionic'])
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'}
   ];
  }])
 // Start of Menu Controller =======================================================
@@ -405,10 +404,29 @@ angular.module('crptFit.controllers', ['ionic'])
  };
 }])
 // Start of Social Controller =======================================================
-.controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
+.controller('SocialCtrl', ['$scope', '$ionicPopup','Social', '$http', function($scope, $ionicPopup, Social, $http) {
   var self = this;
   // Add a refreshing function here
   self.list = Social.friendsList();
+
+  var updateList = function(){
+    console.log('inside of updateList', list);
+    self.list = list;
+  };
+
+  self.showSearchResults = function(username){
+    $http({
+        method: 'GET',
+        url: '/auth/search/' + username
+      })
+      .then(function(response){
+        console.log("inside of the service calling SRL:", response.data)
+        return response.data;
+      }).then(function(response){
+        console.log("final part of SRL from service:", response);
+        self.list = response;
+      });
+  }
 
   self.saveUserID = function(facebookID){
     console.log("inside of SaveUserID", facebookID);
@@ -454,11 +472,8 @@ angular.module('crptFit.controllers', ['ionic'])
     });
     myPopup.then(function(res) {
       console.log('Tapped!', res);
-      return Promise.resolve(Social.searchResultsList(res));
-    }).then(function(result){
-      console.log("this is the result", result)
-      self.list = result;
-    });
+      return self.showSearchResults(res);
+    })
   };
 
 }])
