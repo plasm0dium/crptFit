@@ -116,6 +116,7 @@ angular.module('crptFit.services', [])
     searchResultsList: function(username){
       $http({
         method: 'GET',
+
         url: '/auth/search/' + username
       })
       .then(function(response){
@@ -125,6 +126,9 @@ angular.module('crptFit.services', [])
         console.log("final part of SRL from service:", response);
         searchResults = response;
         return searchResults;
+
+        url: 'auth/search/' + username
+
       });
     }
   };
