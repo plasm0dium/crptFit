@@ -351,27 +351,34 @@ angular.module('crptFit.controllers', ['ionic'])
 //NOTE Refactor me
   var self = this;
 
+  self.showId =function(val){
+    Message.capturedChatID(val);
+  };
   self.search = Social.friendsList();
-
   self.showMessageContent = function(){
     Message.captureMessages();
   };
-  self.clearContent = function(){
-    console.log('why cap no null')
-      Message.clearCap();
-  };
+  // self.clearContent = function(){
+  //   Message.clearCap();
+  // };
   self.showMessages = function(){
    Message.getMessage();
   };
+  Message.messageList();
 
-  self.messageToPage = Message.messageList();
+  self.messageToPage = Message.captureMessages();
+
+  self.returnMessage = Message.messageToPage();
+
+  self.getMessagesById = function(){
+    self.sendHelp = Message.clearCap();
+  };
 
   self.searchFriends = function(){
     self.search = Social.friendsList();
   };
 
-  self.capture = Message.capturedChatID();
-  self.captureMessages = Message.captureMessages();
+  self.captureMessages = Message.messageList();
 
   self.makeChat = function(userId){
     console.log('clicked');
@@ -379,6 +386,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.chat = Message.makeChat(userId);
   };
   self.sendMessage = function(chatId, val){
+    console.log(chatId)
     self.send = Message.sendMessage(chatId, val);
      self.sendTo.val = null;
   };
@@ -392,7 +400,7 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.data = {};
   // An elaborate, custom popup
   var myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href="#/tab/message">{{friend.username}}</a></div></div></div>',
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href=#/tab/message>{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [
@@ -404,7 +412,6 @@ angular.module('crptFit.controllers', ['ionic'])
     self.list = Social.searchResultsList(res);
   });
  };
-
 }])
 // Start of Social Controller =======================================================
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', '$http', function($scope, $ionicPopup, Social, $http) {
