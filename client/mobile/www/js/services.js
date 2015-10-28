@@ -24,6 +24,7 @@ angular.module('crptFit.services', [])
   var friends = [];
   var clients = [];
   var trainers = [];
+  var searchResults = [];
   var savedUserID;
 
   return {
@@ -45,7 +46,6 @@ angular.module('crptFit.services', [])
       }, function(error){
         console.log(error);
       });
-      console.log(friends, 'this is friends')
       return friends;
     },
     getFriendsLength: function(){
@@ -115,7 +115,15 @@ angular.module('crptFit.services', [])
     searchResultsList: function(username){
       $http({
         method: 'GET',
-        url: 'auth/search/' + username
+        url: '/auth/search/' + username
+      })
+      .then(function(response){
+        console.log("inside of the service calling SRL:", response.data)
+        return response.data;
+      }).then(function(response){
+        console.log("final part of SRL from service:", response);
+        searchResults = response;
+        return searchResults;
       });
     }
   };
@@ -203,18 +211,6 @@ angular.module('crptFit.services', [])
   var squat = [];
   //all functions need integration with db
   return {
-    // checkMeStr : function(strong){
-    //   console.log(strong, 'clicked');
-    //   strength.push(strong);
-    // },
-    // checkMeSpd : function(timeSpd, distance){
-    //   console.log(timeSpd, distance);
-    //   speed.push((distance/timeSpd)*60);
-    // },
-    // checkMeWgt : function(weigh){
-    //   console.log(weigh, 'clicked');
-    //   weight.push(weigh);
-    // },
     getStr : function(){
       return strength;
     },
@@ -235,6 +231,26 @@ angular.module('crptFit.services', [])
     },
     getSelf : function(){
       return selfUid;
+    },
+    pushBnch : function(val){
+      bench.shift();
+      bench.push(val);
+    },
+    pushDed : function(val){
+      dead.shift();
+      dead.push(val);
+    },
+    pushSqu : function(val){
+      squat.shift();
+      squat.push(val);
+    },
+    pushSpd : function(val){
+      speed.shift();
+      speed.push(val);
+    },
+    pushWgt : function(val){
+      weight.shift();
+      weight.push(val);
     },
     //all functions below here need to be tested and found working
     postBnch: function(stat){
@@ -273,12 +289,12 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/benchpress/'+val
       }).then(function(response){
-        console.log(response.data, 'this is the bench db query');
         if(bench.length === 0){
-          for(var i = 0; i < response.data.length; i++){
+          for(var i = response.data.length-8; i < response.data.length-1; i++){
             bench.push(response.data[i].benchpress);
           }
         }else{
+          bench.shift();
           bench.push(response.data[response.data.length-1].benchpress);
         }
       }, function(error){
@@ -291,7 +307,7 @@ angular.module('crptFit.services', [])
         url: '/auth/deadlift/'+uId
       }).then(function(response){
         if(dead.length === 0){
-          for(var i = 0; i < response.data.length; i++){
+          for(var i = response.data.length-8; i < response.data.length-1; i++){
             dead.push(response.data[i].deadlift);
           }
         }else{
@@ -307,7 +323,7 @@ angular.module('crptFit.services', [])
         url: '/auth/squats/'+uId
       }).then(function(response){
         if(squat.length === 0){
-          for(var i = 0; i < response.data.length; i++){
+          for(var i = response.data.length-8; i < response.data.length-1; i++){
             squat.push(response.data[i].squat);
           }
         }else{
@@ -323,7 +339,7 @@ angular.module('crptFit.services', [])
         url: '/auth/speeds/'+uId
       }).then(function(response){
         if(speed.length === 0){
-          for(var i = 0; i < response.data.length; i++){
+          for(var i = response.data.length-8; i < response.data.length-1; i++){
             speed.push(response.data[i].speed);
           }
         }else{
@@ -339,7 +355,7 @@ angular.module('crptFit.services', [])
         url: '/auth/weight/'+uId
       }).then(function(response){
         if(weight.length === 0){
-          for(var i = 0; i < response.data.length; i++){
+          for(var i = response.data.length-8; i < response.data.length-1; i++){
             weight.push(response.data[i].weight);
           }
         }else{

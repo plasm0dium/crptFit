@@ -8,7 +8,21 @@ angular.module('crptFit.controllers', ['ionic'])
   self.friendCount;
   self.trainerCount;
   self.clientCount;
+  self.userID = Social.getUserID();
+  console.log("inside ViewProfileCtrl:", self.userID)
 
+  self.sendFriendRequest = function(){
+    $http({
+      method: 'POST',
+      url: '/auth/friendreq/add:' + self.userID
+    })
+  };
+  self.sendClientRequest = function(){
+    $http({
+      method: 'POST',
+      url: '/auth/clientreq/add:' + self.userID
+    })
+  };
   var setProfileInfo = function(picUrl, username, friends, trainers, clients, activityFeed){
     self.pic = picUrl;
     self.username = username;
@@ -57,6 +71,7 @@ angular.module('crptFit.controllers', ['ionic'])
     method: 'GET',
     url: '/auth/tasks'
   }).then(function(response){
+    console.log("inside of the ProfileCtrl call:", response);
     setTasks(response.data);
   })
   // Grab a users profile information - extract into a factory later
@@ -82,7 +97,6 @@ angular.module('crptFit.controllers', ['ionic'])
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
     {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'}
   ];
  }])
 // Start of Menu Controller =======================================================
@@ -97,12 +111,16 @@ angular.module('crptFit.controllers', ['ionic'])
 // Start of Progress Benchpress Controller ==================================================
   .controller('ProgressCtrlBench', ['$scope', '$http', 'Progress', 'Social', function($scope, $http, Progress, Social){
     var self = this;
+    self.pushMe =  function(){
+      Progress.pushBnch(self.benchData.weight);
+      Progress.postBnch(self.benchData.weight);
+      self.benchData.weight = null;
+    };
     self.getUid = function(){
         $http({
           method: 'GET',
           url: '/auth/picture'
         }).then(function(response){
-          console.log(response.data.id)
         self.uId = response.data.id;
         self.checkMe(self.uId);
         });
@@ -116,8 +134,6 @@ angular.module('crptFit.controllers', ['ionic'])
        self.Bench = Progress.getBnch();
 
        self.checkMe = function(val){
-         console.log('in the checkme', val, 'THIS SHOULD BE 1')
-         self.check = Progress.postBnch(self.benchData.weight);
          self.benchData.weight = null;
          Progress.queryBnch(val);
          self.Bench = Progress.getBnch();
@@ -140,12 +156,16 @@ angular.module('crptFit.controllers', ['ionic'])
 // Start of Progress Deadlift Controller ====================================================
   .controller('ProgressCtrlDead', ['$scope','$http', 'Progress', function($scope, $http, Progress){
     var self = this;
+    self.pushMe =  function(){
+      Progress.pushDed(self.deadData.weight);
+      Progress.postDed(self.deadData.weight);
+      self.deadData.weight = null;
+    };
     self.getUid = function(){
         $http({
           method: 'GET',
           url: '/auth/picture'
         }).then(function(response){
-          console.log(response.data.id)
         self.uId = response.data.id;
         self.checkMe(self.uId);
         });
@@ -159,8 +179,6 @@ angular.module('crptFit.controllers', ['ionic'])
        self.Dead = Progress.getDed();
 
        self.checkMe = function(val){
-         console.log('in the checkme', val, 'THIS SHOULD BE 1')
-         self.check = Progress.postDed(self.deadData.weight);
          self.deadData.weight = null;
          Progress.queryDed(val);
          self.Dead = Progress.getDed();
@@ -183,12 +201,16 @@ angular.module('crptFit.controllers', ['ionic'])
 // Start of Progress Squat Controller =======================================================
 .controller('ProgressCtrlSquats', ['$scope', '$http', 'Progress', function($scope, $http, Progress){
   var self = this;
+  self.pushMe =  function(){
+    Progress.pushSqu(self.squatData.weight);
+    Progress.postSqu(self.squatData.weight);
+    self.squatData.weight = null;
+  };
   self.getUid = function(){
       $http({
         method: 'GET',
         url: '/auth/picture'
       }).then(function(response){
-        console.log(response.data.id)
       self.uId = response.data.id;
       self.checkMe(self.uId);
       });
@@ -202,8 +224,6 @@ angular.module('crptFit.controllers', ['ionic'])
      self.Squat = Progress.getSqu();
 
      self.checkMe = function(val){
-       console.log('in the checkme', val, 'THIS SHOULD BE 1')
-       self.check = Progress.postSqu(self.squatData.weight);
        self.squatData.weight = null;
        Progress.querySqu(val);
        self.Squat = Progress.getSqu();
@@ -226,6 +246,12 @@ angular.module('crptFit.controllers', ['ionic'])
 // Start of Progress Speed Controller =======================================================
   .controller('ProgressCtrlSpd', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
     var self = this;
+    self.pushMe =  function(){
+      Progress.pushSpd((self.distance.val/self.timeSpd.val)*60);
+      Progress.postSpd((self.distance.val/self.timeSpd.val)*60);
+      self.distance.val = null;
+      self.timeSpd.val = null;
+    };
     self.timeSpd = {
       val: null
     };
@@ -237,7 +263,6 @@ angular.module('crptFit.controllers', ['ionic'])
           method: 'GET',
           url: '/auth/picture'
         }).then(function(response){
-          console.log(response.data.id)
         self.uId = response.data.id;
         self.checkMe(self.uId);
         });
@@ -246,7 +271,6 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid();
     self.Speed = Progress.getSpd();
     self.checkMe = function(val){
-      self.check = Progress.postSpd(self.distance.val, self.timeSpd.val);
       self.timeSpd.val = null;
       self.distance.val = null;
       Progress.querySpd(val);
@@ -270,12 +294,16 @@ angular.module('crptFit.controllers', ['ionic'])
 // Start of Progress Weight Controller =======================================================
   .controller('ProgressCtrlWgt', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
     var self = this;
+    self.pushMe =  function(){
+      Progress.pushWgt(self.weight.weight);
+      Progress.postWgt(self.weight.weight);
+      self.weight.weight = null;
+    };
     self.getUid = function(){
         $http({
           method: 'GET',
           url: '/auth/picture'
         }).then(function(response){
-          console.log(response.data.id)
         self.uId = response.data.id;
         self.checkMe(self.uId);
         });
@@ -288,8 +316,6 @@ angular.module('crptFit.controllers', ['ionic'])
        self.Weight = Progress.getWgt();
 
        self.checkMe = function(val){
-         console.log('in the checkme', val, 'THIS SHOULD BE 1')
-         self.check = Progress.postWgt(self.weight.weight);
          self.weight.weight = null;
          Progress.queryWgt(val);
          self.Weight = Progress.getWgt();
@@ -381,10 +407,29 @@ angular.module('crptFit.controllers', ['ionic'])
 
 }])
 // Start of Social Controller =======================================================
-.controller('SocialCtrl', ['$scope', '$ionicPopup','Social', function($scope, $ionicPopup, Social) {
+.controller('SocialCtrl', ['$scope', '$ionicPopup','Social', '$http', function($scope, $ionicPopup, Social, $http) {
   var self = this;
   // Add a refreshing function here
   self.list = Social.friendsList();
+
+  var updateList = function(){
+    console.log('inside of updateList', list);
+    self.list = list;
+  };
+
+  self.showSearchResults = function(username){
+    $http({
+        method: 'GET',
+        url: '/auth/search/' + username
+      })
+      .then(function(response){
+        console.log("inside of the service calling SRL:", response.data)
+        return response.data;
+      }).then(function(response){
+        console.log("final part of SRL from service:", response);
+        self.list = response;
+      });
+  }
 
   self.saveUserID = function(facebookID){
     console.log("inside of SaveUserID", facebookID);
@@ -430,8 +475,8 @@ angular.module('crptFit.controllers', ['ionic'])
     });
     myPopup.then(function(res) {
       console.log('Tapped!', res);
-      self.list = Social.searchResultsList(res);
-    });
+      return self.showSearchResults(res);
+    })
   };
 
 }])
