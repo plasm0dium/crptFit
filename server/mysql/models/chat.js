@@ -5,8 +5,9 @@ require('./message');
 
 var Chat = db.Model.extend({
   tableName: 'chats',
+
   user: function () {
-    return this.belongsToMany('User');
+    return this.belongsTo('User');
   },
   message: function() {
     return this.hasMany('Message');

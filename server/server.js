@@ -240,6 +240,11 @@ app.get('auth/users/:username', function (req, res) {
 });
 
 // Fetch Chatroom
+var chatId = 1;
+db.collection('Chats').fetchByUser(chatId)
+.then(function(chat) {
+  console.log('THIS IS CHAT ROOM :', chat.models[0].attributes);
+});
 app.get('/auth/chat/get:id', function (req, res){
   var chatId = req.params.id;
   db.model('Chat').fetchById(chatId)
@@ -473,6 +478,7 @@ app.post('/auth/chat/add:id', function (req, res){
   .save()
 });
 //Adds Messages to chat session
+
 app.post('/auth/messages/add:id', function (req, res){
   console.log('REQ>BODY', req.body, 'REQ>CHATID', req.params.id)
   var userId = req.user.attributes.id;
