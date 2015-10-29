@@ -242,7 +242,7 @@ angular.module('crptFit.services', [])
   var speed = [];
   var bench = [];
   var dead = [];
-  var squat = [];
+  var squatHold = [];
   //all functions need integration with db
   return {
     getStr : function(){
@@ -255,7 +255,7 @@ angular.module('crptFit.services', [])
       return dead;
     },
     getSqu : function(){
-      return squat;
+      return squatHold;
     },
     getSpd : function(){
       return speed;
@@ -279,9 +279,9 @@ angular.module('crptFit.services', [])
       }
     },
     pushSqu : function(val){
-      if(squat.length < 8){squat.push(val);}else{
-      squat.shift();
-      squat.push(val);
+      if(squatHold.length < 8){squatHold.push(val);}else{
+      squatHold.shift();
+      squatHold.push(val);
       }
     },
     pushSpd : function(val){
@@ -338,8 +338,9 @@ angular.module('crptFit.services', [])
               bench.push(response.data[x].benchpress);
             }
           }
-        }else{
+        else{
           bench.push(response.data[response.data.length-1].benchpress);
+        }
         }
       }, function(error){
         console.log('Something went wrong : ', error);
@@ -356,8 +357,9 @@ angular.module('crptFit.services', [])
               dead.push(response.data[x].deadlift);
             }
           }
-        }else{
-          dead.push(response.data[response.data.length-1].deadlift);
+          else{
+            dead.push(response.data[response.data.length-1].deadlift);
+          }
         }
       }, function(error){
         console.log('Something went wrong : ', error);
@@ -368,14 +370,16 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/squats/'+uId
       }).then(function(response){
-        if(squat.length === 0){
+        console.log(response.data)
+        if(squatHold.length === 0){
           if(response.data.length <= 8){
             for(var x = 0; x < response.data.length-1; x++){
-              squat.push(response.data[x].squat);
+              squatHold.push(response.data[x].squat);
             }
           }
-        }else{
-          squat.push(response.data[response.data.length-1].squat);
+          else{
+            squatHold.push(response.data[response.data.length-1].squat);
+          }
         }
       }, function(error){
         console.log('Something went wrong : ', error);
@@ -391,14 +395,11 @@ angular.module('crptFit.services', [])
             for(var x = 0; x < response.data.length-1; x++){
               speed.push(response.data[x].speed);
             }
-          }else{
-            for(var i = response.data.length-8; i < response.data.length-1; i++){
-              speed.push(response.data[i].speed);
+        }
+        else{
+            speed.push(response.data[response.data.length-1].speed);
           }
-        }
-      }else{
-          speed.push(response.data[response.data.length-1].speed);
-        }
+      }
       }, function(error){
         console.log('Something went wrong : ', error);
       });
@@ -414,8 +415,9 @@ angular.module('crptFit.services', [])
               weight.push(response.data[x].weight);
             }
           }
-        }else{
-          weight.push(response.data[response.data.length-1].weight);
+          else{
+            weight.push(response.data[response.data.length-1].weight);
+          }
         }
       }, function(error){
         console.log('Something went wrong : ', error);

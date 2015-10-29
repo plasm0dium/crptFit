@@ -117,6 +117,7 @@ angular.module('crptFit.controllers', ['ionic'])
       self.benchData.weight = null;
     };
     self.getUid = function(){
+       console.log('i fired!')
         $http({
           method: 'GET',
           url: '/auth/picture'
