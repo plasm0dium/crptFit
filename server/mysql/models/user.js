@@ -18,7 +18,6 @@ require('./geolocation');
 var User = db.Model.extend({
   //User Properties
   tableName: 'users',
-
   tasks: function () {
     return this.hasMany('Task');
   },

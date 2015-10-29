@@ -98,26 +98,64 @@ app.get('/auth/user/:id', function (req, res) {
 })
 
 //News Feed Pulls Latest Completed Tasks of Friends
+var taskStore = [];
 app.get('/auth/newsfeed', function (req, res) {
-  db.collection('Friends').fetchByUser(req.user.attributes.id)
+  db.collection('Friends').fetchByUser(1)
   .then(function(users) {
-    return Promise.all(users.models.map(function(friend) {
-      db.model('User').fetchById({
-        id: friend.attributes.friends_id
-      }).then(function(result) {
-        return Promise.all(result.relations.tasks.models.map(function(task) {
-          if(task.attributes.complete === 1) {
-            return task;
-          };
-        })).then(function(filteredTasks) {
-          res.json(filteredTasks);
-        }).catch(function(err) {
-          return err;
-        });
-      });
-    }));
-  });
+    console.log("THEY ARE MY FRIENDS", users)
+      return Promise.all(users.models.map(function(friend) {
+         return db.model('User').fetchById({
+          id: friend.attributes.friends_id
+        })
+      }))
+    })
+      .then(function(results){
+        console.log("I HOPE IT IS THERE", results);
+        return Promise.all(results.map(function(model) {
+          console.log("ANY TASKS HERE", model.relations.tasks.models)
+            model.relations.tasks.models.forEach(function(task){
+              if (task.attributes.complete === 1){
+                taskStore.push(task);
+              }
+            })
+         }))
+      })
+        .then(function(){
+        console.log("WHERE IS MY NEW FEED", taskStore)
+        res.json(taskStore)
+        })
 });
+
+// db.collection('Friends').fetchByUser(1)
+// .then(function(users) {
+//   console.log("THEY ARE MY FRIENDS", users)
+//     return Promise.all(users.models.map(function(friend) {
+//        return db.model('User').fetchById({
+//         id: friend.attributes.friends_id
+//       })
+//     }))
+//   })
+//     .then(function(results){
+//       console.log("I HOPE IT IS THERE", results);
+//       return Promise.all(results.map(function(model) {
+//         console.log("ANY TASKS HERE", model.relations.tasks.models)
+//           model.relations.tasks.models.forEach(function(task){
+//             if (task.attributes.complete === 1){
+//               taskStore.push(task);
+//             }
+//           })
+//        }))
+//     })
+//       .then(function(){
+//       console.log("WHERE IS MY NEW FEED", taskStore)
+//       res.json(taskStore)
+//       })
+    // })
+      // .then(function(filteredTasks) {
+      //   console.log("DOES IT RETURN WHAT I WANT", filteredTasks)
+      //   res.json(filteredTasks);
+      // })
+
 
 app.get('/auth/picture', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
@@ -516,7 +554,6 @@ app.post('/auth/confirmfriend/:id', function (req, res){
 });
 
 //Creates a Chat Session
-
 app.post('/auth/chat/add:id', function (req, res){
   var chatId;
   var userId1 = req.user.attributes.id;
@@ -547,7 +584,6 @@ app.post('/auth/chat/add:id', function (req, res){
 });
 
 //Adds Messages to chat session
-
 app.post('/auth/messages/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
