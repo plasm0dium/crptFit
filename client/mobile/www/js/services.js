@@ -3,11 +3,15 @@ angular.module('crptFit.services', [])
 .factory('Tasks', ['$http', function($http){
   var tasks = [];
   return {
-    finishTask : function(task){
-      console.log(task)
+    getTaskHolder: function(val){
+      tasks.push({description:val})
+      return tasks;
+    },
+    finishTask : function(taskId, task){
+      console.log(taskId, task)
       $http({
         method: 'POST',
-        url: '/auth/task/complete/' +task,
+        url: '/auth/task/complete/' +taskId,
       });
       console.log(task, 'clicked');
       tasks.splice(tasks.indexOf(task), 1);
@@ -40,8 +44,7 @@ angular.module('crptFit.services', [])
     addTaskToSelf: function(val){
       $http({
         method: 'POST',
-        url: '/auth/tasks/',
-        data : val
+        url: '/auth/tasks/'+val
       });
     }
   };

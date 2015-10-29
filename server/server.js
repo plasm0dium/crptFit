@@ -271,6 +271,7 @@ app.get('/auth/clientrequests', function (req, res) {
       console.log('this is the finalresult of client_requests :', result)
       res.json(result);
     });
+    });
   });
 
 // Fetch a User's Chat Sessions
@@ -340,7 +341,7 @@ app.get('/auth/speeds/:id', function (req, res){
 app.post('/auth/tasks/:taskname', function (req, res) {
   var task = req.params.taskname;
   db.model('Task').newTask({
-    description: taskname,
+    description: task,
     complete: false,
     user_id: req.user.attributes.id
   })

@@ -341,6 +341,8 @@ angular.module('crptFit.controllers', ['ionic'])
   var self = this;
   self.createTask = function(val){
     Tasks.addTaskToSelf(val);
+    Tasks.getTaskHolder(val);
+    self.sendTo.val = null;
   };
   self.sendTo = {
     val : null
@@ -351,8 +353,8 @@ angular.module('crptFit.controllers', ['ionic'])
   self.toggle = function(task){
     task.toggled = !task.toggled;
   };
-  self.finishTask = function(task){
-    self.finish = Tasks.finishTask(task);
+  self.finishTask = function(taskId, task){
+    self.finish = Tasks.finishTask(taskId, task);
   };
 }])
 

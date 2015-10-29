@@ -1,7 +1,7 @@
 <ion-view title="Tasks" ng-controller="ProgressCtrlTask as ctrl" ng-init="ctrl.startTasks()">
   <ion-content>
     <div ng-repeat="task in ctrl.tasks track by $index" ng-click="ctrl.toggle(task)" ng-class="{taskCom : task.toggled}">
-      <button type="button" class="button button-dark destro" ng-click="ctrl.finishTask(task.id)">remove</button>
+      <button type="button" class="button button-dark destro" ng-click="ctrl.finishTask(task.id, task)">remove</button>
       <ion-checkbox>
         {{task.description}}
       </ion-checkbox>
