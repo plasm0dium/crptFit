@@ -115,6 +115,7 @@ angular.module('crptFit.controllers', ['ionic'])
       Progress.pushBnch(self.benchData.weight);
       Progress.postBnch(self.benchData.weight);
       self.benchData.weight = null;
+      Progress.getBnch();
     };
     self.getUid = function(){
         $http({
@@ -251,6 +252,7 @@ angular.module('crptFit.controllers', ['ionic'])
       Progress.postSpd((self.distance.val/self.timeSpd.val)*60);
       self.distance.val = null;
       self.timeSpd.val = null;
+      Progress.getSpd();
     };
     self.timeSpd = {
       val: null
@@ -336,14 +338,24 @@ angular.module('crptFit.controllers', ['ionic'])
     };
   }])
 // Start of Progress Task Controller =======================================================
-.controller('ProgressCtrlTask', ['Task', function(Task){
+.controller('ProgressCtrlTask', ['Tasks', function(Tasks){
   var self = this;
-  self.tasks = Task.taskFunc();
+  self.createTask = function(val){
+    Tasks.addTaskToSelf(val);
+    Tasks.getTaskHolder(val);
+    self.sendTo.val = null;
+  };
+  self.sendTo = {
+    val : null
+  };
+  self.startTasks = function(){
+    self.tasks = Tasks.getTasksList();
+  };
   self.toggle = function(task){
     task.toggled = !task.toggled;
   };
-  self.finishTask = function(task){
-    self.finish = Task.finishTask(task);
+  self.finishTask = function(taskId, task){
+    self.finish = Tasks.finishTask(taskId, task);
   };
 }])
 

@@ -34,10 +34,10 @@ img{
 .sideNav{
   padding: 0;
 }
-.taskCom label {
+/*.taskCom{
 	color: #d9d9d9;
 	text-decoration: line-through;
-}
+}*/
 .messageFoot, .messageFoot2{
   margin-bottom: 10px;
   width: 100%;
