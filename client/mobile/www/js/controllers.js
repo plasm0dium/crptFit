@@ -115,6 +115,7 @@ angular.module('crptFit.controllers', ['ionic'])
       Progress.pushBnch(self.benchData.weight);
       Progress.postBnch(self.benchData.weight);
       self.benchData.weight = null;
+      Progress.getBnch();
     };
     self.getUid = function(){
         $http({
