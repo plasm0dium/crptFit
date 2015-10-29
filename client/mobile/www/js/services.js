@@ -170,7 +170,6 @@ angular.module('crptFit.services', [])
   return {
     messageToPage : function(){
       newRet = messageReturn;
-      messageReturn = [];
       return newRet;
     },
     messageList : function(){
@@ -223,6 +222,7 @@ angular.module('crptFit.services', [])
       });
     },
     sendMessage: function(id, val){
+      messageReturn.push(val);
       console.log(id);
       $http({
         method: 'POST',
@@ -267,24 +267,34 @@ angular.module('crptFit.services', [])
       return selfUid;
     },
     pushBnch : function(val){
+      if(bench.length < 8){bench.push(val);}else{
       bench.shift();
       bench.push(val);
+      }
     },
     pushDed : function(val){
+      if(dead.length < 8){dead.push(val);}else{
       dead.shift();
       dead.push(val);
+      }
     },
     pushSqu : function(val){
+      if(squat.length < 8){squat.push(val);}else{
       squat.shift();
       squat.push(val);
+      }
     },
     pushSpd : function(val){
+      if(speed.length < 8){speed.push(val);}else{
       speed.shift();
       speed.push(val);
+      }
     },
     pushWgt : function(val){
+      if(weight.length < 8){weight.push(val);}else{
       weight.shift();
       weight.push(val);
+      }
     },
     //all functions below here need to be tested and found working
     postBnch: function(stat){
@@ -323,11 +333,12 @@ angular.module('crptFit.services', [])
         url: '/auth/benchpress/'+val
       }).then(function(response){
         if(bench.length === 0){
-          for(var i = response.data.length-8; i < response.data.length-1; i++){
-            bench.push(response.data[i].benchpress);
+          if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length-1; x++){
+              bench.push(response.data[x].benchpress);
+            }
           }
         }else{
-          bench.shift();
           bench.push(response.data[response.data.length-1].benchpress);
         }
       }, function(error){
@@ -340,8 +351,10 @@ angular.module('crptFit.services', [])
         url: '/auth/deadlift/'+uId
       }).then(function(response){
         if(dead.length === 0){
-          for(var i = response.data.length-8; i < response.data.length-1; i++){
-            dead.push(response.data[i].deadlift);
+          if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length-1; x++){
+              dead.push(response.data[x].deadlift);
+            }
           }
         }else{
           dead.push(response.data[response.data.length-1].deadlift);
@@ -356,8 +369,10 @@ angular.module('crptFit.services', [])
         url: '/auth/squats/'+uId
       }).then(function(response){
         if(squat.length === 0){
-          for(var i = response.data.length-8; i < response.data.length-1; i++){
-            squat.push(response.data[i].squat);
+          if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length-1; x++){
+              squat.push(response.data[x].squat);
+            }
           }
         }else{
           squat.push(response.data[response.data.length-1].squat);
@@ -394,8 +409,10 @@ angular.module('crptFit.services', [])
         url: '/auth/weight/'+uId
       }).then(function(response){
         if(weight.length === 0){
-          for(var i = response.data.length-8; i < response.data.length-1; i++){
-            weight.push(response.data[i].weight);
+          if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length-1; x++){
+              weight.push(response.data[x].weight);
+            }
           }
         }else{
           weight.push(response.data[response.data.length-1].weight);
