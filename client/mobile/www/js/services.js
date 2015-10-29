@@ -337,10 +337,9 @@ angular.module('crptFit.services', [])
             for(var x = 0; x < response.data.length-1; x++){
               bench.push(response.data[x].benchpress);
             }
+          }else{
+            bench.push(response.data[response.data.length-1].benchpress);
           }
-        else{
-          bench.push(response.data[response.data.length-1].benchpress);
-        }
         }
       }, function(error){
         console.log('Something went wrong : ', error);
@@ -356,8 +355,7 @@ angular.module('crptFit.services', [])
             for(var x = 0; x < response.data.length-1; x++){
               dead.push(response.data[x].deadlift);
             }
-          }
-          else{
+          }else{
             dead.push(response.data[response.data.length-1].deadlift);
           }
         }
@@ -376,8 +374,7 @@ angular.module('crptFit.services', [])
             for(var x = 0; x < response.data.length-1; x++){
               squatHold.push(response.data[x].squat);
             }
-          }
-          else{
+          }else{
             squatHold.push(response.data[response.data.length-1].squat);
           }
         }
@@ -395,11 +392,10 @@ angular.module('crptFit.services', [])
             for(var x = 0; x < response.data.length-1; x++){
               speed.push(response.data[x].speed);
             }
-        }
-        else{
+        }else{
             speed.push(response.data[response.data.length-1].speed);
           }
-      }
+        }
       }, function(error){
         console.log('Something went wrong : ', error);
       });
@@ -414,8 +410,7 @@ angular.module('crptFit.services', [])
             for(var x = 0; x < response.data.length-1; x++){
               weight.push(response.data[x].weight);
             }
-          }
-          else{
+          }else{
             weight.push(response.data[response.data.length-1].weight);
           }
         }
