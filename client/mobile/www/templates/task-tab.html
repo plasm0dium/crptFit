@@ -1,10 +1,22 @@
-<ion-view title="Tasks" ng-controller="ProgressCtrlTask as ctrl">
+<ion-view title="Tasks" ng-controller="ProgressCtrlTask as ctrl" ng-init="ctrl.startTasks()">
   <ion-content>
-    <div ng-repeat="task in ctrl.tasks" ng-click="ctrl.toggle(task)" ng-class="{taskCom : task.toggled}">
-      <button type="button" class="button button-dark destro" ng-click="ctrl.finishTask(task)">remove</button>
+    <div ng-repeat="task in ctrl.tasks track by $index" ng-click="ctrl.toggle(task)" ng-class="{taskCom : task.toggled}">
+      <button type="button" class="button button-dark destro" ng-click="ctrl.finishTask(task.id)">remove</button>
       <ion-checkbox>
-        {{task.task}}: {{task.todo}}
+        {{task.description}}
       </ion-checkbox>
     </div>
   </ion-content>
+    <ion-footer-bar class="messageFoot">
+      <div class="list messageFoot2">
+        <div class="item item-input-inset">
+          <div class="item-input-wrapper">
+            <input class="messageInput" type="text" placeholder="Enter Task Here..." ng-model="ctrl.sendTo.val">
+          </div>
+          <button type="submit" class="button button-small" ng-click="ctrl.createTask(ctrl.sendTo.val)">
+            Add Task
+          </button>
+        </div>
+      </div>
+    </ion-footer-bar>
 </ion-view>

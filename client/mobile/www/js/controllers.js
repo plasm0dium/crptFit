@@ -251,6 +251,7 @@ angular.module('crptFit.controllers', ['ionic'])
       Progress.postSpd((self.distance.val/self.timeSpd.val)*60);
       self.distance.val = null;
       self.timeSpd.val = null;
+      Progress.getSpd();
     };
     self.timeSpd = {
       val: null
@@ -336,14 +337,22 @@ angular.module('crptFit.controllers', ['ionic'])
     };
   }])
 // Start of Progress Task Controller =======================================================
-.controller('ProgressCtrlTask', ['Task', function(Task){
+.controller('ProgressCtrlTask', ['Tasks', function(Tasks){
   var self = this;
-  self.tasks = Task.taskFunc();
+  self.createTask = function(val){
+    Tasks.addTaskToSelf(val);
+  };
+  self.sendTo = {
+    val : null
+  };
+  self.startTasks = function(){
+    self.tasks = Tasks.getTasksList();
+  };
   self.toggle = function(task){
     task.toggled = !task.toggled;
   };
   self.finishTask = function(task){
-    self.finish = Task.finishTask(task);
+    self.finish = Tasks.finishTask(task);
   };
 }])
 

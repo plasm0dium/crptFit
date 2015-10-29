@@ -1,20 +1,48 @@
 angular.module('crptFit.services', [])
 // Start of Tasks Factory ====================================================
 .factory('Tasks', ['$http', function($http){
-  var tasks;
-  var setTasks = function(tasksList){
-    tasks = tasksList;
-  }
+  var tasks = [];
   return {
-    getTasksList: function(){
+    finishTask : function(task){
+      console.log(task)
       $http({
-        method: 'GET',
-        url: '/auth/tasks'
-      }).then(function(response){
-        setTasks(response.data);
-        console.log("Tasks returned from server:", response.data);
-      })
-      return tasks;
+        method: 'POST',
+        url: '/auth/task/complete/' +task,
+      });
+      console.log(task, 'clicked');
+      tasks.splice(tasks.indexOf(task), 1);
+    },
+    getTasksList: function(){
+      console.log(tasks, 'this is tasks as soon as its clicked')
+        tasks = [];
+        $http({
+          method: 'GET',
+          url: '/auth/tasks'
+        }).then(function(response){
+          response.data.forEach(function(x){
+            if(!x.complete){
+              tasks.push(x)
+            }
+          });
+            console.log("Tasks returned from server:", response.data);
+          });
+          return tasks;
+    },
+    addTaskToClient : function(uId, val){
+      $http({
+        method: 'POST',
+        url: '/auth/tasks/add'+uId,
+        data : {
+          taskname: val
+        }
+      });
+    },
+    addTaskToSelf: function(val){
+      $http({
+        method: 'POST',
+        url: '/auth/tasks/',
+        data : val
+      });
     }
   };
 }])
@@ -278,11 +306,10 @@ angular.module('crptFit.services', [])
         url: '/auth/squat/'+stat,
       });
     },
-    postSpd : function(stat1, stat2){
-      var calcStat = ((stat1/stat2)*60);
+    postSpd : function(stat){
       $http({
         method: 'POST',
-        url: '/auth/speed/'+calcStat,
+        url: '/auth/speed/'+stat,
       });
     },
     postWgt : function(stat){
@@ -346,10 +373,16 @@ angular.module('crptFit.services', [])
         url: '/auth/speeds/'+uId
       }).then(function(response){
         if(speed.length === 0){
-          for(var i = response.data.length-8; i < response.data.length-1; i++){
-            speed.push(response.data[i].speed);
+          if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length-1; x++){
+              speed.push(response.data[x].speed);
+            }
+          }else{
+            for(var i = response.data.length-8; i < response.data.length-1; i++){
+              speed.push(response.data[i].speed);
           }
-        }else{
+        }
+      }else{
           speed.push(response.data[response.data.length-1].speed);
         }
       }, function(error){
@@ -374,33 +407,3 @@ angular.module('crptFit.services', [])
     }
   };
 }])
-.factory('Task', ['$http', function($http){
-  var testTask = [
-    {task: 'Task1', todo: 'Run a million miles'},
-    {task: 'Task2', todo: 'Find the dragonballs'},
-    {task: 'Task3', todo: 'Become Perfectly Huge'}
-  ];
-  return {
-    finishTask : function(task){
-      //UNCOMMENT FOR PRODUCTION
-      $http({
-        method: 'POST',
-        url: '/auth/tasks',
-      });
-      console.log(task, 'clicked');
-      testTask.splice(testTask.indexOf(task), 1);
-    },
-    getTask : function(){
-      $http({
-        method: 'GET',
-        url: '/auth/tasks',
-      }).then(function(response){
-        tasks = response.data;
-        testTask.push(tasks);
-      });
-    },
-    taskFunc : function(){
-      return testTask;
-    }
-  };
-}]);

@@ -565,6 +565,7 @@ app.post('/auth/deadlift/:stat', function (req, res) {
 app.post('/auth/speed/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSpeed = req.params.stat;
+  console.log('YOUR SPEED ON POST BRO', currSpeed);
   db.model('Speed').newSpeed({
     speed: currSpeed,
     user_id: userId,
