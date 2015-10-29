@@ -86,7 +86,6 @@ app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
 });
 
 // Fetch a Specific User by Id
-
 app.get('/auth/user/:id', function (req, res) {
   var userId = req.params.id;
   db.model('User').fetchById({
@@ -96,7 +95,6 @@ app.get('/auth/user/:id', function (req, res) {
     res.json(result.toJSON())
   })
 })
-
 //News Feed Pulls Latest Completed Tasks of Friends
 var taskStore = [];
 app.get('/auth/newsfeed', function (req, res) {
@@ -128,7 +126,6 @@ app.get('/auth/newsfeed', function (req, res) {
         taskStore = [];
       })
 });
-
 app.get('/auth/picture', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
@@ -214,7 +211,7 @@ app.get('/auth/trainers', ensureAuthenticated, function (req, res) {
       });
 });
 
-//Search a Friends Friends
+//Search a Friend's Friends
   app.get('/auth/friends/:id', function (req, res) {
     db.collection('Friends').fetchByUser(req.params.id)
     .then(function(friends) {
@@ -282,8 +279,7 @@ app.get('/auth/clientrequests', function (req, res) {
       res.json(result);
     });
     });
-  });
-
+});
 // Fetch a User's Chat Sessions
 app.get('/auth/chatsessions', function(req, res) {
 var userId = req.user.attributes.id;
@@ -394,7 +390,6 @@ app.post('/auth/task/complete/:id', function(req, res) {
 });
 
 //Confirm Client Request and adds Client to User
-
 app.post('/auth/confirmclient', function (req, res) {
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
@@ -402,7 +397,7 @@ app.post('/auth/confirmclient', function (req, res) {
     user_id: userId,
     client_id: clientId
   })
-  .then(function () {
+  .then(function (){
     db.model('clientRequest').acceptClientRequest({
       user_id: clientId,
       client_id: userId
@@ -569,7 +564,6 @@ app.post('/auth/messages/add:id', function (req, res){
   })
   .save()
 });
-
 //Add Current Weight
 app.post('/auth/weight/:stat', function (req, res) {
   var userId = req.user.attributes.id;
@@ -581,7 +575,6 @@ app.post('/auth/weight/:stat', function (req, res) {
   })
   .save();
 });
-
 //Add Current Bench Press
 app.post('/auth/bench/:stat', function (req, res) {
   var userId = req.user.attributes.id;
@@ -593,7 +586,6 @@ app.post('/auth/bench/:stat', function (req, res) {
   })
   .save();
 });
-
 //Add Current Squat
 app.post('/auth/squat/:stat', function (req, res) {
   var userId = req.user.attributes.id;
@@ -605,7 +597,6 @@ app.post('/auth/squat/:stat', function (req, res) {
   })
   .save();
 });
-
 // Current Deadlift
 app.post('/auth/deadlift/:stat', function (req, res) {
   var userId = req.user.attributes.id;
@@ -617,7 +608,6 @@ app.post('/auth/deadlift/:stat', function (req, res) {
   })
   .save();
 });
-
 // Update Current Speed
 app.post('/auth/speed/:stat', function (req, res) {
   var userId = req.user.attributes.id;
