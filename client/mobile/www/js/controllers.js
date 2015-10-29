@@ -124,9 +124,9 @@ angular.module('crptFit.controllers', ['ionic'])
       Progress.pushBnch(self.benchData.weight);
       Progress.postBnch(self.benchData.weight);
       self.benchData.weight = null;
-      Progress.getBnch();
     };
     self.getUid = function(){
+       console.log('i fired!')
         $http({
           method: 'GET',
           url: '/auth/picture'
@@ -407,6 +407,7 @@ angular.module('crptFit.controllers', ['ionic'])
     console.log(chatId)
     self.send = Message.sendMessage(chatId, val);
      self.sendTo.val = null;
+     self.returnMessage = Message.messageToPage();
   };
   self.capChatId = function(chatId){
     Message.getRoom(chatId);
