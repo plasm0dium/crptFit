@@ -117,7 +117,6 @@ angular.module('crptFit.controllers', ['ionic'])
       self.benchData.weight = null;
     };
     self.getUid = function(){
-       console.log('i fired!')
         $http({
           method: 'GET',
           url: '/auth/picture'
@@ -362,19 +361,20 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
 //NOTE Refactor me
   var self = this;
-
+  self.getFriends = function(){
+    Message.getFriends();
+  };
   self.showId =function(val){
     Message.capturedChatID(val);
   };
-  self.search = Social.friendsList();
   self.showMessageContent = function(){
     Message.captureMessages();
   };
   // self.clearContent = function(){
   //   Message.clearCap();
   // };
-  self.showMessages = function(){
-   Message.getMessage();
+  self.showMessages = function(val){
+   Message.getMessage(val);
   };
   Message.messageList();
 
@@ -384,10 +384,6 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.getMessagesById = function(){
     self.sendHelp = Message.clearCap();
-  };
-
-  self.searchFriends = function(){
-    self.search = Social.friendsList();
   };
 
   self.captureMessages = Message.messageList();
