@@ -86,21 +86,30 @@ angular.module('crptFit.controllers', ['ionic'])
   // Add a refreshing function here
  }])
 // Start of HomeCtrl Controller =======================================================
-.controller('HomeCtrl', ['Social', function(Social) {
+.controller('HomeCtrl', ['Social', '$http', function(Social, $http) {
   var self = this;
-  // Add a refreshing function here
+  self.feed = [];
+  // Initiate the user's social data
   Social.friendsList();
   Social.clientsList();
   Social.trainersList();
-  self.feed = [
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-    {username: 'Ricky Walker', update: 'Did 5000 squats!'},
-  ];
+
+  $http({
+    method: 'get',
+    url: '/auth/newsfeed'
+  }).then(function(response){
+    console.log(response.data);
+    self.feed = response.data;
+  })
+
+  // $http({
+  //   method: 'post',
+  //   url: '/auth/task/complete/8'
+  // }).then(function(response){
+  //   console.log('updated a task to complete');
+  // })
+
  }])
-// Start of Menu Controller =======================================================
-.controller('MenuCtrl', [function() { }])
 // Start of Progress Controller =======================================================
 .controller('ProgressCtrl', ['$scope', 'Progress', function($scope, Progress) {
   var self = this;
@@ -115,9 +124,9 @@ angular.module('crptFit.controllers', ['ionic'])
       Progress.pushBnch(self.benchData.weight);
       Progress.postBnch(self.benchData.weight);
       self.benchData.weight = null;
-      Progress.getBnch();
     };
     self.getUid = function(){
+       console.log('i fired!')
         $http({
           method: 'GET',
           url: '/auth/picture'
@@ -370,9 +379,6 @@ angular.module('crptFit.controllers', ['ionic'])
   self.showMessageContent = function(){
     Message.captureMessages();
   };
-  // self.clearContent = function(){
-  //   Message.clearCap();
-  // };
   self.showMessages = function(){
    Message.getMessage();
   };
@@ -401,6 +407,7 @@ angular.module('crptFit.controllers', ['ionic'])
     console.log(chatId)
     self.send = Message.sendMessage(chatId, val);
      self.sendTo.val = null;
+     self.returnMessage = Message.messageToPage();
   };
   self.capChatId = function(chatId){
     Message.getRoom(chatId);
@@ -435,7 +442,6 @@ angular.module('crptFit.controllers', ['ionic'])
     console.log('inside of updateList', list);
     self.list = list;
   };
-
   self.showSearchResults = function(username){
     $http({
         method: 'GET',
@@ -449,28 +455,22 @@ angular.module('crptFit.controllers', ['ionic'])
         self.list = response;
       });
   }
-
   self.saveUserID = function(facebookID){
     console.log("inside of SaveUserID", facebookID);
     Social.userViewerSet(facebookID);
   }
-
   self.showFriends = function(){
     self.list = Social.friendsList();
     console.log(self.list);
   };
-
   self.showClients = function(){
     self.list = Social.clientsList();
   };
-
   self.showTrainers = function(){
     self.list = Social.trainersList();
   }
-
   $scope.showPopup = function(){
     $scope.data = {};
-
     // An elaborate, custom popup
     var myPopup = $ionicPopup.show({
       template: '<form><input type="text" ng-model="data.wifi"></form>',

@@ -72,7 +72,6 @@ angular.module('crptFit.services', [])
         url: '/auth/friends'
       })
       .then(function(response){
-        console.log(response.data)
         friends = response.data;
       }, function(error){
         console.log(error);
@@ -170,7 +169,6 @@ angular.module('crptFit.services', [])
   return {
     messageToPage : function(){
       newRet = messageReturn;
-      messageReturn = [];
       return newRet;
     },
     messageList : function(){
@@ -223,6 +221,7 @@ angular.module('crptFit.services', [])
       });
     },
     sendMessage: function(id, val){
+      messageReturn.push(val);
       console.log(id);
       $http({
         method: 'POST',
@@ -242,8 +241,9 @@ angular.module('crptFit.services', [])
   var speed = [];
   var bench = [];
   var dead = [];
-  var squat = [];
+  var squatHold = [];
   //all functions need integration with db
+  //NOTE Commented out functions in this section are experimental weekly views and are not ready for deploy
   return {
     getStr : function(){
       return strength;
@@ -255,7 +255,7 @@ angular.module('crptFit.services', [])
       return dead;
     },
     getSqu : function(){
-      return squat;
+      return squatHold;
     },
     getSpd : function(){
       return speed;
@@ -267,24 +267,34 @@ angular.module('crptFit.services', [])
       return selfUid;
     },
     pushBnch : function(val){
-      bench.shift();
+      // if(bench.length < 8){bench.push(val);}else{
+      // bench.shift();
       bench.push(val);
+      // }
     },
     pushDed : function(val){
-      dead.shift();
+      // if(dead.length < 8){dead.push(val);}else{
+      // dead.shift();
       dead.push(val);
+      // }
     },
     pushSqu : function(val){
-      squat.shift();
-      squat.push(val);
+      // if(squatHold.length < 8){squatHold.push(val);}else{
+      // squatHold.shift();
+      squatHold.push(val);
+      // }
     },
     pushSpd : function(val){
-      speed.shift();
+      // if(speed.length < 8){speed.push(val);}else{
+      // speed.shift();
       speed.push(val);
+      // }
     },
     pushWgt : function(val){
-      weight.shift();
+      // if(weight.length < 8){weight.push(val);}else{
+      // weight.shift();
       weight.push(val);
+      // }
     },
     //all functions below here need to be tested and found working
     postBnch: function(stat){
@@ -323,12 +333,13 @@ angular.module('crptFit.services', [])
         url: '/auth/benchpress/'+val
       }).then(function(response){
         if(bench.length === 0){
-          for(var i = response.data.length-8; i < response.data.length-1; i++){
-            bench.push(response.data[i].benchpress);
-          }
-        }else{
-          bench.shift();
-          bench.push(response.data[response.data.length-1].benchpress);
+          // if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length; x++){
+              bench.push(response.data[x].benchpress);
+            }
+          // }else{
+          //   bench.push(response.data[response.data.length-1].benchpress);
+          // }
         }
       }, function(error){
         console.log('Something went wrong : ', error);
@@ -340,11 +351,13 @@ angular.module('crptFit.services', [])
         url: '/auth/deadlift/'+uId
       }).then(function(response){
         if(dead.length === 0){
-          for(var i = response.data.length-8; i < response.data.length-1; i++){
-            dead.push(response.data[i].deadlift);
-          }
-        }else{
-          dead.push(response.data[response.data.length-1].deadlift);
+          // if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length; x++){
+              dead.push(response.data[x].deadlift);
+            }
+          // }else{
+          //   dead.push(response.data[response.data.length-1].deadlift);
+          // }
         }
       }, function(error){
         console.log('Something went wrong : ', error);
@@ -355,12 +368,14 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/squats/'+uId
       }).then(function(response){
-        if(squat.length === 0){
-          for(var i = response.data.length-8; i < response.data.length-1; i++){
-            squat.push(response.data[i].squat);
-          }
-        }else{
-          squat.push(response.data[response.data.length-1].squat);
+        if(squatHold.length === 0){
+          // if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length; x++){
+              squatHold.push(response.data[x].squat);
+            }
+          // }else{
+          //   squatHold.push(response.data[response.data.length-1].squat);
+          // }
         }
       }, function(error){
         console.log('Something went wrong : ', error);
@@ -372,17 +387,15 @@ angular.module('crptFit.services', [])
         url: '/auth/speeds/'+uId
       }).then(function(response){
         if(speed.length === 0){
-          if(response.data.length <= 8){
-            for(var x = 0; x < response.data.length-1; x++){
+          // if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length; x++){
               speed.push(response.data[x].speed);
             }
-          }else{
-            for(var i = response.data.length-8; i < response.data.length-1; i++){
-              speed.push(response.data[i].speed);
-          }
-        }
-      }else{
-          speed.push(response.data[response.data.length-1].speed);
+        // }else{
+        //   for(var i = response.data.length-8; i < response.length; i++){
+        //       speed.push(response.data[i].speed);
+        //     }
+          // }
         }
       }, function(error){
         console.log('Something went wrong : ', error);
@@ -394,11 +407,13 @@ angular.module('crptFit.services', [])
         url: '/auth/weight/'+uId
       }).then(function(response){
         if(weight.length === 0){
-          for(var i = response.data.length-8; i < response.data.length-1; i++){
-            weight.push(response.data[i].weight);
-          }
-        }else{
-          weight.push(response.data[response.data.length-1].weight);
+          // if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length; x++){
+              weight.push(response.data[x].weight);
+            }
+        //   }else{
+        //     weight.push(response.data[response.data.length-1].weight);
+        //   }
         }
       }, function(error){
         console.log('Something went wrong : ', error);
