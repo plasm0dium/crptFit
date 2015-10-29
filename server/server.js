@@ -271,6 +271,7 @@ app.get('/auth/clientrequests', function (req, res) {
       console.log('this is the finalresult of client_requests :', result)
       res.json(result);
     });
+    });
   });
 });
 
@@ -612,6 +613,7 @@ app.post('/auth/deadlift/:stat', function (req, res) {
 app.post('/auth/speed/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSpeed = req.params.stat;
+  console.log('YOUR SPEED ON POST BRO', currSpeed);
   db.model('Speed').newSpeed({
     speed: currSpeed,
     user_id: userId,
