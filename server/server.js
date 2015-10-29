@@ -98,7 +98,7 @@ app.get('/auth/user/:id', function (req, res) {
 //News Feed Pulls Latest Completed Tasks of Friends
 var taskStore = [];
 app.get('/auth/newsfeed', function (req, res) {
-  db.collection('Friends').fetchByUser(1)
+  db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(users) {
     console.log("THEY ARE MY FRIENDS", users)
       return Promise.all(users.models.map(function(friend) {

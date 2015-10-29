@@ -54,6 +54,9 @@ img{
   color: black;
   font-size: 20px;
 }
+p.task{
+  word-wrap; break-word;
+}
 .facebook{
   background-color: black;
   width: 40px;
