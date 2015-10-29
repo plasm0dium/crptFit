@@ -272,6 +272,7 @@ app.get('/auth/clientrequests', function (req, res) {
       res.json(result);
     });
   });
+});
 
 // Fetch a User's Chat Sessions
 app.get('/auth/chatsessions', function(req, res) {
@@ -340,7 +341,7 @@ app.get('/auth/speeds/:id', function (req, res){
 app.post('/auth/tasks/:taskname', function (req, res) {
   var task = req.params.taskname;
   db.model('Task').newTask({
-    description: taskname,
+    description: task,
     complete: false,
     user_id: req.user.attributes.id
   })
@@ -357,11 +358,10 @@ app.post('/auth/tasks/:taskname', function (req, res) {
 app.post('/auth/tasks/add:userid', function (req, res) {
   var userId = req.params.userid;
   var taskname = req.body.taskname;
-  var task = req.params.taskname;
   db.model('Task').newTask({
     description: taskname,
     complete: false,
-    user_id: req.user.attributes.id
+    user_id: userId
   })
   .save()
   .catch(function (err) {
