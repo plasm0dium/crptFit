@@ -216,13 +216,14 @@ angular.module('crptFit.services', [])
         console.log(response, 'response data');
           response.data.forEach(function(y){
             y.chatstore.forEach(function(m){
-              if(m.user_id !== 1){
+              // if(m.user_id !== 1){
                 friends.forEach(function(friend){
                   if(friend.id === m.user_id){
                     room_ids[y.id] = friend.username;
+                    console.log(y.id, friend.username, 'made it to the middle')
                   }
                 });
-              }
+              // }
             });
             y.message.forEach(function(z){
               messages[z.text] = y.id;
