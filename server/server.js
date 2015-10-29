@@ -119,6 +119,27 @@ app.get('/auth/newsfeed', function (req, res) {
   });
 });
 
+db.collection('Friends').fetchByUser(1)
+.then(function(users) {
+  return Promise.each(users.models.map(function(friend) {
+    db.model('User').fetchById({
+      id: friend.attributes.friends_id
+    }).then(function(result) {
+      return Promise.each(result.relations.tasks.models.map(function(task) {
+        if(task.attributes.complete === 1) {
+          console.log('THIS IS IN THE LOOP', task)
+          return task;
+        };
+      })).then(function(filteredTasks) {
+      })
+    })
+  })).then(function(hello) {
+    console.log('hello', hello)
+  })
+})
+
+
+
 app.get('/auth/picture', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
@@ -273,7 +294,6 @@ app.get('/auth/clientrequests', function (req, res) {
     });
     });
   });
-});
 
 // Fetch a User's Chat Sessions
 app.get('/auth/chatsessions', function(req, res) {
