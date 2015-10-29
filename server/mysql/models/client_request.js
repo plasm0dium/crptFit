@@ -16,7 +16,9 @@ var clientRequest = db.Model.extend({
     .fetch()
     .then(function(result) {
       console.log('THIS IS IN CLIENT REQUEST', result)
-      result.save({status: 1}, {patch: true});
+      result.save({status: 1,
+      updated_at: new Date()
+    }, {patch: true});
     })
   },
   fetchById: function (id) {

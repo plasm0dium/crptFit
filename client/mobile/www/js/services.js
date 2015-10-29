@@ -1,20 +1,51 @@
 angular.module('crptFit.services', [])
 // Start of Tasks Factory ====================================================
 .factory('Tasks', ['$http', function($http){
-  var tasks;
-  var setTasks = function(tasksList){
-    tasks = tasksList;
-  }
+  var tasks = [];
   return {
-    getTasksList: function(){
-      $http({
-        method: 'GET',
-        url: '/auth/tasks'
-      }).then(function(response){
-        setTasks(response.data);
-        console.log("Tasks returned from server:", response.data);
-      })
+    getTaskHolder: function(val){
+      tasks.push({description:val})
       return tasks;
+    },
+    finishTask : function(taskId, task){
+      console.log(taskId, task)
+      $http({
+        method: 'POST',
+        url: '/auth/task/complete/' +taskId,
+      });
+      console.log(task, 'clicked');
+      tasks.splice(tasks.indexOf(task), 1);
+    },
+    getTasksList: function(){
+      console.log(tasks, 'this is tasks as soon as its clicked')
+        tasks = [];
+        $http({
+          method: 'GET',
+          url: '/auth/tasks'
+        }).then(function(response){
+          response.data.forEach(function(x){
+            if(!x.complete){
+              tasks.push(x)
+            }
+          });
+            console.log("Tasks returned from server:", response.data);
+          });
+          return tasks;
+    },
+    addTaskToClient : function(uId, val){
+      $http({
+        method: 'POST',
+        url: '/auth/tasks/add'+uId,
+        data : {
+          taskname: val
+        }
+      });
+    },
+    addTaskToSelf: function(val){
+      $http({
+        method: 'POST',
+        url: '/auth/tasks/'+val
+      });
     }
   };
 }])
@@ -131,39 +162,53 @@ angular.module('crptFit.services', [])
 
 // Start of Messages Factory ====================================================
 .factory('Message', ['$http', function($http){
-  var messages = [];
+  var messages = {};
+  var messageReturn = [];
 //get user message table from db
+  var room_ids = {};
   var capChat;
-  var capMessage = {};
   return {
+    messageToPage : function(){
+      newRet = messageReturn;
+      messageReturn = [];
+      return newRet;
+    },
     messageList : function(){
-      return messages;
+      messageReturn = [];
+      for(var key in messages){
+        if(messages[key] === parseInt(capChat)){
+          messageReturn.push(key);
+        }
+      }
     },
     clearCap: function(){
-      capMessage = {};
-    },
-    capturedChatID: function(){
       return capChat;
     },
+    capturedChatID: function(val){
+      capChat = val;
+    },
     captureMessages: function(){
-      return capMessage;
+      return room_ids;
     },
     makeChat: function(userId){
       $http({
         method: 'POST',
         url: '/auth/chat/add'+userId
-      })
-      .then(function(){});
+      });
     },
     getMessage : function(){
       $http({
         method: 'GET',
-        url: '/auth/picture'
+        url: '/auth/chatsessions'
       }).then(function(response){
-        console.log(response, 'response data')
-        for(var x = 0; x < response.data.chats.length; x++){
-          messages.push(response.data.chats[x]);
-        }
+        console.log(response, 'response data');
+          response.data.forEach(function(y){
+              room_ids[y.id] = y.id;
+            y.message.forEach(function(z){
+              messages[z.text] = y.id;
+              console.log(z.user_id, 'this should be a number');
+            });
+          });
       }, function(error){
         console.log(error);
       });
@@ -174,13 +219,11 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/chat/get' + chatId
       }).then(function(response){
-        for(var i = 0; i < response.data.length; i++){
-          capMessage[response.data[i].id] = response.data[i].text;
-        }
+
       });
     },
     sendMessage: function(id, val){
-      console.log(val);
+      console.log(id);
       $http({
         method: 'POST',
         url: '/auth/messages/add' + id,
@@ -191,15 +234,6 @@ angular.module('crptFit.services', [])
         console.log(error);
       });
     },
-    // getMessageContent: function(chatId){
-    //   console.log('made it here in get message ocntent')
-    //   $http({
-    //     method: 'GET',
-    //     url: '/auth/messages/get'+ chatId
-    //   }).then(function(response){
-    //     console.log(response.data, 'in the data content resp');
-    //   });
-    // }
   };
 }])
 .factory('Progress', ['$http', function($http){
@@ -271,11 +305,10 @@ angular.module('crptFit.services', [])
         url: '/auth/squat/'+stat,
       });
     },
-    postSpd : function(stat1, stat2){
-      var calcStat = ((stat1/stat2)*60);
+    postSpd : function(stat){
       $http({
         method: 'POST',
-        url: '/auth/speed/'+calcStat,
+        url: '/auth/speed/'+stat,
       });
     },
     postWgt : function(stat){
@@ -339,10 +372,16 @@ angular.module('crptFit.services', [])
         url: '/auth/speeds/'+uId
       }).then(function(response){
         if(speed.length === 0){
-          for(var i = response.data.length-8; i < response.data.length-1; i++){
-            speed.push(response.data[i].speed);
+          if(response.data.length <= 8){
+            for(var x = 0; x < response.data.length-1; x++){
+              speed.push(response.data[x].speed);
+            }
+          }else{
+            for(var i = response.data.length-8; i < response.data.length-1; i++){
+              speed.push(response.data[i].speed);
           }
-        }else{
+        }
+      }else{
           speed.push(response.data[response.data.length-1].speed);
         }
       }, function(error){
@@ -367,33 +406,3 @@ angular.module('crptFit.services', [])
     }
   };
 }])
-.factory('Task', ['$http', function($http){
-  var testTask = [
-    {task: 'Task1', todo: 'Run a million miles'},
-    {task: 'Task2', todo: 'Find the dragonballs'},
-    {task: 'Task3', todo: 'Become Perfectly Huge'}
-  ];
-  return {
-    finishTask : function(task){
-      //UNCOMMENT FOR PRODUCTION
-      $http({
-        method: 'POST',
-        url: '/auth/tasks',
-      });
-      console.log(task, 'clicked');
-      testTask.splice(testTask.indexOf(task), 1);
-    },
-    getTask : function(){
-      $http({
-        method: 'GET',
-        url: '/auth/tasks',
-      }).then(function(response){
-        tasks = response.data;
-        testTask.push(tasks);
-      });
-    },
-    taskFunc : function(){
-      return testTask;
-    }
-  };
-}]);

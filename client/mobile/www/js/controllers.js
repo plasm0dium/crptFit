@@ -115,6 +115,7 @@ angular.module('crptFit.controllers', ['ionic'])
       Progress.pushBnch(self.benchData.weight);
       Progress.postBnch(self.benchData.weight);
       self.benchData.weight = null;
+      Progress.getBnch();
     };
     self.getUid = function(){
         $http({
@@ -251,6 +252,7 @@ angular.module('crptFit.controllers', ['ionic'])
       Progress.postSpd((self.distance.val/self.timeSpd.val)*60);
       self.distance.val = null;
       self.timeSpd.val = null;
+      Progress.getSpd();
     };
     self.timeSpd = {
       val: null
@@ -336,14 +338,24 @@ angular.module('crptFit.controllers', ['ionic'])
     };
   }])
 // Start of Progress Task Controller =======================================================
-.controller('ProgressCtrlTask', ['Task', function(Task){
+.controller('ProgressCtrlTask', ['Tasks', function(Tasks){
   var self = this;
-  self.tasks = Task.taskFunc();
+  self.createTask = function(val){
+    Tasks.addTaskToSelf(val);
+    Tasks.getTaskHolder(val);
+    self.sendTo.val = null;
+  };
+  self.sendTo = {
+    val : null
+  };
+  self.startTasks = function(){
+    self.tasks = Tasks.getTasksList();
+  };
   self.toggle = function(task){
     task.toggled = !task.toggled;
   };
-  self.finishTask = function(task){
-    self.finish = Task.finishTask(task);
+  self.finishTask = function(taskId, task){
+    self.finish = Tasks.finishTask(taskId, task);
   };
 }])
 
@@ -351,27 +363,34 @@ angular.module('crptFit.controllers', ['ionic'])
 //NOTE Refactor me
   var self = this;
 
+  self.showId =function(val){
+    Message.capturedChatID(val);
+  };
   self.search = Social.friendsList();
-
   self.showMessageContent = function(){
     Message.captureMessages();
   };
-  self.clearContent = function(){
-    console.log('why cap no null')
-      Message.clearCap();
-  };
+  // self.clearContent = function(){
+  //   Message.clearCap();
+  // };
   self.showMessages = function(){
    Message.getMessage();
   };
+  Message.messageList();
 
-  self.messageToPage = Message.messageList();
+  self.messageToPage = Message.captureMessages();
+
+  self.returnMessage = Message.messageToPage();
+
+  self.getMessagesById = function(){
+    self.sendHelp = Message.clearCap();
+  };
 
   self.searchFriends = function(){
     self.search = Social.friendsList();
   };
 
-  self.capture = Message.capturedChatID();
-  self.captureMessages = Message.captureMessages();
+  self.captureMessages = Message.messageList();
 
   self.makeChat = function(userId){
     console.log('clicked');
@@ -379,6 +398,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.chat = Message.makeChat(userId);
   };
   self.sendMessage = function(chatId, val){
+    console.log(chatId)
     self.send = Message.sendMessage(chatId, val);
      self.sendTo.val = null;
   };
@@ -392,7 +412,7 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.data = {};
   // An elaborate, custom popup
   var myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href="#/tab/message">{{friend.username}}</a></div></div></div>',
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href=#/tab/message>{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [
@@ -404,7 +424,6 @@ angular.module('crptFit.controllers', ['ionic'])
     self.list = Social.searchResultsList(res);
   });
  };
-
 }])
 // Start of Social Controller =======================================================
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', '$http', function($scope, $ionicPopup, Social, $http) {

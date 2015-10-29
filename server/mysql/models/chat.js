@@ -4,9 +4,14 @@ require('./chatstore');
 require('./message');
 
 var Chat = db.Model.extend({
-  tableName: 'chat',
+    tableName: 'chat',
+
+  user: function () {
+    return this.belongsTo('User');
+  },
   chatstore: function () {
     return this.hasMany('Chatstore');
+
   },
   message: function () {
     return this.hasMany('Message')

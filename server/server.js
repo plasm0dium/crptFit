@@ -226,30 +226,74 @@ app.get('/auth/trainers', ensureAuthenticated, function (req, res) {
 
 //Search All Users to Add as Friend
 app.get('/auth/search/:id', function (req, res) {
- var username = req.params.id;
- db.collection('Users').searchByUsername(username)
- .then(function (username) {
-   return Promise.all(username.models.map(function(friend){
-     return db.model('User').fetchById({
-       id: friend.attributes.id
-     })
-   }))
-     .then(function (results){
-       return res.json(results);
-     })
- })
-});
-
-// Fetch Chatroom
-app.get('/auth/chat/get:id', function (req, res){
-  var chatId = req.params.id;
-  db.model('Chat').fetchById(chatId)
-  .then(function(chat) {
-    console.log('THIS IS CHAT ROOM :', chat.relations.chats.model);
-    // res.json(chat.relations.message.models);
+  var username = req.params.id;
+  db.collection('Users').searchByUsername(username)
+  .then(function (username) {
+    return Promise.all(username.models.map(function(friend){
+      return db.model('User').fetchById({
+        id: friend.attributes.id
+      })
+    }))
+      .then(function (results){
+        return res.json(results);
+      })
   })
+})
+
+//Notifications for Pending Friend Requests
+app.get('/auth/friendrequests', function (req, res) {
+  var userId = req.user.attributes.id;
+  db.collection('friendRequests').fetchByUser(userId)
+  .then(function(friendRequests) {
+    return Promise.all(friendRequests.models.map(function(filtered) {
+      if(result.attributes.status === 0) {
+        console.log('this is the result', filtered)
+        return filtered;
+      }
+    })).then(function(result) {
+      console.log('this is the finalresult of friend_requests :', result)
+      res.json(result);
+    });
+  });
 });
 
+//Notifications for Pending Friend Requests
+app.get('/auth/clientrequests', function (req, res) {
+  var userId = req.user.attributes.id;
+  db.collection('clientRequests').fetchByUser(userId)
+  .then(function(clientRequests) {
+    return Promise.all(clientRequests.models.map(function(filtered) {
+      if(result.attributes.status === 0) {
+        console.log('this is the result', filtered)
+        return filtered;
+      }
+    })).then(function(result) {
+      console.log('this is the finalresult of client_requests :', result)
+      res.json(result);
+    });
+    });
+  });
+
+// Fetch a User's Chat Sessions
+app.get('/auth/chatsessions', function(req, res) {
+var userId = req.user.attributes.id;
+db.model('User').fetchById({
+    id: userId
+  })
+  .then(function(result) {
+    console.log('THIS IS USER :', result.relations.chatstores.models);
+    return Promise.all(result.relations.chatstores.models.map(function(msg){
+      console.log('CHAT ID :', msg.attributes.chat_id)
+      return db.model('Chat').fetchById(msg.attributes.chat_id)
+    }))
+    .then(function (results){
+      console.log("PLEASE WORK::::::::>", results);
+      res.json(results);
+    })
+  });
+})
+
+// Fetch a User's Weights
 app.get('/auth/weight/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Weights').fetchByUser(userId)
@@ -298,13 +342,30 @@ app.get('/auth/speeds/:id', function (req, res){
 app.post('/auth/tasks/:taskname', function (req, res) {
   var task = req.params.taskname;
   db.model('Task').newTask({
-    description: taskname,
+    description: task,
     complete: false,
     user_id: req.user.attributes.id
-  }).save()
+  })
+  .save()
   .then(function(task) {
     return task;
   })
+  .catch(function (err) {
+    console.log('ERR IN POST /auth/tasks : ', err);
+  });
+});
+
+//Add a New Task to Another User
+app.post('/auth/tasks/add:userid', function (req, res) {
+  var userId = req.params.userid;
+  var taskname = req.body.taskname;
+  var task = req.params.taskname;
+  db.model('Task').newTask({
+    description: taskname,
+    complete: false,
+    user_id: req.user.attributes.id
+  })
+  .save()
   .catch(function (err) {
     console.log('ERR IN POST /auth/tasks : ', err);
   });
@@ -329,14 +390,12 @@ app.post('/auth/confirmclient', function (req, res) {
   var clientId = req.params.id;
    db.model('clientRequest').acceptClientRequest({
     user_id: userId,
-    client_id: clientId,
-    updated_at: new Date()
+    client_id: clientId
   })
   .then(function () {
     db.model('clientRequest').acceptClientRequest({
       user_id: clientId,
-      client_id: userId,
-      updated_at: new Date()
+      client_id: userId
     })
   })
   .then(function (){
@@ -418,7 +477,6 @@ app.post('/auth/friendreq/add:id', function (req, res){
 })
 
 // Confirm friend request and add each other as friend
-
 app.post('/auth/confirmfriend/:id', function (req, res){
   var userId = req.user.attributes.id;
   var friendId = req.params.id;
@@ -458,38 +516,39 @@ app.post('/auth/confirmfriend/:id', function (req, res){
 });
 
 //Creates a Chat Session
-var chatId;
+
 app.post('/auth/chat/add:id', function (req, res){
+  var chatId;
   var userId1 = req.user.attributes.id;
   var userId2 = req.params.id;
   db.model('Chat').newChat({
-    created_at: new Date()
-  })
-  .save()
-  .then(function(result){
-    chatId = result.id;
-    console.log("THIS IS MY RESULT: ", result);
-    db.model('Chatstore').newChatStore({
-      chat_id: result.id,
-      user_id: 1,
-      created_at: new Date()
-    })
-  .save()
-  })
-  .then(function(){
-    console.log("THIS IS MY SECOND RESULT: ", chatId);
-    db.model('Chatstore').newChatStore({
-      chat_id: chatId,
-      user_id: 2,
       created_at: new Date()
     })
     .save()
-  })
+    .then(function(result){
+      chatId = result.id;
+      console.log("THIS IS MY RESULT: ", result);
+      db.model('Chatstore').newChatStore({
+        chat_id: result.id,
+        user_id: userId1,
+        created_at: new Date()
+      })
+    .save()
+    })
+    .then(function(){
+      console.log("THIS IS MY SECOND RESULT: ", chatId);
+      db.model('Chatstore').newChatStore({
+        chat_id: chatId,
+        user_id: userId2,
+        created_at: new Date()
+      })
+      .save()
+    })
 });
 
 //Adds Messages to chat session
+
 app.post('/auth/messages/add:id', function (req, res){
-  console.log('REQ>BODY', req.body, 'REQ>CHATID', req.params.id)
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
   var body = req.body.message;
@@ -555,6 +614,7 @@ app.post('/auth/deadlift/:stat', function (req, res) {
 app.post('/auth/speed/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSpeed = req.params.stat;
+  console.log('YOUR SPEED ON POST BRO', currSpeed);
   db.model('Speed').newSpeed({
     speed: currSpeed,
     user_id: userId,
