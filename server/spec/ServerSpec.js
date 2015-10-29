@@ -5,14 +5,6 @@ var stubs = require('./Stubs');
 var db = require('../mysql/config');
 var User = require('../mysql/collections/users');
 
-// Conditional async testing, akin to Jasmine's waitsFor()
-// Will wait for test to be truthy before executing callback
-function waitForThen(test, cb) {
-  setTimeout(function() {
-    test() ? cb.apply(this) : waitForThen(test, cb);
-  }, 5);
-}
-
 
 describe('server', function() {
   it('should response to GET requests for /auth/facebook with a 200 status code', function(done){

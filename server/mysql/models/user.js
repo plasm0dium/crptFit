@@ -13,11 +13,11 @@ require('./squat');
 require('./deadlift');
 require('./speed');
 require('./chatstore');
+require('./geolocation');
 
 var User = db.Model.extend({
   //User Properties
   tableName: 'users',
-
   tasks: function () {
     return this.hasMany('Task');
   },
@@ -47,21 +47,24 @@ var User = db.Model.extend({
   },
   chatstores: function(){
     return this.hasMany('Chatstore');
+  },
+  geolocations: function() {
+    return this.hasMany('Geolocation');
   }
 }, {
   //User Class Methods
 fetchById: function(options) {
-  return new this(options).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores']});
+  return new this(options).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores', 'geolocations']});
   },
 fetchByUsername: function (username) {
   return this({
     username: username,
-  }).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores']});
+  }).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores', 'geolocations']});
 },
 fetchByName: function (name) {
   return this({
     name: name
-    }).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores']});
+  }).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores', 'geolocations']});
   },
 newUser: function (options) {
   return new this(options);

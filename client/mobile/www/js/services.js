@@ -72,7 +72,6 @@ angular.module('crptFit.services', [])
         url: '/auth/friends'
       })
       .then(function(response){
-        console.log(response.data)
         friends = response.data;
       }, function(error){
         console.log(error);
