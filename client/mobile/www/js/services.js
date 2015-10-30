@@ -441,4 +441,4 @@ angular.module('crptFit.services', [])
       });
     }
   };
-}]);
+}])

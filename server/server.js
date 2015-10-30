@@ -4,13 +4,8 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var morgan = require('morgan');
 var Promise = require('bluebird');
-var http = require('http');
 var app = express();
-var io = require('socket.io');
 var port = process.env.PORT || 8100;
-var server = http.createServer(app);
-io = io.listen(server);
-server.listen(port);
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
@@ -103,9 +98,8 @@ app.get('/auth/user/:id', function (req, res) {
 //News Feed Pulls Latest Completed Tasks of Friends
 var taskStore = [];
 app.get('/auth/newsfeed', function (req, res) {
-  db.collection('Friends').fetchByUser(1)
+  db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(users) {
-    console.log("THEY ARE MY FRIENDS", users)
       return Promise.all(users.models.map(function(friend) {
          return db.model('User').fetchById({
           id: friend.attributes.friends_id
@@ -113,25 +107,24 @@ app.get('/auth/newsfeed', function (req, res) {
       }))
     })
       .then(function(results){
-        console.log("I HOPE IT IS THERE", results);
         return Promise.all(results.map(function(model) {
-          console.log("ANY TASKS HERE", model.relations.tasks.models)
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
                 taskStore.push(task);
               }
             })
-         }))
+         }))
       })
       .then(function(){
-        console.log("WHERE IS MY NEW FEED", taskStore)
         res.json(taskStore)
       })
       .then(function(){
         taskStore = [];
       })
 });
-app.get('/auth/picture', function(req, res){
+
+// Grab the logged in user's user object
+app.get('/auth/user', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
    res.json(user);
@@ -140,7 +133,6 @@ app.get('/auth/picture', function(req, res){
 
 // Logout User
 app.get('/logout', function(req, res){
-  console.log('LOGOUT REQ.USER', req.user.attributes);
   req.session.destroy();
   req.logout();
   res.redirect('/');
@@ -378,7 +370,6 @@ app.post('/auth/tasks/add:userid', function (req, res) {
   })
   .save()
   .catch(function (err) {
-    console.log('ERR IN POST /auth/tasks : ', err);
   });
 });
 
@@ -387,7 +378,6 @@ app.post('/auth/task/complete/:id', function(req, res) {
   var taskId = req.params.id;
   db.model('Task').completeTask(taskId)
   .then(function () {
-    console.log('TASK UPDATED TO COMPLETE :', db.model('Task').fetchByUser(req.user.attributes.id));
   })
   .catch(function (err) {
     return err;
@@ -423,7 +413,6 @@ app.post('/auth/confirmclient', function (req, res) {
   .save()
   })
   .then(function(newClient) {
-    console.log('ADDED NEW CLIENT :', newClient);
     return newClient;
   })
   .catch(function(err) {
@@ -478,7 +467,6 @@ app.post('/auth/friendreq/add:id', function (req, res){
     .save()
   })
   .then(function (friendreq){
-    console.log('ADD FRIEND REQUEST', friendreq);
     return friendreq;
   })
   .catch(function(err){
@@ -517,7 +505,6 @@ app.post('/auth/confirmfriend/:id', function (req, res){
     .save()
   })
   .then(function (acceptReq) {
-    console.log('Request accepted', acceptReq);
     return acceptReq;
   })
   .catch(function(err){
@@ -536,7 +523,6 @@ app.post('/auth/chat/add:id', function (req, res){
     .save()
     .then(function(result){
       chatId = result.id;
-      console.log("THIS IS MY RESULT: ", result);
       db.model('Chatstore').newChatStore({
         chat_id: result.id,
         user_id: userId1,
@@ -545,7 +531,6 @@ app.post('/auth/chat/add:id', function (req, res){
     .save()
     })
     .then(function(){
-      console.log("THIS IS MY SECOND RESULT: ", chatId);
       db.model('Chatstore').newChatStore({
         chat_id: chatId,
         user_id: userId2,
@@ -560,7 +545,6 @@ app.post('/auth/messages/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
   var body = req.body.message;
-  console.log(chatId, 'this is chatID', userId, 'this is user id', body, 'this is body')
   db.model('Message').newMessage({
     user_id: userId,
     chat_id: chatId,
@@ -627,7 +611,6 @@ app.post('/auth/speed/:stat', function (req, res) {
 });
 
 function ensureAuthenticated(req, res, next) {
-  console.log('AUTHENTICATED FUNCTION');
   if(req.isAuthenticated()) {
     return next();
   } else {
@@ -635,6 +618,6 @@ function ensureAuthenticated(req, res, next) {
   }
 }
 
-// app.listen(port, function(){
-//   console.log('listening on port...', port);
-// });
+app.listen(port, function(){
+  console.log('listening on port...', port);
+});
