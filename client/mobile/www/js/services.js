@@ -220,7 +220,6 @@ angular.module('crptFit.services', [])
                 friends.forEach(function(friend){
                   if(friend.id === m.user_id){
                     room_ids[y.id] = friend.username;
-                    console.log(y.id, friend.username, 'made it to the middle')
                   }
                 });
               // }
@@ -442,4 +441,4 @@ angular.module('crptFit.services', [])
       });
     }
   };
-}])
+}]);

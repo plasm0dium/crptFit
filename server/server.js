@@ -4,8 +4,13 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var morgan = require('morgan');
 var Promise = require('bluebird');
+var http = require('http');
 var app = express();
+var io = require('socket.io');
 var port = process.env.PORT || 8100;
+var server = http.createServer(app);
+io = io.listen(server);
+server.listen(port);
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
@@ -630,6 +635,6 @@ function ensureAuthenticated(req, res, next) {
   }
 }
 
-app.listen(port, function(){
-  console.log('listening on port...', port);
-});
+// app.listen(port, function(){
+//   console.log('listening on port...', port);
+// });
