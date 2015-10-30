@@ -5,7 +5,7 @@ var passport = require('passport');
 var morgan = require('morgan');
 var Promise = require('bluebird');
 var app = express();
-var port = process.env.PORT;
+var port = process.env.PORT || 8100;
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
