@@ -51,8 +51,7 @@ var userTasks = buildTable('tasks', function(t) {
       t.string('description', 100);
       t.boolean('complete');
       t.integer('user_id');
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var userClients = buildTable('clients', function(t) {
@@ -78,8 +77,7 @@ var userMessages = buildTable('messages', function(t) {
       t.integer('chat_id');
       t.integer('user_id');
       t.string('text', 200);
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var userFriendRequest = buildTable('friend_request', function(t) {
@@ -87,8 +85,7 @@ var userFriendRequest = buildTable('friend_request', function(t) {
       t.integer('friend_id');
       t.integer('user_id');
       t.integer('status', 10);
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var userClientRequest = buildTable('client_request', function(t) {
@@ -96,62 +93,54 @@ var userClientRequest = buildTable('client_request', function(t) {
       t.integer('client_id');
       t.integer('user_id');
       t.integer('status', 10);
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var userWeights = buildTable('weights', function(t) {
       t.increments('id').primary();
       t.integer('weight');
       t.integer('user_id');
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var userChat = buildTable('chat', function(t) {
       t.increments('id').primary();
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var userChatStore = buildTable('chatstore', function(t) {
       t.increments('id').primary();
       t.integer('user_id');
       t.integer('chat_id');
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var userBenchPress = buildTable('benchpress', function(t) {
       t.increments('id').primary();
       t.integer('benchpress');
       t.integer('user_id');
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var userSquats = buildTable('squats', function(t) {
       t.increments('id').primary();
       t.integer('squat');
       t.integer('user_id');
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var userDeadLifts = buildTable('deadlifts', function(t) {
       t.increments('id').primary();
       t.integer('deadlift');
       t.integer('user_id');
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
     });
 
 var userSpeeds = buildTable('speeds', function(t) {
       t.increments('id').primary();
       t.integer('speed');
       t.integer('user_id');
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var userGeolocations = buildTable('geolocations', function(t) {
@@ -159,8 +148,7 @@ var userGeolocations = buildTable('geolocations', function(t) {
       t.integer('longtitude');
       t.integer('latitude');
       t.integer('user_id');
-      t.timestamp('created_at');
-      t.timestamp('updated_at');
+      t.timestamps();
 });
 
 var tables = [userProfiles, userTasks, userClients, userTrainers, userFriends, userMessages, userFriendRequest, userClientRequest, userWeights, userChat, userChatStore, userBenchPress, userSquats, userDeadLifts, userSpeeds, userGeolocations];
