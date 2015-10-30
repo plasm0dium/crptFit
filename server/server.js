@@ -124,7 +124,7 @@ app.get('/auth/nearbyusers', function (req, res) {
           })
         })).then(function(userObject) {
           console.log('THIS IS FINAL RESULT', userObject)
-          res.json(userObject)
+          res.json(userObject)  
         })
       })
     })
