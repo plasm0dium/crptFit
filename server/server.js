@@ -102,9 +102,9 @@ app.get('/auth/user/:id', function (req, res) {
 
 //Fetch Nearest Users to Logged in User
 app.get('/auth/nearbyusers', function (req, res) {
-  var distPref = 25;
-  var inputLat = 34.01;
-  var inputLng = -118.49;
+  var distPref = req.body.distPref;
+  var inputLat = req.body.inputLat;
+  var inputLng = req.body.inputLng;
   db.collection('Geolocations').fetchAll()
   .then(function(results) {
     return Promise.all(results.models.filter(function(model){
@@ -119,15 +119,15 @@ app.get('/auth/nearbyusers', function (req, res) {
     })
     .then(function(nearestUsers){
       return Promise.all(nearestUsers.map(function(user) {
-          return db.model('User').fetchById({
-            id: user.attributes.user_id
-          })
-        })).then(function(userObject) {
-          console.log('THIS IS FINAL RESULT', userObject)
-          res.json(userObject)  
+        return db.model('User').fetchById({
+          id: user.attributes.user_id
         })
+      })).then(function(userObject) {
+          console.log('THIS IS FINAL RESULT', userObject)
+          res.json(userObject)
       })
     })
+  })
 })
 
 var distPref = 25;

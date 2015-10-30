@@ -1,4 +1,4 @@
-var FacebookStrategy = require('passport-facebook').Strategy
+ var FacebookStrategy = require('passport-facebook').Strategy
 var Auth = require('./auth');
 
 require('./mysql/models/user');
