@@ -126,7 +126,9 @@ app.get('/auth/newsfeed', function (req, res) {
         taskStore = [];
       })
 });
-app.get('/auth/picture', function(req, res){
+
+// Grab the logged in user's user object
+app.get('/auth/user', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
    res.json(user);
