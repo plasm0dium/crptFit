@@ -1,4 +1,4 @@
 node_modules
 bower_components
-
+server/auth.js
 npm-debug.log
