@@ -6,6 +6,9 @@ var morgan = require('morgan');
 var Promise = require('bluebird');
 var app = express();
 var port = process.env.PORT || 8100;
+var mysql = require('mysql');
+var server = app.listen(port);
+var io = require('socket.io').listen(server);
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
@@ -48,6 +51,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+
 
 app.use(express.static(__dirname + '/../client/mobile/www'));
 
@@ -283,8 +287,7 @@ app.get('/auth/clientrequests', function (req, res) {
 // Fetch a User's Chat Sessions
 app.get('/auth/chatsessions', function(req, res) {
 var userId = req.user.attributes.id;
-db.model('User').fetchById({
-    id: userId
+db.model('User').fetchById({userId
   })
   .then(function(result) {
     console.log('THIS IS USER :', result.relations.chatstores.models);
@@ -630,6 +633,57 @@ function ensureAuthenticated(req, res, next) {
   }
 }
 
-app.listen(port, function(){
-  console.log('listening on port...', port);
-});
+// app.listen(port, function(){
+//   console.log('listening on port...', port);
+// });
+
+
+io.sockets.on('connection', function (socket){
+  var userObj = socket.client.request.user;
+  var chatroomId;
+
+  if (userObj !== undefined){
+    // emit user's facebook name
+    socket.emit('user name', {username: userObj.get('username')});
+  }
+
+  // new chat room
+  socket.on('chatroom id', function(id){
+    chatroomId = id;
+    socket.join(id);
+    db.model('Chat').fetchById(id)
+  .then(function (id){
+    console.log("WHAT IS THIS ID", id)
+    return Promise.all(id.relations.message.models.map(function(message){
+      console.log("WHAT IS THIS SHIT", message);
+      return message;
+    }))
+  })
+  .then(function (messages){
+    messages.forEach(function (message){
+      var messageObj = message.toJSON();
+      db.model('User').fetchById(message.get('user_id'))
+      .then(function (user){
+        // console.log("LET ME SEE WHAT THIS IS", user);
+        messageObj.name = user.get('username');
+        socket.emit('new chat', messageObj);
+        });
+      });
+    });
+  });
+
+  socket.on('new chat', function(chat){
+    if(userObj){
+      var messageObj;
+      db.model('Message').newMessage(text, chatroomId, userObj)
+      .then( function(message){
+        messageObj = message.toJSON();
+        return db.model('User').fetchById(messageObj.user_id);
+      })
+      .then(function(user){
+        messageObj.name = user.get('username');
+        io.to(chatroomId).emit('new chat', messageObj);
+      })
+    }
+  })
+})
