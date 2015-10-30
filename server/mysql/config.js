@@ -1,7 +1,7 @@
 var knex = require('knex')({
   client: 'mysql',
   connection: {
-    host     : '127.0.0.1',
+    host     : 'mysql://bb0c4742ad1e62:d0ab9674@us-cdbr-iron-east-03.cleardb.net/heroku_21a4bd4f5ef23e1?reconnect=true',
     user     : 'root',
     password : '',
     database : 'crptfit',
