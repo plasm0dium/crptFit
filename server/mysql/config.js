@@ -1,7 +1,7 @@
 var Promise = require('bluebird');
 
 var knex = require('knex')({
-  client: process.env.dbClient || 'mysql',
+  client: process.env.dbClient || 'postgres',
   pool: {
     min: 2,
     max: 30
@@ -49,7 +49,6 @@ var userProfiles = buildTable('users', function(t) {
       t.string('gender', 10);
       t.text('profile');
 });
-
 
 var userTasks = buildTable('tasks', function(t) {
       t.increments('id').primary();
