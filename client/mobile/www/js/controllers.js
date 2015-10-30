@@ -77,7 +77,7 @@ angular.module('crptFit.controllers', ['ionic'])
   // Grab a users profile information - extract into a factory later
   $http({
     method: 'GET',
-    url: '/auth/picture'
+    url: '/auth/user'
   }).then(function(response){
     var picUrl = response.data.profile_pic;
     var userName = response.data.username;
@@ -86,28 +86,24 @@ angular.module('crptFit.controllers', ['ionic'])
   // Add a refreshing function here
  }])
 // Start of HomeCtrl Controller =======================================================
-.controller('HomeCtrl', ['Social', '$http', function(Social, $http) {
+.controller('HomeCtrl', ['Social', '$http', 'User', function(Social, $http, User) {
   var self = this;
   self.feed = [];
-  // Initiate the user's social data
-  Social.friendsList();
-  Social.clientsList();
-  Social.trainersList();
+  self.user;
 
-  $http({
-    method: 'get',
-    url: '/auth/newsfeed'
-  }).then(function(response){
-    console.log(response.data);
-    self.feed = response.data;
-  })
+  self.initialize = function(){
+    Social.friendsList();
+    Social.clientsList();
+    Social.trainersList();
+    $http({
+      method: 'get',
+      url: '/auth/newsfeed'
+    }).then(function(response){
+      self.feed = response.data;
+    })
+  }
 
-  // $http({
-  //   method: 'post',
-  //   url: '/auth/task/complete/8'
-  // }).then(function(response){
-  //   console.log('updated a task to complete');
-  // })
+  self.initialize();
 
  }])
 // Start of Progress Controller =======================================================
@@ -432,12 +428,9 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', '$http', function($scope, $ionicPopup, Social, $http) {
   var self = this;
   // Add a refreshing function here
+  Social.friendsList();
   self.list = Social.friendsList();
 
-  var updateList = function(){
-    console.log('inside of updateList', list);
-    self.list = list;
-  };
   self.showSearchResults = function(username){
     $http({
         method: 'GET',

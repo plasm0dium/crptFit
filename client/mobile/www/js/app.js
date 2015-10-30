@@ -147,7 +147,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'social-tab': {
           templateUrl: 'templates/profile-view.html',
-          controller: 'SocialCtrl'
         }
       }
     })
