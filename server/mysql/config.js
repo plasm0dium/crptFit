@@ -1,5 +1,9 @@
 var knex = require('knex')({
-  client: process.env.dbClient || 'postgres',
+  client: process.env.dbClient || 'mysql',
+  pool: {
+    min: 2,
+    max: 10
+  },
   connection: {
     host     : process.env.dbHost || '127.0.0.1',
     user     : process.env.dbUser || 'root',
