@@ -130,32 +130,6 @@ app.get('/auth/nearbyusers', function (req, res) {
   })
 })
 
-var distPref = 25;
-var inputLat = 34.01;
-var inputLng = -118.49;
-db.collection('Geolocations').fetchAll()
-.then(function(results) {
-  return Promise.all(results.models.filter(function(model){
-    var users_lat = model.attributes.lat;
-    var users_lng = model.attributes.lng;
-    if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
-      return model
-    }
-  })).then(function(results) {
-    console.log('THESE ARE RESULTS', results)
-    return results
-  }).then(function(nearestUsers){
-    return Promise.all(nearestUsers.map(function(user) {
-        return db.model('User').fetchById({
-          id: user.attributes.user_id
-        })
-      })).then(function(userObject) {
-        console.log('THIS IS FINAL RESULT', userObject)
-        return userObject
-      })
-    })
-  })
-
 //News Feed Pulls Latest Completed Tasks of Friends
 var taskStore = [];
 app.get('/auth/newsfeed', function (req, res) {
@@ -184,7 +158,8 @@ app.get('/auth/newsfeed', function (req, res) {
       })
 });
 
-app.get('/auth/picture', function(req, res){
+// Grab the logged in user's user object
+app.get('/auth/user', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
    console.log('THIS IS AUTH?PICTURE', user)

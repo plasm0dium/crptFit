@@ -1,4 +1,19 @@
 angular.module('crptFit.services', [])
+// Start of Logged in User Factory ====================================================
+.factory('User', ['$http', '$q', function($http, $q){
+  var getUserObject = function(){
+    return $http({
+      method: 'get',
+      url: '/auth/user'
+    }).then(function(response){
+      return response.data;
+    })
+  };
+
+  return {
+    getUserObject: getUserObject
+  };
+}])
 // Start of Tasks Factory ====================================================
 .factory('Tasks', ['$http', function($http){
   var tasks = [];
