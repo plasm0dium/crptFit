@@ -26,9 +26,6 @@ db.knex.schema.hasTable('users').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('tasks').then(function(exists) {
   if (!exists) {
@@ -42,9 +39,6 @@ db.knex.schema.hasTable('tasks').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('clients').then(function(exists) {
   if (!exists) {
@@ -55,9 +49,6 @@ db.knex.schema.hasTable('clients').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('trainers').then(function(exists) {
   if (!exists) {
@@ -68,9 +59,6 @@ db.knex.schema.hasTable('trainers').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('friends').then(function(exists) {
   if (!exists) {
@@ -81,9 +69,6 @@ db.knex.schema.hasTable('friends').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('messages').then(function(exists) {
   if (!exists) {
@@ -97,9 +82,6 @@ db.knex.schema.hasTable('messages').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('friend_request').then(function(exists) {
   if (!exists) {
@@ -113,9 +95,6 @@ db.knex.schema.hasTable('friend_request').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('client_request').then(function(exists) {
   if (!exists) {
@@ -129,9 +108,6 @@ db.knex.schema.hasTable('client_request').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('weights').then(function(exists) {
   if (!exists) {
@@ -144,9 +120,6 @@ db.knex.schema.hasTable('weights').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('chat').then(function(exists) {
   if (!exists) {
@@ -157,9 +130,6 @@ db.knex.schema.hasTable('chat').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('chatstore').then(function(exists) {
   if (!exists) {
@@ -172,10 +142,6 @@ db.knex.schema.hasTable('chatstore').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
-
 
 db.knex.schema.hasTable('benchpress').then(function(exists) {
   if (!exists) {
@@ -188,9 +154,6 @@ db.knex.schema.hasTable('benchpress').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('squats').then(function(exists) {
   if (!exists) {
@@ -203,9 +166,6 @@ db.knex.schema.hasTable('squats').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('deadlifts').then(function(exists) {
   if (!exists) {
@@ -218,9 +178,6 @@ db.knex.schema.hasTable('deadlifts').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('speeds').then(function(exists) {
   if (!exists) {
@@ -233,9 +190,6 @@ db.knex.schema.hasTable('speeds').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 db.knex.schema.hasTable('geolocations').then(function(exists) {
   if (!exists) {
@@ -249,8 +203,5 @@ db.knex.schema.hasTable('geolocations').then(function(exists) {
     });
   }
 })
-.then(function(t) {
-  console.log('created table:', t);
-});
 
 module.exports = db;
