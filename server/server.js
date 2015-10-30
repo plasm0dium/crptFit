@@ -66,7 +66,7 @@ app.get('/auth/facebook',
  }));
 
 // Facebook Auth Callback
-app.get('/auth/facebook/callback/', function (req, res, next) {
+app.get('/auth/facebook/callback', function (req, res, next) {
   passport.authenticate('facebook',
     function(err, user, info) {
       if (err) { return next(err); }
