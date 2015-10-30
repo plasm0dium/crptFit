@@ -77,7 +77,7 @@ angular.module('crptFit.controllers', ['ionic'])
   // Grab a users profile information - extract into a factory later
   $http({
     method: 'GET',
-    url: '/auth/picture'
+    url: '/auth/user'
   }).then(function(response){
     var picUrl = response.data.profile_pic;
     var userName = response.data.username;
@@ -86,28 +86,24 @@ angular.module('crptFit.controllers', ['ionic'])
   // Add a refreshing function here
  }])
 // Start of HomeCtrl Controller =======================================================
-.controller('HomeCtrl', ['Social', '$http', function(Social, $http) {
+.controller('HomeCtrl', ['Social', '$http', 'User', function(Social, $http, User) {
   var self = this;
   self.feed = [];
-  // Initiate the user's social data
-  Social.friendsList();
-  Social.clientsList();
-  Social.trainersList();
+  self.user;
 
-  $http({
-    method: 'get',
-    url: '/auth/newsfeed'
-  }).then(function(response){
-    console.log(response.data);
-    self.feed = response.data;
-  })
+  self.initialize = function(){
+    Social.friendsList();
+    Social.clientsList();
+    Social.trainersList();
+    $http({
+      method: 'get',
+      url: '/auth/newsfeed'
+    }).then(function(response){
+      self.feed = response.data;
+    })
+  }
 
-  // $http({
-  //   method: 'post',
-  //   url: '/auth/task/complete/8'
-  // }).then(function(response){
-  //   console.log('updated a task to complete');
-  // })
+  self.initialize();
 
  }])
 // Start of Progress Controller =======================================================
@@ -126,7 +122,6 @@ angular.module('crptFit.controllers', ['ionic'])
       self.benchData.weight = null;
     };
     self.getUid = function(){
-       console.log('i fired!')
         $http({
           method: 'GET',
           url: '/auth/picture'
@@ -371,17 +366,21 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
 //NOTE Refactor me
   var self = this;
-
+  self.search = Social.friendsList();
+  self.getFriends = function(){
+    Message.getFriends();
+  };
   self.showId =function(val){
     Message.capturedChatID(val);
   };
-  self.search = Social.friendsList();
   self.showMessageContent = function(){
     Message.captureMessages();
   };
+
   self.showMessages = function(){
    Message.getMessage();
   };
+
   Message.messageList();
 
   self.messageToPage = Message.captureMessages();
@@ -390,10 +389,6 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.getMessagesById = function(){
     self.sendHelp = Message.clearCap();
-  };
-
-  self.searchFriends = function(){
-    self.search = Social.friendsList();
   };
 
   self.captureMessages = Message.messageList();
@@ -413,13 +408,10 @@ angular.module('crptFit.controllers', ['ionic'])
     Message.getRoom(chatId);
   };
 
-  // self.messageCapture = Message.getMessageContent(Message.capChat);
-
   $scope.showPopup = function() {
   $scope.data = {};
-  // An elaborate, custom popup
   var myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.searchFriends()"><div ng-repeat="friend in ctrl.search"><a class="item item-avatar" ng-click="ctrl.makeChat(friend.id)" href=#/tab/message>{{friend.username}}</a></div></div></div>',
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)" href=#/tab/message>{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [
@@ -436,12 +428,9 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', '$http', function($scope, $ionicPopup, Social, $http) {
   var self = this;
   // Add a refreshing function here
+  Social.friendsList();
   self.list = Social.friendsList();
 
-  var updateList = function(){
-    console.log('inside of updateList', list);
-    self.list = list;
-  };
   self.showSearchResults = function(username){
     $http({
         method: 'GET',

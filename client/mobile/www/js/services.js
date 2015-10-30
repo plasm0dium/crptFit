@@ -1,4 +1,19 @@
 angular.module('crptFit.services', [])
+// Start of Logged in User Factory ====================================================
+.factory('User', ['$http', '$q', function($http, $q){
+  var getUserObject = function(){
+    return $http({
+      method: 'get',
+      url: '/auth/user'
+    }).then(function(response){
+      return response.data;
+    })
+  };
+
+  return {
+    getUserObject: getUserObject
+  };
+}])
 // Start of Tasks Factory ====================================================
 .factory('Tasks', ['$http', function($http){
   var tasks = [];
@@ -166,6 +181,7 @@ angular.module('crptFit.services', [])
 //get user message table from db
   var room_ids = {};
   var capChat;
+  var friends = [];
   return {
     messageToPage : function(){
       newRet = messageReturn;
@@ -194,17 +210,38 @@ angular.module('crptFit.services', [])
         url: '/auth/chat/add'+userId
       });
     },
+    getFriends: function(){
+      $http({
+        method: 'GET',
+        url: '/auth/friends'
+      })
+      .then(function(response){
+        console.log(response.data)
+        friends = response.data;
+      }, function(error){
+        console.log(error);
+      });
+    },
     getMessage : function(){
+      //NOTE refactor for time complexity
       $http({
         method: 'GET',
         url: '/auth/chatsessions'
       }).then(function(response){
         console.log(response, 'response data');
           response.data.forEach(function(y){
-              room_ids[y.id] = y.id;
+            y.chatstore.forEach(function(m){
+              // if(m.user_id !== 1){
+                friends.forEach(function(friend){
+                  if(friend.id === m.user_id){
+                    room_ids[y.id] = friend.username;
+                    console.log(y.id, friend.username, 'made it to the middle')
+                  }
+                });
+              // }
+            });
             y.message.forEach(function(z){
               messages[z.text] = y.id;
-              console.log(z.user_id, 'this should be a number');
             });
           });
       }, function(error){

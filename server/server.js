@@ -102,7 +102,7 @@ app.get('/auth/user/:id', function (req, res) {
 //News Feed Pulls Latest Completed Tasks of Friends
 var taskStore = [];
 app.get('/auth/newsfeed', function (req, res) {
-  db.collection('Friends').fetchByUser(1)
+  db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(users) {
     console.log("THEY ARE MY FRIENDS", users)
       return Promise.all(users.models.map(function(friend) {
@@ -130,7 +130,9 @@ app.get('/auth/newsfeed', function (req, res) {
         taskStore = [];
       })
 });
-app.get('/auth/picture', function(req, res){
+
+// Grab the logged in user's user object
+app.get('/auth/user', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
    res.json(user);
