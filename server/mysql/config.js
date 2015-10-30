@@ -2,10 +2,6 @@ var Promise = require('bluebird');
 
 var knex = require('knex')({
   client: process.env.dbClient || 'postgres',
-  pool: {
-    min: 2,
-    max: 30
-  },
   connection: {
     host     : process.env.dbHost || '127.0.0.1',
     user     : process.env.dbUser || 'root',
@@ -54,7 +50,7 @@ var userTasks = buildTable('tasks', function(t) {
       t.increments('id').primary();
       t.string('description', 100);
       t.boolean('complete');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
 });
@@ -62,25 +58,25 @@ var userTasks = buildTable('tasks', function(t) {
 var userClients = buildTable('clients', function(t) {
       t.increments('id').primary();
       t.integer('client_id');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('user_id');
 });
 
 var userTrainers = buildTable('trainers', function(t) {
       t.increments('id').primary();
       t.integer('trainer_id');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('user_id');
 });
 
 var userFriends = buildTable('friends', function(t) {
       t.string('status', 50);
-      t.integer('friends_id').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('friends_id');
+      t.integer('user_id');
 });
 
 var userMessages = buildTable('messages', function(t) {
       t.increments('id').primary();
       t.integer('chat_id');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('user_id');
       t.string('text', 200);
       t.timestamp('created_at');
       t.timestamp('updated_at');
@@ -106,8 +102,8 @@ var userClientRequest = buildTable('client_request', function(t) {
 
 var userWeights = buildTable('weights', function(t) {
       t.increments('id').primary();
-      t.integer('weight').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('weight');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
 });
@@ -120,49 +116,49 @@ var userChat = buildTable('chat', function(t) {
 
 var userChatStore = buildTable('chatstore', function(t) {
       t.increments('id').primary();
-      t.integer('user_id').references('id').inTable('users');
-      t.integer('chat_id').references('id').inTable('chat');
+      t.integer('user_id');
+      t.integer('chat_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
 });
 
 var userBenchPress = buildTable('benchpress', function(t) {
       t.increments('id').primary();
-      t.integer('benchpress').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('benchpress');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
 });
 
 var userSquats = buildTable('squats', function(t) {
       t.increments('id').primary();
-      t.integer('squat').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('squat');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
 });
 
 var userDeadLifts = buildTable('deadlifts', function(t) {
       t.increments('id').primary();
-      t.integer('deadlift').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('deadlift');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
     });
 
 var userSpeeds = buildTable('speeds', function(t) {
       t.increments('id').primary();
-      t.integer('speed').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('speed');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
 });
 
 var userGeolocations = buildTable('geolocations', function(t) {
       t.increments('id').primary();
-      t.integer('longtitude').references('id').inTable('users');
-      t.integer('latitude').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('longtitude');
+      t.integer('latitude');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
 });
