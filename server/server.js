@@ -6,6 +6,7 @@ var morgan = require('morgan');
 var Promise = require('bluebird');
 var app = express();
 var port = process.env.PORT || 8100;
+var geodist = require('geodist');
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
@@ -22,6 +23,7 @@ require('./mysql/models/squat');
 require('./mysql/models/deadlift');
 require('./mysql/models/speed');
 require('./mysql/models/chatstore');
+require('./mysql/models/geolocation');
 
 require('./mysql/collections/clients');
 require('./mysql/collections/friends');
@@ -38,6 +40,7 @@ require('./mysql/collections/squats');
 require('./mysql/collections/deadlifts');
 require('./mysql/collections/speeds');
 require('./mysql/collections/chatstores');
+require('./mysql/collections/geolocations');
 
 var session = require("express-session");
 
@@ -78,6 +81,7 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 });
 
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
+  console.log('THIS USER IS LOGGED IN', req.user)
   if(res.user) {
     res.json(req.user.toJSON());
   } else {
@@ -95,12 +99,68 @@ app.get('/auth/user/:id', function (req, res) {
     res.json(result.toJSON())
   })
 })
+
+//Fetch Nearest Users to Logged in User
+app.get('/auth/nearbyusers', function (req, res) {
+  var distPref = 25;
+  var inputLat = 34.01;
+  var inputLng = -118.49;
+  db.collection('Geolocations').fetchAll()
+  .then(function(results) {
+    return Promise.all(results.models.filter(function(model){
+      var users_lat = model.attributes.lat;
+      var users_lng = model.attributes.lng;
+      if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
+        return model
+      }
+    }))
+    .then(function(results) {
+      return results
+    })
+    .then(function(nearestUsers){
+      return Promise.all(nearestUsers.map(function(user) {
+          return db.model('User').fetchById({
+            id: user.attributes.user_id
+          })
+        })).then(function(userObject) {
+          console.log('THIS IS FINAL RESULT', userObject)
+          res.json(userObject)
+        })
+      })
+    })
+})
+
+var distPref = 25;
+var inputLat = 34.01;
+var inputLng = -118.49;
+db.collection('Geolocations').fetchAll()
+.then(function(results) {
+  return Promise.all(results.models.filter(function(model){
+    var users_lat = model.attributes.lat;
+    var users_lng = model.attributes.lng;
+    if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
+      return model
+    }
+  })).then(function(results) {
+    console.log('THESE ARE RESULTS', results)
+    return results
+  }).then(function(nearestUsers){
+    return Promise.all(nearestUsers.map(function(user) {
+        return db.model('User').fetchById({
+          id: user.attributes.user_id
+        })
+      })).then(function(userObject) {
+        console.log('THIS IS FINAL RESULT', userObject)
+        return userObject
+      })
+    })
+  })
+
 //News Feed Pulls Latest Completed Tasks of Friends
 var taskStore = [];
 app.get('/auth/newsfeed', function (req, res) {
-  db.collection('Friends').fetchByUser(1)
+  db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(users) {
-    console.log("THEY ARE MY FRIENDS", users)
       return Promise.all(users.models.map(function(friend) {
          return db.model('User').fetchById({
           id: friend.attributes.friends_id
@@ -108,9 +168,7 @@ app.get('/auth/newsfeed', function (req, res) {
       }))
     })
       .then(function(results){
-        console.log("I HOPE IT IS THERE", results);
         return Promise.all(results.map(function(model) {
-          console.log("ANY TASKS HERE", model.relations.tasks.models)
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
                 taskStore.push(task);
@@ -119,7 +177,6 @@ app.get('/auth/newsfeed', function (req, res) {
          }))
       })
       .then(function(){
-        console.log("WHERE IS MY NEW FEED", taskStore)
         res.json(taskStore)
       })
       .then(function(){
@@ -128,6 +185,7 @@ app.get('/auth/newsfeed', function (req, res) {
 });
 
 app.get('/auth/picture', function(req, res){
+  console.log('THIS IS USER', req.user.relations.geolocations.models[0].attributes.id)
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
    res.json(user);
@@ -620,6 +678,29 @@ app.post('/auth/speed/:stat', function (req, res) {
   })
   .save();
 });
+
+//Store User's Current Location or Update if it Exists
+app.post('/auth/location', function (req, res) {
+  var userId = req.user.attributes.id;
+  var lat = req.body.lat;
+  var lng = req.body.lng;
+  var locationId = req.user.relations.geolocations.models[0].attributes.id;
+  db.collection('Geolocations').fetchByUser(userId)
+  .then(function(location) {
+    if(location.length === 0) {
+      console.log('NO LOCATION FOUND')
+      return db.model('Geolocation').newLocation({
+        lat: lat,
+        lng: lng,
+        user_id: userId
+      })
+      .save();
+    } else {
+      console.log('SAVING LOCATION TO DB')
+      return db.model('Geolocation').updateLocation(locationId,lat, lng)
+    }
+  })
+})
 
 function ensureAuthenticated(req, res, next) {
   console.log('AUTHENTICATED FUNCTION');

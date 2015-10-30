@@ -241,8 +241,8 @@ db.knex.schema.hasTable('geolocations').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('geolocations', function(t) {
       t.increments('id').primary();
-      t.integer('longtitude').references('id').inTable('users');
-      t.integer('latitude').references('id').inTable('users');
+      t.float('lat');
+      t.float('lng');
       t.integer('user_id').references('id').inTable('users');
       t.timestamp('created_at');
       t.timestamp('updated_at');
