@@ -185,9 +185,9 @@ app.get('/auth/newsfeed', function (req, res) {
 });
 
 app.get('/auth/picture', function(req, res){
-  console.log('THIS IS USER', req.user.relations.geolocations.models[0].attributes.id)
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
+   console.log('THIS IS AUTH?PICTURE', user)
    res.json(user);
  });
 });
