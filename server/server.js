@@ -66,7 +66,7 @@ app.get('/auth/facebook',
  }));
 
 // Facebook Auth Callback
-app.get('/auth/facebook/callback/', function (req, res, next) {
+app.get('/auth/facebook/callback', function (req, res, next) {
   passport.authenticate('facebook',
     function(err, user, info) {
       if (err) { return next(err); }
@@ -282,6 +282,7 @@ app.get('/auth/clientrequests', function (req, res) {
     });
     });
 });
+
 // Fetch a User's Chat Sessions
 app.get('/auth/chatsessions', function(req, res) {
 var userId = req.user.attributes.id;
@@ -577,6 +578,7 @@ app.post('/auth/weight/:stat', function (req, res) {
   })
   .save();
 });
+
 //Add Current Bench Press
 app.post('/auth/bench/:stat', function (req, res) {
   var userId = req.user.attributes.id;
