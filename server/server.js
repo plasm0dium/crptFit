@@ -6,12 +6,9 @@ var morgan = require('morgan');
 var Promise = require('bluebird');
 var app = express();
 var port = process.env.PORT || 8100;
-<<<<<<< HEAD
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
-=======
 var geodist = require('geodist');
->>>>>>> 2838d0e8d1bd13847b61b928635673692c0359d6
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
@@ -106,56 +103,56 @@ app.get('/auth/user/:id', function (req, res) {
     id: userId
   })
   .then(function(result) {
-    res.json(result.toJSON())
-  })
-})
+    res.json(result.toJSON());
+  });
+});
 
 //Fetch Nearest Users to Logged in User
-var distPref = 1000
-var inputLat = 33.01;
-var inputLng = -118.32;
-db.collection('Geolocations').fetchAll()
-.then(function(results) {
-  return Promise.all(results.models.filter(function(model){
-    var users_lat = model.attributes.lat;
-    var users_lng = model.attributes.lng;
-    if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
-      return model;
-    }
-  }))
-  .then(function(results) {
-    return results;
-  })
-  .then(function(nearestUsers){
-    return Promise.all(nearestUsers.map(function(user) {
-      return db.model('User').fetchById({
-        id: user.attributes.user_id
-      });
-    })).then(function(userObject) {
-        console.log('THIS IS FINAL RESULT', userObject);
-        return userObject;
-    }).then(function(users) {
-      return Promise.all(users.map(function(user) {
-        var userId = 1;
-        var swipedId = user.attributes.id;
-        if(db.collection('Swipes').fetchBySwiped(userId, swipedId).length === 0) {
-          console.log('USER ISNT IN DB')
-          return user
-        }}).then(function(user) {
-          console.log('WRITING TO TABLE')
-          return db.model('Swipe').newSwipe({
-            user_id: 1,
-            swiped_id: user.attributes.id,
-            swiped: false,
-            swiped_left: false,
-            swiped_right: false
-          })
-          .save()
-        }))
-      })
-    })
-  })
-
+// var distPref = 1000
+// var inputLat = 33.01;
+// var inputLng = -118.32;
+// var userObject = []
+// db.collection('Geolocations').fetchAll()
+// .then(function(results) {
+//   return Promise.all(results.models.filter(function(model){
+//     var users_lat = model.attributes.lat;
+//     var users_lng = model.attributes.lng;
+//     if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
+//       return model;
+//     }
+//   }))
+//   .then(function(nearestUsers){
+//     return Promise.all(nearestUsers.map(function(user) {
+//       return db.model('User').fetchById({
+//         id: user.attributes.user_id
+//         });
+//       }))
+//       .then(function(users) {
+//         return Promise.all(users.map(function(user) {
+//           var userId = 1;
+//           var swipedId = user.attributes.id;
+//           return db.collection('Swipes').fetchBySwiped(userId, swipedId)
+//           .then(function(result) {
+//             if(result.length === 0) {
+//               return user;
+//             }
+//         })
+//       }))
+//       .then(function(user) {
+//         console.log('THIS IS FILTERED', user)
+//         //res.json(user)
+//         return db.model('Swipe').newSwipe({
+//           user_id: 1,
+//           swiped_id: user.attributes.id,
+//           swiped: false,
+//           swiped_left: false,
+//           swiped_right: false
+//         })
+//         .save()
+//       })
+//     })
+//   })
+// })
 app.get('/auth/nearbyusers', function (req, res) {
   var distPref = req.body.distPref;
   var inputLat = req.body.inputLat;
@@ -228,24 +225,25 @@ app.get('/auth/newsfeed', function (req, res) {
       return Promise.all(users.models.map(function(friend) {
          return db.model('User').fetchById({
           id: friend.attributes.friends_id
-        })
-      }))
+        });
+      }));
     })
       .then(function(results){
+        res.json(results);
         return Promise.all(results.map(function(model) {
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
                 taskStore.push(task);
               }
-            })
-         }))
+            });
+         }));
       })
       .then(function(){
-        res.json(taskStore)
+        res.json(taskStore);
       })
       .then(function(){
         taskStore = [];
-      })
+      });
 });
 
 // Grab the logged in user's user object
@@ -367,9 +365,9 @@ app.get('/auth/search/:id', function (req, res) {
     }))
       .then(function (results){
         return res.json(results);
-      })
-  })
-})
+      });
+  });
+});
 
 //Notifications for Pending Friend Requests
 app.get('/auth/friendrequests', function (req, res) {
@@ -382,7 +380,7 @@ app.get('/auth/friendrequests', function (req, res) {
         return filtered;
       }
     })).then(function(result) {
-      console.log('this is the finalresult of friend_requests :', result)
+      console.log('this is the final result of friend_requests :', result)
       res.json(result);
     });
   });
@@ -419,9 +417,9 @@ db.model('User').fetchById({
     .then(function (results){
       console.log("PLEASE WORK::::::::>", results);
       res.json(results);
-    })
+    });
   });
-})
+});
 
 // Fetch a User's Weights
 app.get('/auth/weight/:id', function (req, res){
