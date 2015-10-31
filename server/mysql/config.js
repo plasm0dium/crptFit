@@ -36,7 +36,7 @@ db.knex.schema.hasTable('tasks').then(function(exists) {
       t.increments('id').primary();
       t.string('description', 100);
       t.boolean('complete');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
     });
@@ -51,7 +51,7 @@ db.knex.schema.hasTable('clients').then(function(exists) {
     return db.knex.schema.createTable('clients', function(t) {
       t.increments('id').primary();
       t.integer('client_id');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('user_id');
     });
   }
 })
@@ -64,7 +64,7 @@ db.knex.schema.hasTable('trainers').then(function(exists) {
     return db.knex.schema.createTable('trainers', function(t) {
       t.increments('id').primary();
       t.integer('trainer_id');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('user_id');
     });
   }
 })
@@ -76,8 +76,8 @@ db.knex.schema.hasTable('friends').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('friends', function(t) {
       t.string('status', 50);
-      t.integer('friends_id').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('friends_id');
+      t.integer('user_id');
     });
   }
 })
@@ -90,7 +90,7 @@ db.knex.schema.hasTable('messages').then(function(exists) {
     return db.knex.schema.createTable('messages', function(t) {
       t.increments('id').primary();
       t.integer('chat_id');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('user_id');
       t.string('text', 200);
       t.timestamp('created_at');
       t.timestamp('updated_at');
@@ -137,8 +137,8 @@ db.knex.schema.hasTable('weights').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('weights', function(t) {
       t.increments('id').primary();
-      t.integer('weight').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('weight');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
     });
@@ -165,8 +165,8 @@ db.knex.schema.hasTable('chatstore').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('chatstore', function(t) {
       t.increments('id').primary();
-      t.integer('user_id').references('id').inTable('users');
-      t.integer('chat_id').references('id').inTable('chat');
+      t.integer('user_id');
+      t.integer('chat_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
     });
@@ -181,8 +181,8 @@ db.knex.schema.hasTable('benchpress').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('benchpress', function(t) {
       t.increments('id').primary();
-      t.integer('benchpress').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('benchpress');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
     });
@@ -196,8 +196,8 @@ db.knex.schema.hasTable('squats').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('squats', function(t) {
       t.increments('id').primary();
-      t.integer('squat').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('squat');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
     });
@@ -211,8 +211,8 @@ db.knex.schema.hasTable('deadlifts').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('deadlifts', function(t) {
       t.increments('id').primary();
-      t.integer('deadlift').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('deadlift');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
     });
@@ -226,8 +226,8 @@ db.knex.schema.hasTable('speeds').then(function(exists) {
   if (!exists) {
     return db.knex.schema.createTable('speeds', function(t) {
       t.increments('id').primary();
-      t.integer('speed').references('id').inTable('users');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('speed');
+      t.integer('user_id');
       t.timestamp('created_at');
       t.timestamp('updated_at');
     });
@@ -243,9 +243,41 @@ db.knex.schema.hasTable('geolocations').then(function(exists) {
       t.increments('id').primary();
       t.float('lat');
       t.float('lng');
-      t.integer('user_id').references('id').inTable('users');
+      t.integer('user_id')
       t.timestamp('created_at');
       t.timestamp('updated_at');
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('swipes').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('swipes', function(t) {
+      t.increments('id').primary();
+      t.integer('user_id');
+      t.integer('swiped_id');
+      t.boolean('swiped');
+      t.boolean('swiped_left');
+      t.boolean('swiped_right')
+      t.timestamp('created_at');
+      t.timestamp('updated_at');
+    });
+  }
+})
+.then(function(t) {
+  console.log('created table:', t);
+});
+
+db.knex.schema.hasTable('matches').then(function(exists) {
+  if (!exists) {
+    return db.knex.schema.createTable('matches', function(t) {
+      t.increments('id').primary();
+      t.integer('user_id');
+      t.integer('match_id');
+      t.timestamp('created_at');
     });
   }
 })

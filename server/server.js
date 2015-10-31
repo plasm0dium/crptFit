@@ -24,6 +24,8 @@ require('./mysql/models/deadlift');
 require('./mysql/models/speed');
 require('./mysql/models/chatstore');
 require('./mysql/models/geolocation');
+require('./mysql/models/swipe');
+require('./mysql/models/match');
 
 require('./mysql/collections/clients');
 require('./mysql/collections/friends');
@@ -41,6 +43,8 @@ require('./mysql/collections/deadlifts');
 require('./mysql/collections/speeds');
 require('./mysql/collections/chatstores');
 require('./mysql/collections/geolocations');
+require('./mysql/collections/swipes');
+require('./mysql/collections/matches');
 
 var session = require("express-session");
 
@@ -101,6 +105,51 @@ app.get('/auth/user/:id', function (req, res) {
 })
 
 //Fetch Nearest Users to Logged in User
+var distPref = 1000
+var inputLat = 33.01;
+var inputLng = -118.32;
+db.collection('Geolocations').fetchAll()
+.then(function(results) {
+  return Promise.all(results.models.filter(function(model){
+    var users_lat = model.attributes.lat;
+    var users_lng = model.attributes.lng;
+    if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
+      return model;
+    }
+  }))
+  .then(function(results) {
+    return results;
+  })
+  .then(function(nearestUsers){
+    return Promise.all(nearestUsers.map(function(user) {
+      return db.model('User').fetchById({
+        id: user.attributes.user_id
+      });
+    })).then(function(userObject) {
+        console.log('THIS IS FINAL RESULT', userObject);
+        return userObject;
+    }).then(function(users) {
+      return Promise.all(users.map(function(user) {
+        var userId = 1;
+        var swipedId = user.attributes.id;
+        if(db.collection('Swipes').fetchBySwiped(userId, swipedId).length === 0) {
+          console.log('USER ISNT IN DB')
+          return user
+        }}).then(function(user) {
+          console.log('WRITING TO TABLE')
+          return db.model('Swipe').newSwipe({
+            user_id: 1,
+            swiped_id: user.attributes.id,
+            swiped: false,
+            swiped_left: false,
+            swiped_right: false
+          })
+          .save()
+        }))
+      })
+    })
+  })
+
 app.get('/auth/nearbyusers', function (req, res) {
   var distPref = req.body.distPref;
   var inputLat = req.body.inputLat;
@@ -111,24 +160,59 @@ app.get('/auth/nearbyusers', function (req, res) {
       var users_lat = model.attributes.lat;
       var users_lng = model.attributes.lng;
       if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
-        return model
+        return model;
       }
     }))
     .then(function(results) {
-      return results
+      return results;
     })
     .then(function(nearestUsers){
       return Promise.all(nearestUsers.map(function(user) {
         return db.model('User').fetchById({
           id: user.attributes.user_id
-        })
+        });
       })).then(function(userObject) {
-          console.log('THIS IS FINAL RESULT', userObject)
-          res.json(userObject)
-      })
-    })
-  })
-})
+          console.log('THIS IS FINAL RESULT', userObject);
+          res.json(userObject);
+          return userObject;
+      }).then(function(users) {
+        return Promise.all(users.map(function(user) {
+          var userId = req.user.attributes.id;
+          var swipedId = user.attributes.id;
+          if(db.collection('Swipes').fetchBySwiped(userId, swipedId).length > 0) {
+            return
+          } else {
+            return db.model('Swipe').newSwipe({
+              user_id: req.user.attributes.id,
+              swiped_id: user.attributes.id,
+              swiped: false,
+              swiped_left: false,
+              swiped_right: false
+            })
+            .save()
+          }
+        }));
+      });
+    });
+  });
+});
+
+app.get('/auth/matchcheck/:id', function (req, res) {
+  var swipedId = req.user.attributes.id;
+  var userId = req.params.id;
+  db.collection('Swipes').fetchBySwiped(userId, swipedId)
+  .then(function(exists) {
+    if(exists.length === 0) {
+      res.json({match: false});
+    } else {
+      if(exists.models[0].attributes.swiped_right === 1) {
+        res.json({match: true});
+      } else {
+        res.json({match: false});
+      };
+    };
+  });
+});
 
 //News Feed Pulls Latest Completed Tasks of Friends
 var taskStore = [];
@@ -672,8 +756,28 @@ app.post('/auth/location', function (req, res) {
       .save();
     } else {
       console.log('SAVING LOCATION TO DB')
-      return db.model('Geolocation').updateLocation(locationId,lat, lng)
-    }
+      return db.model('Geolocation').updateLocation(locationId,lat, lng);
+    };
+  });
+});
+
+//User Swiped Left on Swiped User
+app.post('/auth/leftswipe:id', function (req,res) {
+  var userId = req.user.attributes.id;
+  var swipedId = req.params.id;
+  db.collection('Swipes').fetchBySwiped(userId, swipedId)
+  .then(function(result) {
+    db.model('Swipe').updateLeftSwipe(result.models[0].attributes.id)
+  })
+})
+
+//User Swipes Right on Swiped User
+app.post('/auth/rightswipe:id', function (req,res) {
+  var userId = req.user.attributes.id;
+  var swipedId = req.params.id;
+  db.collection('Swipes').fetchBySwiped(userId, swipedId)
+  .then(function(result) {
+    db.model('Swipe').updateRightSwipe(result.models[0].attributes.id)
   })
 })
 
