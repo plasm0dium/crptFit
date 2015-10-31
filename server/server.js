@@ -6,7 +6,6 @@ var morgan = require('morgan');
 var Promise = require('bluebird');
 var app = express();
 var port = process.env.PORT || 8100;
-var mysql = require('mysql');
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
 
