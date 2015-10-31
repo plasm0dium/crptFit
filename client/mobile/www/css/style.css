@@ -26,6 +26,7 @@ img{
 }
 .recent-activity{
   margin-top: 20px;
+  background-color: red;
 }
 .social-icon{
   position: absolute;
