@@ -367,6 +367,9 @@ angular.module('crptFit.controllers', ['ionic'])
 .controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
 //NOTE Refactor me
   var self = this;
+  self.sendTo = {
+    val: null
+  }
   self.search = Social.friendsList();
   self.getFriends = function(){
     Message.getFriends();
@@ -381,21 +384,6 @@ angular.module('crptFit.controllers', ['ionic'])
   self.showMessages = function(){
    Message.getMessage();
   };
-
-  self.connect = function(id){
-    var socket = io();
-    socket.on('connecting', function(id){
-      socket.emit('join room', id)
-    })
-  }
-
-  self.liveUpdate = function(chatId, message){
-    var socket = io();
-    socket.emit('chatroom id', chatId, message)
-    socket.on('message-append', function(id, message){
-      self.sendMessage(id, message)
-    })
-  }
 
   Message.messageList();
 
@@ -415,7 +403,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.chat = Message.makeChat(userId);
   };
   self.sendMessage = function(chatId, val){
-    console.log(chatId)
+    console.log(chatId, val)
     self.send = Message.sendMessage(chatId, val);
      self.sendTo.val = null;
      self.returnMessage = Message.messageToPage();
@@ -424,6 +412,20 @@ angular.module('crptFit.controllers', ['ionic'])
     Message.getRoom(chatId);
   };
 
+  self.connect = function(id){
+    var socket = io();
+    console.log(id, 'this is what im passing')
+    console.log('LOOKING TO CONNECTION')
+    socket.emit('connecting', id)
+     socket.on('message-append', function(id, message){
+      console.log(id, message)
+        self.sendMessage(id, message)
+      })
+  }
+  self.liveUpdate = function(chatId, message){
+    var socket = io();
+      socket.emit('chatroom id', chatId, message);
+    }
   $scope.showPopup = function() {
   $scope.data = {};
   var myPopup = $ionicPopup.show({

@@ -640,13 +640,16 @@ io.on('connection', function (socket){
     socket.emit('user name', {username: userObj.get('username')});
   }
 
-  // new chat room
-  socket.on('join room', function(id){
-    socket.join(id)
+  socket.on('connecting', function(id){
+    console.log('i heard it coming from on high, the song that ends the world', id)
+    socket.join(id);
   })
+  // new chat room
   socket.on('chatroom id', function(id, message){
+    console.log(id, message)
     // chatroomId = id;
     // newMessage = message;
+    socket.join(id)
     io.sockets.in(id).emit('message-append', id, message);
     // console.log(chatroomId, 'expect a number', 'expect a message', newMessage)
     db.model('Chat').fetchById(id)

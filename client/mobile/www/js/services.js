@@ -185,6 +185,7 @@ angular.module('crptFit.services', [])
   return {
     messageToPage : function(){
       newRet = messageReturn;
+      console.log('LOOKING FOR THE DOUBLER', newRet)
       return newRet;
     },
     messageList : function(){
