@@ -6,6 +6,7 @@ var morgan = require('morgan');
 var Promise = require('bluebird');
 var app = express();
 var port = process.env.PORT || 8100;
+var geodist = require('geodist');
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
@@ -22,6 +23,9 @@ require('./mysql/models/squat');
 require('./mysql/models/deadlift');
 require('./mysql/models/speed');
 require('./mysql/models/chatstore');
+require('./mysql/models/geolocation');
+require('./mysql/models/swipe');
+require('./mysql/models/match');
 
 require('./mysql/collections/clients');
 require('./mysql/collections/friends');
@@ -38,6 +42,9 @@ require('./mysql/collections/squats');
 require('./mysql/collections/deadlifts');
 require('./mysql/collections/speeds');
 require('./mysql/collections/chatstores');
+require('./mysql/collections/geolocations');
+require('./mysql/collections/swipes');
+require('./mysql/collections/matches');
 
 var session = require("express-session");
 
@@ -78,6 +85,7 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 });
 
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
+  console.log('THIS USER IS LOGGED IN', req.user)
   if(res.user) {
     res.json(req.user.toJSON());
   } else {
@@ -95,12 +103,122 @@ app.get('/auth/user/:id', function (req, res) {
     res.json(result.toJSON())
   })
 })
+
+//Fetch Nearest Users to Logged in User
+var distPref = 1000
+var inputLat = 33.01;
+var inputLng = -118.32;
+db.collection('Geolocations').fetchAll()
+.then(function(results) {
+  return Promise.all(results.models.filter(function(model){
+    var users_lat = model.attributes.lat;
+    var users_lng = model.attributes.lng;
+    if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
+      return model;
+    }
+  }))
+  .then(function(results) {
+    return results;
+  })
+  .then(function(nearestUsers){
+    return Promise.all(nearestUsers.map(function(user) {
+      return db.model('User').fetchById({
+        id: user.attributes.user_id
+      });
+    })).then(function(userObject) {
+        console.log('THIS IS FINAL RESULT', userObject);
+        return userObject;
+    }).then(function(users) {
+      return Promise.all(users.map(function(user) {
+        var userId = 1;
+        var swipedId = user.attributes.id;
+        if(db.collection('Swipes').fetchBySwiped(userId, swipedId).length === 0) {
+          console.log('USER ISNT IN DB')
+          return user
+        }}).then(function(user) {
+          console.log('WRITING TO TABLE')
+          return db.model('Swipe').newSwipe({
+            user_id: 1,
+            swiped_id: user.attributes.id,
+            swiped: false,
+            swiped_left: false,
+            swiped_right: false
+          })
+          .save()
+        }))
+      })
+    })
+  })
+
+app.get('/auth/nearbyusers', function (req, res) {
+  var distPref = req.body.distPref;
+  var inputLat = req.body.inputLat;
+  var inputLng = req.body.inputLng;
+  db.collection('Geolocations').fetchAll()
+  .then(function(results) {
+    return Promise.all(results.models.filter(function(model){
+      var users_lat = model.attributes.lat;
+      var users_lng = model.attributes.lng;
+      if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
+        return model;
+      }
+    }))
+    .then(function(results) {
+      return results;
+    })
+    .then(function(nearestUsers){
+      return Promise.all(nearestUsers.map(function(user) {
+        return db.model('User').fetchById({
+          id: user.attributes.user_id
+        });
+      })).then(function(userObject) {
+          console.log('THIS IS FINAL RESULT', userObject);
+          res.json(userObject);
+          return userObject;
+      }).then(function(users) {
+        return Promise.all(users.map(function(user) {
+          var userId = req.user.attributes.id;
+          var swipedId = user.attributes.id;
+          if(db.collection('Swipes').fetchBySwiped(userId, swipedId).length > 0) {
+            return
+          } else {
+            return db.model('Swipe').newSwipe({
+              user_id: req.user.attributes.id,
+              swiped_id: user.attributes.id,
+              swiped: false,
+              swiped_left: false,
+              swiped_right: false
+            })
+            .save()
+          }
+        }));
+      });
+    });
+  });
+});
+
+app.get('/auth/matchcheck/:id', function (req, res) {
+  var swipedId = req.user.attributes.id;
+  var userId = req.params.id;
+  db.collection('Swipes').fetchBySwiped(userId, swipedId)
+  .then(function(exists) {
+    if(exists.length === 0) {
+      res.json({match: false});
+    } else {
+      if(exists.models[0].attributes.swiped_right === 1) {
+        res.json({match: true});
+      } else {
+        res.json({match: false});
+      };
+    };
+  });
+});
+
 //News Feed Pulls Latest Completed Tasks of Friends
 var taskStore = [];
 app.get('/auth/newsfeed', function (req, res) {
   db.collection('Friends').fetchByUser(req.user.attributes.id)
   .then(function(users) {
-    console.log("THEY ARE MY FRIENDS", users)
       return Promise.all(users.models.map(function(friend) {
          return db.model('User').fetchById({
           id: friend.attributes.friends_id
@@ -108,9 +226,7 @@ app.get('/auth/newsfeed', function (req, res) {
       }))
     })
       .then(function(results){
-        console.log("I HOPE IT IS THERE", results);
         return Promise.all(results.map(function(model) {
-          console.log("ANY TASKS HERE", model.relations.tasks.models)
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
                 taskStore.push(task);
@@ -119,7 +235,6 @@ app.get('/auth/newsfeed', function (req, res) {
          }))
       })
       .then(function(){
-        console.log("WHERE IS MY NEW FEED", taskStore)
         res.json(taskStore)
       })
       .then(function(){
@@ -131,6 +246,7 @@ app.get('/auth/newsfeed', function (req, res) {
 app.get('/auth/user', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
+   console.log('THIS IS AUTH?PICTURE', user)
    res.json(user);
  });
 });
@@ -365,11 +481,10 @@ app.post('/auth/tasks/:taskname', function (req, res) {
 app.post('/auth/tasks/add:userid', function (req, res) {
   var userId = req.params.userid;
   var taskname = req.body.taskname;
-  var task = req.params.taskname;
   db.model('Task').newTask({
     description: taskname,
     complete: false,
-    user_id: req.user.attributes.id
+    user_id: userId
   })
   .save()
   .catch(function (err) {
@@ -620,6 +735,49 @@ app.post('/auth/speed/:stat', function (req, res) {
   })
   .save();
 });
+
+//Store User's Current Location or Update if it Exists
+app.post('/auth/location', function (req, res) {
+  var userId = req.user.attributes.id;
+  var lat = req.body.lat;
+  var lng = req.body.lng;
+  var locationId = req.user.relations.geolocations.models[0].attributes.id;
+  db.collection('Geolocations').fetchByUser(userId)
+  .then(function(location) {
+    if(location.length === 0) {
+      console.log('NO LOCATION FOUND')
+      return db.model('Geolocation').newLocation({
+        lat: lat,
+        lng: lng,
+        user_id: userId
+      })
+      .save();
+    } else {
+      console.log('SAVING LOCATION TO DB')
+      return db.model('Geolocation').updateLocation(locationId,lat, lng);
+    };
+  });
+});
+
+//User Swiped Left on Swiped User
+app.post('/auth/leftswipe:id', function (req,res) {
+  var userId = req.user.attributes.id;
+  var swipedId = req.params.id;
+  db.collection('Swipes').fetchBySwiped(userId, swipedId)
+  .then(function(result) {
+    db.model('Swipe').updateLeftSwipe(result.models[0].attributes.id)
+  })
+})
+
+//User Swipes Right on Swiped User
+app.post('/auth/rightswipe:id', function (req,res) {
+  var userId = req.user.attributes.id;
+  var swipedId = req.params.id;
+  db.collection('Swipes').fetchBySwiped(userId, swipedId)
+  .then(function(result) {
+    db.model('Swipe').updateRightSwipe(result.models[0].attributes.id)
+  })
+})
 
 function ensureAuthenticated(req, res, next) {
   console.log('AUTHENTICATED FUNCTION');
