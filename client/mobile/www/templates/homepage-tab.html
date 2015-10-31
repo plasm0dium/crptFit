@@ -3,9 +3,9 @@
   <ion-refresher pulling-text="Pull To Refresh" on-refresh="console.log('refreshed')" refreshing-icon="ion-loading-c"></ion-refresher>
   <div ng-repeat="update in ctrl.feed">
     <a class="item item-avatar task">
-      <img src=""/>
+      <img src="{{update.profile_pic}}"/>
       <h3>{{update.username}}</h3>
-      <p>The tasks {{update.description}} was just completed.</p>
+      <p>completed the task "<span class="completedTask">{{update.tasks[0].description.toUpperCase()}}</span>"!</p>
     </a>
   </div>
   </ion-content>

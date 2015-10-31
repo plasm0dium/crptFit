@@ -8,9 +8,9 @@ var app = express();
 // var http = require('http').Server(app);
 // var io = require('socket.io')(http);
 var port = process.env.PORT || 8100;
-var mysql = require('mysql');
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
+var geodist = require('geodist');
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
@@ -27,6 +27,9 @@ require('./mysql/models/squat');
 require('./mysql/models/deadlift');
 require('./mysql/models/speed');
 require('./mysql/models/chatstore');
+require('./mysql/models/geolocation');
+require('./mysql/models/swipe');
+require('./mysql/models/match');
 
 require('./mysql/collections/clients');
 require('./mysql/collections/friends');
@@ -43,6 +46,9 @@ require('./mysql/collections/squats');
 require('./mysql/collections/deadlifts');
 require('./mysql/collections/speeds');
 require('./mysql/collections/chatstores');
+require('./mysql/collections/geolocations');
+require('./mysql/collections/swipes');
+require('./mysql/collections/matches');
 
 var session = require("express-session");
 app.use(session({
@@ -83,6 +89,7 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 });
 
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
+  console.log('THIS USER IS LOGGED IN', req.user)
   if(res.user) {
     res.json(req.user.toJSON());
   } else {
@@ -97,9 +104,84 @@ app.get('/auth/user/:id', function (req, res) {
     id: userId
   })
   .then(function(result) {
-    res.json(result.toJSON())
+    res.json(result.toJSON());
+  });
+});
+
+//Fetch Nearest Users to Logged in User
+app.get('/auth/nearbyusers', function (req, res) {
+  var distPref = req.body.distPref;
+  var inputLat = req.body.inputLat;
+  var inputLng = req.body.inputLng;
+  db.collection('Geolocations').fetchAll()
+  .then(function(results) {
+    return Promise.all(results.models.filter(function(model){
+      var users_lat = model.attributes.lat;
+      var users_lng = model.attributes.lng;
+      if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
+        return model;
+      }
+    }))
+    .then(function(nearestUsers){
+      return Promise.all(nearestUsers.map(function(user) {
+        return db.model('User').fetchById({
+          id: user.attributes.user_id
+          });
+        }))
+        .then(function(users) {
+          return Promise.all(users.map(function(user) {
+            var userId = req.user.attributes.id;
+            var swipedId = user.attributes.id;
+            return db.collection('Swipes').fetchBySwiped(userId, swipedId)
+            .then(function(result) {
+               if(result.length === 0) {
+                console.log('THIS IS IN IF')
+                return user;
+              }
+          })
+        }))
+        .then(function(user) {
+          if(user[0] === undefined ) {
+            console.log('{nearbyUsers: None}')
+            res.json({nearbyUsers: 'None'})
+            return
+          } else {
+            console.log('THIS IS IN ELSE AND SAVING', user)
+            res.json(user);
+            return Promise.all(user.map(function (user) {
+              return db.model('Swipe').newSwipe({
+                user_id: req.user.attributes.id,
+                swiped_id: user.attributes.id,
+                swiped: false,
+                swiped_left: false,
+                swiped_right: false
+              })
+              .save()
+            }))
+          }
+        })
+      })
+    })
   })
-})
+});
+//On Right Swipe Check if Swiped User has Also Swiped Right on the User
+app.get('/auth/matchcheck/:id', function (req, res) {
+  var swipedId = req.user.attributes.id;
+  var userId = req.params.id;
+  db.collection('Swipes').fetchBySwiped(userId, swipedId)
+  .then(function(exists) {
+    if(exists.length === 0) {
+      res.json({match: false});
+    } else {
+      if(exists.models[0].attributes.swiped_right === 1) {
+        res.json({match: true});
+      } else {
+        res.json({match: false});
+      };
+    };
+  });
+});
+
 //News Feed Pulls Latest Completed Tasks of Friends
 var taskStore = [];
 app.get('/auth/newsfeed', function (req, res) {
@@ -108,8 +190,8 @@ app.get('/auth/newsfeed', function (req, res) {
       return Promise.all(users.models.map(function(friend) {
          return db.model('User').fetchById({
           id: friend.attributes.friends_id
-        })
-      }))
+        });
+      }));
     })
       .then(function(results){
         return Promise.all(results.map(function(model) {
@@ -117,21 +199,23 @@ app.get('/auth/newsfeed', function (req, res) {
               if (task.attributes.complete === 1){
                 taskStore.push(task);
               }
-            })
-         }))
+
+            });
+         }));
       })
       .then(function(){
-        res.json(taskStore)
+        res.json(taskStore);
       })
       .then(function(){
         taskStore = [];
-      })
+      });
 });
 
 // Grab the logged in user's user object
 app.get('/auth/user', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
+   console.log('THIS IS AUTH?PICTURE', user)
    res.json(user);
  });
 });
@@ -150,6 +234,27 @@ app.get('/auth/tasks', function (req,res) {
     res.json(tasks.toJSON());
   });
 });
+
+// Get current user's completed Tasks
+app.get('/auth/usertask/:id', function (req, res){
+var userId = req.user.attributes.id;
+  db.model('User').fetchById({
+    id: userId
+  })
+  .then(function(user){
+    console.log("THIS IS CURRENT USER", user)
+    return Promise.all(user.relations.tasks.models.map(function(tasks){
+      console.log("TASKS ARE HERE", tasks)
+          if(tasks.attributes.complete === 1){
+            return tasks;
+          }
+      }))
+    .then(function(results){
+      res.json(results);
+    });
+  });
+});
+
 
 // Fetch Logged in Users Friends
 var storage = [];
@@ -245,9 +350,9 @@ app.get('/auth/search/:id', function (req, res) {
     }))
       .then(function (results){
         return res.json(results);
-      })
-  })
-})
+      });
+  });
+});
 
 //Notifications for Pending Friend Requests
 app.get('/auth/friendrequests', function (req, res) {
@@ -290,9 +395,9 @@ db.model('User').fetchById({
     }))
     .then(function (results){
       res.json(results);
-    })
+    });
   });
-})
+});
 
 // Fetch a User's Weights
 app.get('/auth/weight/:id', function (req, res){
@@ -355,11 +460,10 @@ app.post('/auth/tasks/:taskname', function (req, res) {
 app.post('/auth/tasks/add:userid', function (req, res) {
   var userId = req.params.userid;
   var taskname = req.body.taskname;
-  var task = req.params.taskname;
   db.model('Task').newTask({
     description: taskname,
     complete: false,
-    user_id: req.user.attributes.id
+    user_id: userId
   })
   .save()
   .catch(function (err) {
@@ -600,6 +704,49 @@ app.post('/auth/speed/:stat', function (req, res) {
   })
   .save();
 });
+
+//Store User's Current Location or Update if it Exists
+app.post('/auth/location', function (req, res) {
+  var userId = req.user.attributes.id;
+  var lat = req.body.lat;
+  var lng = req.body.lng;
+  var locationId = req.user.relations.geolocations.models[0].attributes.id;
+  db.collection('Geolocations').fetchByUser(userId)
+  .then(function(location) {
+    if(location.length === 0) {
+      console.log('NO LOCATION FOUND')
+      return db.model('Geolocation').newLocation({
+        lat: lat,
+        lng: lng,
+        user_id: userId
+      })
+      .save();
+    } else {
+      console.log('SAVING LOCATION TO DB')
+      return db.model('Geolocation').updateLocation(locationId,lat, lng);
+    };
+  });
+});
+
+//User Swiped Left on Swiped User
+app.post('/auth/leftswipe:id', function (req,res) {
+  var userId = req.user.attributes.id;
+  var swipedId = req.params.id;
+  db.collection('Swipes').fetchBySwiped(userId, swipedId)
+  .then(function(result) {
+    db.model('Swipe').updateLeftSwipe(result.models[0].attributes.id)
+  })
+})
+
+//User Swipes Right on Swiped User
+app.post('/auth/rightswipe:id', function (req,res) {
+  var userId = req.user.attributes.id;
+  var swipedId = req.params.id;
+  db.collection('Swipes').fetchBySwiped(userId, swipedId)
+  .then(function(result) {
+    db.model('Swipe').updateRightSwipe(result.models[0].attributes.id)
+  })
+})
 
 function ensureAuthenticated(req, res, next) {
   if(req.isAuthenticated()) {

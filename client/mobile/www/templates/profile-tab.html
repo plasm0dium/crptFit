@@ -30,9 +30,8 @@
     <div class="recent-activity">
       <div ng-repeat="update in ctrl.feed" >
         <a class="item item-avatar">
-          <img src="https://healthhabits.files.wordpress.com/2008/09/body_builder.gif"/>
           <h3>{{ctrl.username}}</h3>
-          <p>{{update.description}}</p>
+          <p>completed the task "<span class="completedTask">{{update.description}}</span>"!</p>
         </a>
       </div>
     </div>

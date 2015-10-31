@@ -26,10 +26,15 @@ img{
 }
 .recent-activity{
   margin-top: 20px;
+  background-color: red;
 }
 .social-icon{
   position: absolute;
   top: 20px;
+}
+.completedTask{
+  font-weight: bold;
+  color: green;
 }
 .sideNav{
   padding: 0;
