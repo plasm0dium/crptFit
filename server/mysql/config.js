@@ -48,6 +48,7 @@ var userProfiles = buildTable('users', function(t) {
       t.string('email', 30);
       t.string('gender', 10);
       t.text('profile');
+      t.timestamps();
 });
 
 var userTasks = buildTable('tasks', function(t) {

@@ -11,3 +11,8 @@ ERROR:  relation "users" does not exist
 STATEMENT:  alter table "clients" add constraint clients_user_id_foreign foreign key ("user_id") references "users" ("id")
 ERROR:  unrecognized configuration parameter "tables"
 STATEMENT:  show tables;
+ERROR:  syntax error at or near "select" at character 21
+STATEMENT:  select * from users
+	select * from users;
+ERROR:  syntax error at or near "describe" at character 1
+STATEMENT:  describe users;
