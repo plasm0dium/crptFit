@@ -31,6 +31,10 @@ img{
   position: absolute;
   top: 20px;
 }
+.completedTask{
+  font-weight: bold;
+  color: green;
+}
 .sideNav{
   padding: 0;
 }

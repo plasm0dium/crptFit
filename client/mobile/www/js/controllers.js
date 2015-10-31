@@ -53,25 +53,33 @@ angular.module('crptFit.controllers', ['ionic'])
   self.pic;
   self.username;
   self.feed;
+  self.Id;
 
   self.friendCount = Social.getFriendsLength();
   self.trainerCount = Social.getTrainersLength();
   self.clientCount = Social.getClientsLength();
   // Helper function for extracting profile info dynamically and setting it in the controller
-  var setUserInfo = function(picUrl, username){
+  var setUserInfo = function(picUrl, username, id){
      self.pic = picUrl;
      self.username = username;
+     self.Id = id;
   };
 
   var setTasks = function(tasks){
-    self.feed = tasks;
+    var filtered = [];
+    for(var i = 0; i < tasks.length; i++){
+      if(tasks[i]){
+        filtered.push(tasks[i]);
+      }
+    }
+    self.feed = filtered;
   }
   // Grab a users tasks - extract into a factory later
   $http({
     method: 'GET',
-    url: '/auth/tasks'
+    url: '/auth/usertask/' + self.Id
   }).then(function(response){
-    console.log("inside of the ProfileCtrl call:", response);
+    console.log("inside of the ProfileCtrl call tasks:", response.data);
     setTasks(response.data);
   })
   // Grab a users profile information - extract into a factory later
@@ -81,7 +89,8 @@ angular.module('crptFit.controllers', ['ionic'])
   }).then(function(response){
     var picUrl = response.data.profile_pic;
     var userName = response.data.username;
-    setUserInfo(picUrl, userName);
+    var currentUserId = response.data.id;
+    setUserInfo(picUrl, userName, currentUserId);
   });
   // Add a refreshing function here
  }])
@@ -99,7 +108,6 @@ angular.module('crptFit.controllers', ['ionic'])
       method: 'get',
       url: '/auth/newsfeed'
     }).then(function(response){
-      console.log("This is the response for the newsfeed:", response)
       self.feed = response.data;
     })
   }
