@@ -391,7 +391,7 @@ app.get('/auth/search/:id', function (req, res) {
 });
 
 //Notifications for Pending Friend Requests
-app.get('/auth/friendrequests', function (req, res) {
+app.get('/auth/friendrequests/:id', function (req, res) {
   var userId = req.user.attributes.id;
   db.collection('friendRequests').fetchByUser(userId)
   .then(function(friendRequests) {
