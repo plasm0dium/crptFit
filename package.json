@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Unconfined/crptFit#readme",
   "dependencies": {
+    "angular-socket-io": "^0.7.0",
     "bluebird": "^3.0.0",
     "body-parser": "~1.13.2",
     "bookshelf": "^0.8.2",
