@@ -12,7 +12,7 @@
             <input id="messageIn" class="messageInput" type="text" placeholder="Type here..." ng-model="ctrl.sendTo.val">
           </form>
           </div>
-          <button type="submit" class="messageHandle button button-small" ng-click="ctrl.sendMessage(ctrl.sendHelp, ctrl.sendTo.val); ctrl.showMessages()">
+          <button type="submit" class="messageHandle button button-small" ng-click="ctrl.liveUpdate(ctrl.sendHelp, ctrl.sendTo.val); ctrl.showMessages()">
             Send
           </button>
         </div>

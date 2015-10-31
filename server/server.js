@@ -5,6 +5,8 @@ var passport = require('passport');
 var morgan = require('morgan');
 var Promise = require('bluebird');
 var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 var port = process.env.PORT || 8100;
 
 require('./mysql/models/client');
@@ -40,7 +42,6 @@ require('./mysql/collections/speeds');
 require('./mysql/collections/chatstores');
 
 var session = require("express-session");
-
 app.use(session({
   key: 'crptFit',
   secret: 'Ted',
@@ -251,11 +252,9 @@ app.get('/auth/friendrequests', function (req, res) {
   .then(function(friendRequests) {
     return Promise.all(friendRequests.models.map(function(filtered) {
       if(result.attributes.status === 0) {
-        console.log('this is the result', filtered)
         return filtered;
       }
     })).then(function(result) {
-      console.log('this is the finalresult of friend_requests :', result)
       res.json(result);
     });
   });
@@ -268,11 +267,9 @@ app.get('/auth/clientrequests', function (req, res) {
   .then(function(clientRequests) {
     return Promise.all(clientRequests.models.map(function(filtered) {
       if(result.attributes.status === 0) {
-        console.log('this is the result', filtered)
         return filtered;
       }
     })).then(function(result) {
-      console.log('this is the finalresult of client_requests :', result)
       res.json(result);
     });
     });
@@ -284,13 +281,10 @@ db.model('User').fetchById({
     id: userId
   })
   .then(function(result) {
-    console.log('THIS IS USER :', result.relations.chatstores.models);
     return Promise.all(result.relations.chatstores.models.map(function(msg){
-      console.log('CHAT ID :', msg.attributes.chat_id)
       return db.model('Chat').fetchById(msg.attributes.chat_id)
     }))
     .then(function (results){
-      console.log("PLEASE WORK::::::::>", results);
       res.json(results);
     })
   });
@@ -301,7 +295,6 @@ app.get('/auth/weight/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Weights').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR WEIGHT: ', user);
     res.json(user.toJSON());
   });
 });
@@ -318,7 +311,6 @@ app.get('/auth/deadlift/:id', function (req, res){
   var userId = req.params.id;
   db.collection('DeadLifts').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR DEADLIFTS', user);
     res.json(user.toJSON());
   });
 });
@@ -327,7 +319,6 @@ app.get('/auth/squats/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Squats').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR SQUATS', user);
     res.json(user.toJSON());
   });
 });
@@ -336,7 +327,6 @@ app.get('/auth/speeds/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Speeds').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR SPEED', user);
     res.json(user.toJSON());
   });
 });
@@ -354,7 +344,6 @@ app.post('/auth/tasks/:taskname', function (req, res) {
     return task;
   })
   .catch(function (err) {
-    console.log('ERR IN POST /auth/tasks : ', err);
   });
 });
 
@@ -424,7 +413,6 @@ app.post('/auth/confirmclient', function (req, res) {
 app.post('/auth/clientreq/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
-  console.log("After the route is called", clientId)
   db.model('clientRequest').newClientRequest({
     client_id: clientId,
     user_id: userId,
@@ -601,7 +589,6 @@ app.post('/auth/deadlift/:stat', function (req, res) {
 app.post('/auth/speed/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSpeed = req.params.stat;
-  console.log('YOUR SPEED ON POST BRO', currSpeed);
   db.model('Speed').newSpeed({
     speed: currSpeed,
     user_id: userId,
@@ -618,6 +605,16 @@ function ensureAuthenticated(req, res, next) {
   }
 }
 
-app.listen(port, function(){
+io.on('connection', function(socket){
+  console.log('someone is fooling around in messages');
+  socket.on('event:new:message', function(data){
+    // socket.broadcast.emit('event:outgoing:message', data);
+    console.log(data)
+  })
+  socket.on('event:outgoing:message', function(data){
+    return data;
+  })
+})
+http.listen(port, function(){
   console.log('listening on port...', port);
 });
