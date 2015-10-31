@@ -9,7 +9,6 @@ angular.module('crptFit.controllers', ['ionic'])
   self.trainerCount;
   self.clientCount;
   self.userID = Social.getUserID();
-  console.log("inside ViewProfileCtrl:", self.userID)
 
   self.sendFriendRequest = function(){
     $http({
@@ -31,20 +30,29 @@ angular.module('crptFit.controllers', ['ionic'])
     self.clientCount = clients;
     self.feed = activityFeed;
   }
+  var setTasks = function(tasks){
+    var filtered = [];
+    for(var i = 0; i < tasks.length; i++){
+      if(tasks[i].complete === 1){
+        filtered.push(tasks[i]);
+      }
+    }
+    return filtered;
+  }
 
   $http({
     method: 'GET',
     url: '/auth/user/' + Social.getUserID() // This self.savedID variable is passed down from the parent controller 'Social Ctrl'
   }).then(function(response){
-    console.log("Inside ViewProfileCtrl:", response.data);
     var pic = response.data.profile_pic;
     var userName = response.data.username;
     var friends = response.data.friends.length;
     var trainers = response.data.trainers.length;
     var clients = response.data.clients.length;
-    var tasks = response.data.tasks;
+    var tasks = setTasks(response.data.tasks);
     setProfileInfo(pic, userName, friends, trainers, clients, tasks);
   })
+
 }])
 // Start of Profile Controller =======================================================
 .controller('ProfileCtrl', ['Social', '$http', function(Social, $http) {
@@ -79,7 +87,6 @@ angular.module('crptFit.controllers', ['ionic'])
     method: 'GET',
     url: '/auth/usertask/' + self.Id
   }).then(function(response){
-    console.log("inside of the ProfileCtrl call tasks:", response.data);
     setTasks(response.data);
   })
   // Grab a users profile information - extract into a factory later
@@ -133,7 +140,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
         self.uId = response.data.id;
         self.checkMe(self.uId);
@@ -178,7 +185,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
         self.uId = response.data.id;
         self.checkMe(self.uId);
@@ -223,7 +230,7 @@ angular.module('crptFit.controllers', ['ionic'])
   self.getUid = function(){
       $http({
         method: 'GET',
-        url: '/auth/picture'
+        url: '/auth/user'
       }).then(function(response){
       self.uId = response.data.id;
       self.checkMe(self.uId);
@@ -276,7 +283,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
         self.uId = response.data.id;
         self.checkMe(self.uId);
@@ -317,7 +324,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
         self.uId = response.data.id;
         self.checkMe(self.uId);
