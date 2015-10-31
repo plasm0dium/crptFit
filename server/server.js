@@ -415,7 +415,6 @@ db.model('User').fetchById({
       return db.model('Chat').fetchById(msg.attributes.chat_id)
     }))
     .then(function (results){
-      console.log("PLEASE WORK::::::::>", results);
       res.json(results);
     });
   });
@@ -426,7 +425,6 @@ app.get('/auth/weight/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Weights').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR WEIGHT: ', user);
     res.json(user.toJSON());
   });
 });
