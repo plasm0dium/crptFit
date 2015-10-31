@@ -178,7 +178,7 @@ angular.module('crptFit.services', [])
 .factory('Message', ['$http', function($http){
   var messages = {};
   var messageReturn = [];
-//get user message table from db
+  //get user message table from db
   var room_ids = {};
   var capChat;
   var friends = [];
@@ -235,7 +235,7 @@ angular.module('crptFit.services', [])
               // if(m.user_id !== 1){
                 friends.forEach(function(friend){
                   if(friend.id === m.user_id){
-                    room_ids[y.id] = friend.username;
+                    room_ids[y.id] = [friend.username, y.created_at];
                   }
                 });
               // }

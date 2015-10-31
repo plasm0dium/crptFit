@@ -647,16 +647,11 @@ io.on('connection', function (socket){
   // new chat room
   socket.on('chatroom id', function(id, message){
     console.log(id, message)
-    // chatroomId = id;
-    // newMessage = message;
     socket.join(id)
     io.sockets.in(id).emit('message-append', id, message);
-    // console.log(chatroomId, 'expect a number', 'expect a message', newMessage)
     db.model('Chat').fetchById(id)
   .then(function (id){
-    // console.log("WHAT IS THIS ID", id)
     return Promise.all(id.relations.message.models.map(function(message){
-      // console.log("WHAT IS THIS SHIT", message);
       return message;
     }))
   })
