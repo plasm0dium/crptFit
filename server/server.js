@@ -105,51 +105,6 @@ app.get('/auth/user/:id', function (req, res) {
 })
 
 //Fetch Nearest Users to Logged in User
-var distPref = 1000
-var inputLat = 33.01;
-var inputLng = -118.32;
-db.collection('Geolocations').fetchAll()
-.then(function(results) {
-  return Promise.all(results.models.filter(function(model){
-    var users_lat = model.attributes.lat;
-    var users_lng = model.attributes.lng;
-    if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
-      return model;
-    }
-  }))
-  .then(function(results) {
-    return results;
-  })
-  .then(function(nearestUsers){
-    return Promise.all(nearestUsers.map(function(user) {
-      return db.model('User').fetchById({
-        id: user.attributes.user_id
-      });
-    })).then(function(userObject) {
-        console.log('THIS IS FINAL RESULT', userObject);
-        return userObject;
-    }).then(function(users) {
-      return Promise.all(users.map(function(user) {
-        var userId = 1;
-        var swipedId = user.attributes.id;
-        if(db.collection('Swipes').fetchBySwiped(userId, swipedId).length === 0) {
-          console.log('USER ISNT IN DB')
-          return user
-        }}).then(function(user) {
-          console.log('WRITING TO TABLE')
-          return db.model('Swipe').newSwipe({
-            user_id: 1,
-            swiped_id: user.attributes.id,
-            swiped: false,
-            swiped_left: false,
-            swiped_right: false
-          })
-          .save()
-        }))
-      })
-    })
-  })
-
 app.get('/auth/nearbyusers', function (req, res) {
   var distPref = req.body.distPref;
   var inputLat = req.body.inputLat;
@@ -163,38 +118,47 @@ app.get('/auth/nearbyusers', function (req, res) {
         return model;
       }
     }))
-    .then(function(results) {
-      return results;
-    })
     .then(function(nearestUsers){
       return Promise.all(nearestUsers.map(function(user) {
         return db.model('User').fetchById({
           id: user.attributes.user_id
-        });
-      })).then(function(userObject) {
-          console.log('THIS IS FINAL RESULT', userObject);
-          res.json(userObject);
-          return userObject;
-      }).then(function(users) {
-        return Promise.all(users.map(function(user) {
-          var userId = req.user.attributes.id;
-          var swipedId = user.attributes.id;
-          if(db.collection('Swipes').fetchBySwiped(userId, swipedId).length > 0) {
+          });
+        }))
+        .then(function(users) {
+          return Promise.all(users.map(function(user) {
+            var userId = req.user.attributes.id;
+            var swipedId = user.attributes.id;
+            return db.collection('Swipes').fetchBySwiped(userId, swipedId)
+            .then(function(result) {
+               if(result.length === 0) {
+                console.log('THIS IS IN IF')
+                return user;
+              }
+          })
+        }))
+        .then(function(user) {
+          if(user[0] === undefined ) {
+            console.log('{nearbyUsers: None}')
+            res.json({nearbyUsers: 'None'})
             return
           } else {
-            return db.model('Swipe').newSwipe({
-              user_id: req.user.attributes.id,
-              swiped_id: user.attributes.id,
-              swiped: false,
-              swiped_left: false,
-              swiped_right: false
-            })
-            .save()
+            console.log('THIS IS IN ELSE AND SAVING', user)
+            res.json(user);
+            return Promise.all(user.map(function (user) {
+              return db.model('Swipe').newSwipe({
+                user_id: req.user.attributes.id,
+                swiped_id: user.attributes.id,
+                swiped: false,
+                swiped_left: false,
+                swiped_right: false
+              })
+              .save()
+            }))
           }
-        }));
-      });
-    });
-  });
+        })
+      })
+    })
+  })
 });
 
 app.get('/auth/matchcheck/:id', function (req, res) {
