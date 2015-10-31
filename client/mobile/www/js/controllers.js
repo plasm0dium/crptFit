@@ -124,8 +124,9 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
+          console.log(response, 'THIS IS THE USER OBJ')
         self.uId = response.data.id;
         self.checkMe(self.uId);
         });
@@ -169,7 +170,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
         self.uId = response.data.id;
         self.checkMe(self.uId);
@@ -214,7 +215,7 @@ angular.module('crptFit.controllers', ['ionic'])
   self.getUid = function(){
       $http({
         method: 'GET',
-        url: '/auth/picture'
+        url: '/auth/user'
       }).then(function(response){
       self.uId = response.data.id;
       self.checkMe(self.uId);
@@ -267,7 +268,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
         self.uId = response.data.id;
         self.checkMe(self.uId);
@@ -308,7 +309,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
         self.uId = response.data.id;
         self.checkMe(self.uId);
@@ -380,6 +381,13 @@ angular.module('crptFit.controllers', ['ionic'])
   self.showMessages = function(){
    Message.getMessage();
   };
+
+  self.connect = function(id){
+    var socket = io();
+    socket.on('connecting', function(id){
+      socket.emit('join room', id)
+    })
+  }
 
   self.liveUpdate = function(chatId, message){
     var socket = io();

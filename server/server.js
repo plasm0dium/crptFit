@@ -641,12 +641,14 @@ io.on('connection', function (socket){
   }
 
   // new chat room
+  socket.on('join room', function(id){
+    socket.join(id)
+  })
   socket.on('chatroom id', function(id, message){
-    chatroomId = id;
-    newMessage = message;
-    socket.join(id);
+    // chatroomId = id;
+    // newMessage = message;
     io.sockets.in(id).emit('message-append', id, message);
-    console.log(chatroomId, 'expect a number', 'expect a message', newMessage)
+    // console.log(chatroomId, 'expect a number', 'expect a message', newMessage)
     db.model('Chat').fetchById(id)
   .then(function (id){
     // console.log("WHAT IS THIS ID", id)
