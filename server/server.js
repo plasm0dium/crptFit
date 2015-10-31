@@ -282,6 +282,7 @@ app.get('/auth/clientrequests', function (req, res) {
     });
     });
 });
+
 // Fetch a User's Chat Sessions
 app.get('/auth/chatsessions', function(req, res) {
 var userId = req.user.attributes.id;
@@ -577,6 +578,7 @@ app.post('/auth/weight/:stat', function (req, res) {
   })
   .save();
 });
+
 //Add Current Bench Press
 app.post('/auth/bench/:stat', function (req, res) {
   var userId = req.user.attributes.id;
