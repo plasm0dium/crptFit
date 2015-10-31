@@ -99,6 +99,7 @@ angular.module('crptFit.controllers', ['ionic'])
       method: 'get',
       url: '/auth/newsfeed'
     }).then(function(response){
+      console.log("This is the response for the newsfeed:", response)
       self.feed = response.data;
     })
   }
