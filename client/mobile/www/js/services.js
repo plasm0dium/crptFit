@@ -458,3 +458,7 @@ angular.module('crptFit.services', [])
     }
   };
 }])
+
+.factory('Finder', ['http', function() {
+  
+}])

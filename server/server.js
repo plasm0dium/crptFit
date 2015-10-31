@@ -163,6 +163,7 @@ app.get('/auth/nearbyusers', function (req, res) {
     })
   })
 });
+
 //On Right Swipe Check if Swiped User has Also Swiped Right on the User
 app.get('/auth/matchcheck/:id', function (req, res) {
   var swipedId = req.user.attributes.id;
