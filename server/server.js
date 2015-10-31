@@ -271,6 +271,27 @@ app.get('/auth/tasks', function (req,res) {
   });
 });
 
+// Get current user Tasks
+app.get('/auth/usertask/:id', function (req, res){
+var userId = req.user.attributes.id;
+  db.model('User').fetchById({
+    id: userId
+  })
+  .then(function(user){
+    console.log("THIS IS CURRENT USER", user)
+    return Promise.all(user.relations.tasks.models.map(function(tasks){
+      console.log("TASKS ARE HERE", tasks)
+          if(tasks.attributes.complete === 1){
+            return tasks;
+          }
+      }))
+    .then(function(results){
+      res.json(results);
+    });
+  });
+});
+
+
 // Fetch Logged in Users Friends
 var storage = [];
 app.get('/auth/friends', function (req, res) {
