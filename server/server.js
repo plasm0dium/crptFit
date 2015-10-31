@@ -235,7 +235,7 @@ app.get('/auth/tasks', function (req,res) {
   });
 });
 
-// Get current user Tasks
+// Get current user's completed Tasks
 app.get('/auth/usertask/:id', function (req, res){
 var userId = req.user.attributes.id;
   db.model('User').fetchById({
