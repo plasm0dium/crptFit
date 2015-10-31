@@ -383,12 +383,9 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.liveUpdate = function(chatId, message){
     var socket = io();
-    socket.emit('event:new:message', function(chatId, data){
-      self.sendMessage(chatId, data)
-      return data;
-    })
-    socket.on('event:outgoing:message', function(data){
-      console.log(data);
+    socket.emit('chatroom id', chatId, message)
+    socket.on('message-append', function(id, message){
+      self.sendMessage(id, message)
     })
   }
 
