@@ -11,9 +11,20 @@ var Geolocation = db.Model.extend({
   newLocation: function (options) {
     return new this(options);
   },
+  updateLocation: function(id,lat,lng) {
+    return new this({
+      id: id
+    })
+    .save ({
+        lat: lat,
+        lng: lng,
+        updated_at: new Date()
+        }, {patch: true});
+    },
+
   fetchById: function (id) {
     return new this({
-      chat_id: id
+      user_id: id
     }).fetch({withRelated: ['user']});
   }
 });
