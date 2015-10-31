@@ -108,51 +108,6 @@ app.get('/auth/user/:id', function (req, res) {
 });
 
 //Fetch Nearest Users to Logged in User
-// var distPref = 1000
-// var inputLat = 33.01;
-// var inputLng = -118.32;
-// var userObject = []
-// db.collection('Geolocations').fetchAll()
-// .then(function(results) {
-//   return Promise.all(results.models.filter(function(model){
-//     var users_lat = model.attributes.lat;
-//     var users_lng = model.attributes.lng;
-//     if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
-//       return model;
-//     }
-//   }))
-//   .then(function(nearestUsers){
-//     return Promise.all(nearestUsers.map(function(user) {
-//       return db.model('User').fetchById({
-//         id: user.attributes.user_id
-//         });
-//       }))
-//       .then(function(users) {
-//         return Promise.all(users.map(function(user) {
-//           var userId = 1;
-//           var swipedId = user.attributes.id;
-//           return db.collection('Swipes').fetchBySwiped(userId, swipedId)
-//           .then(function(result) {
-//             if(result.length === 0) {
-//               return user;
-//             }
-//         })
-//       }))
-//       .then(function(user) {
-//         console.log('THIS IS FILTERED', user)
-//         //res.json(user)
-//         return db.model('Swipe').newSwipe({
-//           user_id: 1,
-//           swiped_id: user.attributes.id,
-//           swiped: false,
-//           swiped_left: false,
-//           swiped_right: false
-//         })
-//         .save()
-//       })
-//     })
-//   })
-// })
 app.get('/auth/nearbyusers', function (req, res) {
   var distPref = req.body.distPref;
   var inputLat = req.body.inputLat;
@@ -166,40 +121,49 @@ app.get('/auth/nearbyusers', function (req, res) {
         return model;
       }
     }))
-    .then(function(results) {
-      return results;
-    })
     .then(function(nearestUsers){
       return Promise.all(nearestUsers.map(function(user) {
         return db.model('User').fetchById({
           id: user.attributes.user_id
-        });
-      })).then(function(userObject) {
-          console.log('THIS IS FINAL RESULT', userObject);
-          res.json(userObject);
-          return userObject;
-      }).then(function(users) {
-        return Promise.all(users.map(function(user) {
-          var userId = req.user.attributes.id;
-          var swipedId = user.attributes.id;
-          if(db.collection('Swipes').fetchBySwiped(userId, swipedId).length > 0) {
+          });
+        }))
+        .then(function(users) {
+          return Promise.all(users.map(function(user) {
+            var userId = req.user.attributes.id;
+            var swipedId = user.attributes.id;
+            return db.collection('Swipes').fetchBySwiped(userId, swipedId)
+            .then(function(result) {
+               if(result.length === 0) {
+                console.log('THIS IS IN IF')
+                return user;
+              }
+          })
+        }))
+        .then(function(user) {
+          if(user[0] === undefined ) {
+            console.log('{nearbyUsers: None}')
+            res.json({nearbyUsers: 'None'})
             return
           } else {
-            return db.model('Swipe').newSwipe({
-              user_id: req.user.attributes.id,
-              swiped_id: user.attributes.id,
-              swiped: false,
-              swiped_left: false,
-              swiped_right: false
-            })
-            .save()
+            console.log('THIS IS IN ELSE AND SAVING', user)
+            res.json(user);
+            return Promise.all(user.map(function (user) {
+              return db.model('Swipe').newSwipe({
+                user_id: req.user.attributes.id,
+                swiped_id: user.attributes.id,
+                swiped: false,
+                swiped_left: false,
+                swiped_right: false
+              })
+              .save()
+            }))
           }
-        }));
-      });
-    });
-  });
+        })
+      })
+    })
+  })
 });
-
+//On Right Swipe Check if Swiped User has Also Swiped Right on the User
 app.get('/auth/matchcheck/:id', function (req, res) {
   var swipedId = req.user.attributes.id;
   var userId = req.params.id;
@@ -271,7 +235,7 @@ app.get('/auth/tasks', function (req,res) {
   });
 });
 
-// Get current user Tasks
+// Get current user's completed Tasks
 app.get('/auth/usertask/:id', function (req, res){
 var userId = req.user.attributes.id;
   db.model('User').fetchById({
@@ -436,7 +400,6 @@ db.model('User').fetchById({
       return db.model('Chat').fetchById(msg.attributes.chat_id)
     }))
     .then(function (results){
-      console.log("PLEASE WORK::::::::>", results);
       res.json(results);
     });
   });
@@ -447,7 +410,6 @@ app.get('/auth/weight/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Weights').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR WEIGHT: ', user);
     res.json(user.toJSON());
   });
 });
