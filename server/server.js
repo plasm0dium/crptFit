@@ -289,7 +289,8 @@ app.get('/auth/clientrequests', function (req, res) {
 // Fetch a User's Chat Sessions
 app.get('/auth/chatsessions', function(req, res) {
 var userId = req.user.attributes.id;
-db.model('User').fetchById({userId
+db.model('User').fetchById({
+  id: userId
   })
   .then(function(result) {
     console.log('THIS IS USER :', result.relations.chatstores.models);
@@ -552,7 +553,7 @@ app.post('/auth/chat/add:id', function (req, res){
         created_at: new Date()
       })
       .save()
-    })
+    });
 });
 
 //Adds Messages to chat session
@@ -560,7 +561,7 @@ app.post('/auth/messages/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
   var body = req.body.message;
-  console.log(chatId, 'this is chatID', userId, 'this is user id', body, 'this is body')
+  console.log(chatId, 'this is chatID', userId, 'this is user id', body, 'this is body');
   db.model('Message').newMessage({
     user_id: userId,
     chat_id: chatId,
@@ -640,52 +641,52 @@ function ensureAuthenticated(req, res, next) {
 // });
 
 
-io.sockets.on('connection', function (socket){
-  var userObj = socket.client.request.user;
-  var chatroomId;
+// io.sockets.on('connection', function (socket){
+//   var userObj = socket.client.request.user;
+//   var chatroomId;
 
-  if (userObj !== undefined){
-    // emit user's facebook name
-    socket.emit('user name', {username: userObj.get('username')});
-  }
+//   if (userObj !== undefined){
+//     // emit user's facebook name
+//     socket.emit('user name', {username: userObj.get('username')});
+//   }
 
-  // new chat room
-  socket.on('chatroom id', function(id){
-    chatroomId = id;
-    socket.join(id);
-    db.model('Chat').fetchById(id)
-  .then(function (id){
-    console.log("WHAT IS THIS ID", id)
-    return Promise.all(id.relations.message.models.map(function(message){
-      console.log("WHAT IS THIS SHIT", message);
-      return message;
-    }))
-  })
-  .then(function (messages){
-    messages.forEach(function (message){
-      var messageObj = message.toJSON();
-      db.model('User').fetchById(message.get('user_id'))
-      .then(function (user){
-        // console.log("LET ME SEE WHAT THIS IS", user);
-        messageObj.name = user.get('username');
-        socket.emit('new chat', messageObj);
-        });
-      });
-    });
-  });
+//   // new chat room
+//   socket.on('chatroom id', function(id){
+//     chatroomId = id;
+//     socket.join(id);
+//     db.model('Chat').fetchById(id)
+//   .then(function (id){
+//     console.log("WHAT IS THIS ID", id)
+//     return Promise.all(id.relations.message.models.map(function(message){
+//       console.log("WHAT IS THIS SHIT", message);
+//       return message;
+//     }))
+//   })
+//   .then(function (messages){
+//     messages.forEach(function (message){
+//       var messageObj = message.toJSON();
+//       db.model('User').fetchById(message.get('user_id'))
+//       .then(function (user){
+//         // console.log("LET ME SEE WHAT THIS IS", user);
+//         messageObj.name = user.get('username');
+//         socket.emit('new chat', messageObj);
+//         });
+//       });
+//     });
+//   });
 
-  socket.on('new chat', function(chat){
-    if(userObj){
-      var messageObj;
-      db.model('Message').newMessage(text, chatroomId, userObj)
-      .then( function(message){
-        messageObj = message.toJSON();
-        return db.model('User').fetchById(messageObj.user_id);
-      })
-      .then(function(user){
-        messageObj.name = user.get('username');
-        io.to(chatroomId).emit('new chat', messageObj);
-      })
-    }
-  })
-})
+//   socket.on('new chat', function(chat){
+//     if(userObj){
+//       var messageObj;
+//       db.model('Message').newMessage(text, chatroomId, userObj)
+//       .then( function(message){
+//         messageObj = message.toJSON();
+//         return db.model('User').fetchById(messageObj.user_id);
+//       })
+//       .then(function(user){
+//         messageObj.name = user.get('username');
+//         io.to(chatroomId).emit('new chat', messageObj);
+//       })
+//     }
+//   });
+// });

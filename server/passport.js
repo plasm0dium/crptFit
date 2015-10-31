@@ -1,4 +1,4 @@
-var FacebookStrategy = require('passport-facebook').Strategy
+var FacebookStrategy = require('passport-facebook').Strategy;
 var Auth = require('./auth');
 
 require('./mysql/models/user');
@@ -26,7 +26,7 @@ module.exports = function (passport) {
       passReqToCallback: true,
       enabledProof: false,
       profileFields: ['id', 'birthday', 'email', 'displayName', 'gender', 'picture.type(large)', 'friends', 'about'],
-      callbackURL: "https://localhost:8100/auth/facebook/callback"
+      callbackURL: "http://localhost:8100/auth/facebook/callback"
     },
   function(req, accessToken, refreshToken, profile, done) {
     db.model('User').fetchById({
