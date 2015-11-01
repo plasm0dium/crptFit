@@ -89,8 +89,9 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   console.log('THIS USER IS LOGGED IN', req.user)
-  if(res.user) {
-    res.json(req.user.toJSON());
+  var user = req.user
+  if(user) {
+    res.json(user);
   } else {
     res.redirect('/');
   }
@@ -113,6 +114,7 @@ app.get('/auth/nearbyusers', function (req, res) {
   var inputLng = req.user.relations.geolocations.models[0].attributes.lng;
   db.collection('Geolocations').fetchAll()
   .then(function(results) {
+    //Find all user's with a 25 mile radius
     return Promise.all(results.models.filter(function(model){
       var users_lat = model.attributes.lat;
       var users_lng = model.attributes.lng;
@@ -122,44 +124,51 @@ app.get('/auth/nearbyusers', function (req, res) {
         return model;
       }
     }))
+    //Map the nearby users objects
     .then(function(nearestUsers){
       return Promise.all(nearestUsers.map(function(user) {
         return db.model('User').fetchById({
           id: user.attributes.user_id
           });
         }))
+        //Check if the nearby users are already in the Swipes table
+        //only return those who havent previously been swiped
         .then(function(users) {
           return Promise.all(users.map(function(user) {
             var userId = req.user.attributes.id;
             var swipedId = user.attributes.id;
             return db.collection('Swipes').fetchBySwiped(userId, swipedId)
             .then(function(result) {
-              console.log('THISIS RESULT', result)
+              console.log('THIS IS RESULT OF SWIPES FETCH', result)
                if(result.length === 0) {
-                console.log('THIS IS IN IF')
-                return user;
+                 //if they don't exist in user's swipes save them first & return them
+                console.log('THIS USER ISNT IN SWIPES YET SO SAVE THIS USER & return:', user)
+                db.model('Swipe').newSwipe({
+                  user_id: req.user.attributes.id,
+                  swiped_id: user.attributes.id,
+                  swiped: false,
+                  swiped_left: false,
+                  swiped_right: false
+                })
+                .save()
+                return user
+              } else {
+                console.log('THIS USER ALREADY EXISTS AND SWIPED = FALSE:', user)
+                //if they already exist and havent been swiped yet return them
+                return user
               }
           })
         }))
+        //if no users are found nearby then user[0] will be undefined
         .then(function(user) {
-          console.log('THIS IS IN USER', user)
+          console.log('THIS IS USER IN LAST BLOCK', user)
           if(user[0] === undefined ) {
             console.log('{nearbyUsers: None}')
             res.json({nearbyUsers: 'None'})
             return
           } else {
-            console.log('THIS IS IN ELSE AND SAVING', user)
+            console.log('THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', user)
             res.json(user);
-            return Promise.all(user.map(function (user) {
-              return db.model('Swipe').newSwipe({
-                user_id: req.user.attributes.id,
-                swiped_id: user.attributes.id,
-                swiped: false,
-                swiped_left: false,
-                swiped_right: false
-              })
-              .save()
-            }))
           }
         })
       })
@@ -171,6 +180,7 @@ app.get('/auth/nearbyusers', function (req, res) {
 app.get('/auth/matchcheck/:id', function (req, res) {
   var swipedId = req.user.attributes.id;
   var userId = req.params.id;
+  console.log('IN MATCHCHECK')
   db.collection('Swipes').fetchBySwiped(userId, swipedId)
   .then(function(exists) {
     if(exists.length === 0) {
@@ -197,7 +207,6 @@ app.get('/auth/newsfeed', function (req, res) {
       }));
     })
       .then(function(results){
-        res.json(results);
         return Promise.all(results.map(function(model) {
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
