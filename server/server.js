@@ -359,9 +359,12 @@ app.get('/auth/friendrequests', function (req, res) {
   var userId = req.user.attributes.id;
   db.collection('friendRequests').fetchByUser(userId)
   .then(function(friendRequests) {
-    return Promise.all(friendRequests.models.map(function(filtered) {
-      if(result.attributes.status === 0) {
-        return filtered;
+    return Promise.all(friendRequests.models.map(function(friends) {
+      if(friends.attributes.status === 0) {
+        console.log('this is the result', friends);
+        return db.model('User').fetchById({
+          id: friends.attributes.friend_id
+        })
       }
     })).then(function(result) {
       res.json(result);
@@ -576,14 +579,12 @@ app.post('/auth/confirmfriend/:id', function (req, res){
   var friendId = req.params.id;
   db.model('friendRequest').acceptFriendRequest({
     friend_id: friendId,
-    user_id: userId,
-    updated_at: new Date()
+    user_id: userId
   })
   .then(function () {
     db.model('friendRequest').acceptFriendRequest({
       friend_id: userId,
-      user_id: friendId,
-      updated_at: new Date()
+      user_id: friendId
     })
   })
   .then(function(){
@@ -600,9 +601,12 @@ app.post('/auth/confirmfriend/:id', function (req, res){
     })
     .save()
   })
+<<<<<<< HEAD
+=======
   .then(function (acceptReq) {
     return acceptReq;
   })
+>>>>>>> fa8010a36128dabaa9f4acf31c06af1e2aa934d9
   .catch(function(err){
     return err;
   });
