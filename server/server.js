@@ -615,16 +615,7 @@ app.post('/auth/confirmfriend/:id', function (req, res){
     })
     .save()
   })
-<<<<<<< HEAD
-=======
-  .then(function (acceptReq) {
-    return acceptReq;
-  })
->>>>>>> fa8010a36128dabaa9f4acf31c06af1e2aa934d9
-  .catch(function(err){
-    return err;
-  });
-});
+})
 
 //Creates a Chat Session
 app.post('/auth/chat/add:id', function (req, res){
