@@ -72,6 +72,7 @@ angular.module('crptFit.services', [])
   var trainers = [];
   var searchResults = [];
   var savedUserID;
+  var friendsPendingRequest = [];
 
   return {
     userViewerSet: function(userID){
@@ -96,8 +97,25 @@ angular.module('crptFit.services', [])
     getFriendsLength: function(){
       return friends.length;
     },
+    getFriendRequests: function() {
+      return $http({
+        method: 'GET',
+        url: '/auth/friendrequests' 
+      });
+    },
     sendFriendRequest: function(friend){
       // This function needs the proper AJAX request
+      // $http({
+      //   method: 'POST',
+      //   url: '/auth/friendrequests/'
+      // })
+      // .then(function(response){
+      //   friendsPendingRequest = response.data;
+      //   console.log("WHAT IS THIS", friendsPendingRequest)
+      // }, function(error){
+      //   console.log(error);
+      // });
+      // return friendsPendingRequest;
     },
     addFriend: function(friendId){
       // This function needs the proper AJAX request
@@ -178,13 +196,14 @@ angular.module('crptFit.services', [])
 .factory('Message', ['$http', function($http){
   var messages = {};
   var messageReturn = [];
-//get user message table from db
+  //get user message table from db
   var room_ids = {};
   var capChat;
   var friends = [];
   return {
     messageToPage : function(){
       newRet = messageReturn;
+      console.log('LOOKING FOR THE DOUBLER', newRet)
       return newRet;
     },
     messageList : function(){
@@ -234,8 +253,7 @@ angular.module('crptFit.services', [])
               // if(m.user_id !== 1){
                 friends.forEach(function(friend){
                   if(friend.id === m.user_id){
-                    room_ids[y.id] = friend.username;
-                    console.log(y.id, friend.username, 'made it to the middle')
+                    room_ids[y.id] = [friend.username, y.created_at];
                   }
                 });
               // }

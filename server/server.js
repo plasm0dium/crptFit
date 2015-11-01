@@ -5,6 +5,8 @@ var passport = require('passport');
 var morgan = require('morgan');
 var Promise = require('bluebird');
 var app = express();
+// var http = require('http').Server(app);
+// var io = require('socket.io')(http);
 var port = process.env.PORT || 8100;
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
@@ -49,7 +51,6 @@ require('./mysql/collections/swipes');
 require('./mysql/collections/matches');
 
 var session = require("express-session");
-
 app.use(session({
   key: 'crptFit',
   secret: 'Ted',
@@ -212,6 +213,7 @@ app.get('/auth/newsfeed', function (req, res) {
               if (task.attributes.complete === 1){
                 taskStore.push(task);
               }
+
             });
          }));
       })
@@ -234,7 +236,6 @@ app.get('/auth/user', function(req, res){
 
 // Logout User
 app.get('/logout', function(req, res){
-  console.log('LOGOUT REQ.USER', req.user.attributes);
   req.session.destroy();
   req.logout();
   res.redirect('/');
@@ -372,13 +373,14 @@ app.get('/auth/friendrequests', function (req, res) {
   var userId = req.user.attributes.id;
   db.collection('friendRequests').fetchByUser(userId)
   .then(function(friendRequests) {
-    return Promise.all(friendRequests.models.map(function(filtered) {
-      if(result.attributes.status === 0) {
-        console.log('this is the result', filtered)
-        return filtered;
+    return Promise.all(friendRequests.models.map(function(friends) {
+      if(friends.attributes.status === 0) {
+        console.log('this is the result', friends);
+        return db.model('User').fetchById({
+          id: friends.attributes.friend_id
+        })
       }
     })).then(function(result) {
-      console.log('this is the final result of friend_requests :', result)
       res.json(result);
     });
   });
@@ -391,11 +393,9 @@ app.get('/auth/clientrequests', function (req, res) {
   .then(function(clientRequests) {
     return Promise.all(clientRequests.models.map(function(filtered) {
       if(result.attributes.status === 0) {
-        console.log('this is the result', filtered)
         return filtered;
       }
     })).then(function(result) {
-      console.log('this is the finalresult of client_requests :', result)
       res.json(result);
     });
     });
@@ -407,9 +407,7 @@ db.model('User').fetchById({
   id: userId
   })
   .then(function(result) {
-    console.log('THIS IS USER :', result.relations.chatstores.models);
     return Promise.all(result.relations.chatstores.models.map(function(msg){
-      console.log('CHAT ID :', msg.attributes.chat_id)
       return db.model('Chat').fetchById(msg.attributes.chat_id)
     }))
     .then(function (results){
@@ -439,7 +437,6 @@ app.get('/auth/deadlift/:id', function (req, res){
   var userId = req.params.id;
   db.collection('DeadLifts').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR DEADLIFTS', user);
     res.json(user.toJSON());
   });
 });
@@ -448,7 +445,6 @@ app.get('/auth/squats/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Squats').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR SQUATS', user);
     res.json(user.toJSON());
   });
 });
@@ -457,7 +453,6 @@ app.get('/auth/speeds/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Speeds').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR SPEED', user);
     res.json(user.toJSON());
   });
 });
@@ -475,7 +470,6 @@ app.post('/auth/tasks/:taskname', function (req, res) {
     return task;
   })
   .catch(function (err) {
-    console.log('ERR IN POST /auth/tasks : ', err);
   });
 });
 
@@ -490,7 +484,6 @@ app.post('/auth/tasks/add:userid', function (req, res) {
   })
   .save()
   .catch(function (err) {
-    console.log('ERR IN POST /auth/tasks : ', err);
   });
 });
 
@@ -499,7 +492,6 @@ app.post('/auth/task/complete/:id', function(req, res) {
   var taskId = req.params.id;
   db.model('Task').completeTask(taskId)
   .then(function () {
-    console.log('TASK UPDATED TO COMPLETE :', db.model('Task').fetchByUser(req.user.attributes.id));
   })
   .catch(function (err) {
     return err;
@@ -535,7 +527,6 @@ app.post('/auth/confirmclient', function (req, res) {
   .save()
   })
   .then(function(newClient) {
-    console.log('ADDED NEW CLIENT :', newClient);
     return newClient;
   })
   .catch(function(err) {
@@ -547,7 +538,6 @@ app.post('/auth/confirmclient', function (req, res) {
 app.post('/auth/clientreq/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
-  console.log("After the route is called", clientId)
   db.model('clientRequest').newClientRequest({
     client_id: clientId,
     user_id: userId,
@@ -590,7 +580,6 @@ app.post('/auth/friendreq/add:id', function (req, res){
     .save()
   })
   .then(function (friendreq){
-    console.log('ADD FRIEND REQUEST', friendreq);
     return friendreq;
   })
   .catch(function(err){
@@ -604,14 +593,12 @@ app.post('/auth/confirmfriend/:id', function (req, res){
   var friendId = req.params.id;
   db.model('friendRequest').acceptFriendRequest({
     friend_id: friendId,
-    user_id: userId,
-    updated_at: new Date()
+    user_id: userId
   })
   .then(function () {
     db.model('friendRequest').acceptFriendRequest({
       friend_id: userId,
-      user_id: friendId,
-      updated_at: new Date()
+      user_id: friendId
     })
   })
   .then(function(){
@@ -628,10 +615,12 @@ app.post('/auth/confirmfriend/:id', function (req, res){
     })
     .save()
   })
+<<<<<<< HEAD
+=======
   .then(function (acceptReq) {
-    console.log('Request accepted', acceptReq);
     return acceptReq;
   })
+>>>>>>> fa8010a36128dabaa9f4acf31c06af1e2aa934d9
   .catch(function(err){
     return err;
   });
@@ -648,7 +637,6 @@ app.post('/auth/chat/add:id', function (req, res){
     .save()
     .then(function(result){
       chatId = result.id;
-      console.log("THIS IS MY RESULT: ", result);
       db.model('Chatstore').newChatStore({
         chat_id: result.id,
         user_id: userId1,
@@ -657,7 +645,6 @@ app.post('/auth/chat/add:id', function (req, res){
     .save()
     })
     .then(function(){
-      console.log("THIS IS MY SECOND RESULT: ", chatId);
       db.model('Chatstore').newChatStore({
         chat_id: chatId,
         user_id: userId2,
@@ -672,7 +659,6 @@ app.post('/auth/messages/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
   var body = req.body.message;
-  console.log(chatId, 'this is chatID', userId, 'this is user id', body, 'this is body');
   db.model('Message').newMessage({
     user_id: userId,
     chat_id: chatId,
@@ -729,7 +715,6 @@ app.post('/auth/deadlift/:stat', function (req, res) {
 app.post('/auth/speed/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSpeed = req.params.stat;
-  console.log('YOUR SPEED ON POST BRO', currSpeed);
   db.model('Speed').newSpeed({
     speed: currSpeed,
     user_id: userId,
@@ -784,7 +769,6 @@ app.post('/auth/rightswipe/:id', function (req,res) {
 })
 
 function ensureAuthenticated(req, res, next) {
-  console.log('AUTHENTICATED FUNCTION');
   if(req.isAuthenticated()) {
     return next();
   } else {
@@ -792,57 +776,77 @@ function ensureAuthenticated(req, res, next) {
   }
 }
 
-// app.listen(port, function(){
+
+// io.on('connection', function(socket){
+//   console.log('someone is fooling around in messages');
+//   socket.on('event:new:message', function(data){
+//     // socket.broadcast.emit('event:outgoing:message', data);
+//     console.log(data)
+//   })
+//   socket.on('event:outgoing:message', function(data){
+//     return data;
+//   })
+// })
+// http.listen(port, function(){
 //   console.log('listening on port...', port);
 // });
 
+server.listen(port, function(){
+  console.log('listening on port...', port);
+});
 
-// io.sockets.on('connection', function (socket){
-//   var userObj = socket.client.request.user;
-//   var chatroomId;
 
-//   if (userObj !== undefined){
-//     // emit user's facebook name
-//     socket.emit('user name', {username: userObj.get('username')});
-//   }
+io.on('connection', function (socket){
+  console.log('youser connected breh')
+  var userObj = socket.client.request.user;
+  var chatroomId;
+  var newMessage;
+  console.log(userObj, '<------ userobj, expect undef', 'will be null ------->', chatroomId)
+  if (userObj !== undefined){
+    // emit user's facebook name
+    socket.emit('user name', {username: userObj.get('username')});
+  }
 
-//   // new chat room
-//   socket.on('chatroom id', function(id){
-//     chatroomId = id;
-//     socket.join(id);
-//     db.model('Chat').fetchById(id)
-//   .then(function (id){
-//     console.log("WHAT IS THIS ID", id)
-//     return Promise.all(id.relations.message.models.map(function(message){
-//       console.log("WHAT IS THIS SHIT", message);
-//       return message;
-//     }))
-//   })
-//   .then(function (messages){
-//     messages.forEach(function (message){
-//       var messageObj = message.toJSON();
-//       db.model('User').fetchById(message.get('user_id'))
-//       .then(function (user){
-//         // console.log("LET ME SEE WHAT THIS IS", user);
-//         messageObj.name = user.get('username');
-//         socket.emit('new chat', messageObj);
-//         });
-//       });
-//     });
-//   });
+  socket.on('connecting', function(id){
+    console.log('i heard it coming from on high, the song that ends the world', id)
+    socket.join(id);
+  })
+  // new chat room
+  socket.on('chatroom id', function(id, message){
+    console.log(id, message)
+    socket.join(id)
+    io.sockets.in(id).emit('message-append', id, message);
+    db.model('Chat').fetchById(id)
+  .then(function (id){
+    return Promise.all(id.relations.message.models.map(function(message){
+      return message;
+    }))
+  })
+  .then(function (messages){
+    messages.forEach(function (message){
+      var messageObj = message.toJSON();
+      db.model('User').fetchById(message.get('user_id'))
+      .then(function (user){
+        // console.log("LET ME SEE WHAT THIS IS", user);
+        messageObj.name = user.get('username');
+        socket.emit('new chat', messageObj);
+        });
+      });
+    });
+  });
 
-//   socket.on('new chat', function(chat){
-//     if(userObj){
-//       var messageObj;
-//       db.model('Message').newMessage(text, chatroomId, userObj)
-//       .then( function(message){
-//         messageObj = message.toJSON();
-//         return db.model('User').fetchById(messageObj.user_id);
-//       })
-//       .then(function(user){
-//         messageObj.name = user.get('username');
-//         io.to(chatroomId).emit('new chat', messageObj);
-//       })
-//     }
-//   });
-// });
+  socket.on('new chat', function(chat){
+    if(userObj){
+      var messageObj;
+      db.model('Message').newMessage(text, chatroomId, userObj)
+      .then( function(message){
+        messageObj = message.toJSON();
+        return db.model('User').fetchById(messageObj.user_id);
+      })
+      .then(function(user){
+        messageObj.name = user.get('username');
+        io.to(chatroomId).emit('new chat', messageObj);
+      })
+    }
+  });
+});
