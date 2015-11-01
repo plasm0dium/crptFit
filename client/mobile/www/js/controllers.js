@@ -143,6 +143,7 @@ angular.module('crptFit.controllers', ['ionic'])
           method: 'GET',
           url: '/auth/user'
         }).then(function(response){
+          console.log(response, 'THIS IS THE USER OBJ')
         self.uId = response.data.id;
         self.checkMe(self.uId);
         });
@@ -380,10 +381,14 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 }])
 
-.controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
+.controller('MessagesCtrl', ['$scope','$state', '$ionicPopup', 'Message', 'Social', function($scope,$state, $ionicPopup, Message, Social) {
 //NOTE Refactor me
   var self = this;
+  self.sendTo = {
+    val: null
+  }
   self.search = Social.friendsList();
+
   self.getFriends = function(){
     Message.getFriends();
   };
@@ -395,7 +400,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   self.showMessages = function(){
-   Message.getMessage();
+    Message.getMessage();
   };
 
   Message.messageList();
@@ -409,14 +414,13 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   self.captureMessages = Message.messageList();
-
   self.makeChat = function(userId){
-    console.log('clicked');
-    // Message.getFriendIds();
+    $scope.myPopup.close();
     self.chat = Message.makeChat(userId);
+    $state.go($state.current, {}, {reload: true});
   };
   self.sendMessage = function(chatId, val){
-    console.log(chatId)
+    console.log(chatId, val)
     self.send = Message.sendMessage(chatId, val);
      self.sendTo.val = null;
      self.returnMessage = Message.messageToPage();
@@ -425,17 +429,31 @@ angular.module('crptFit.controllers', ['ionic'])
     Message.getRoom(chatId);
   };
 
+  self.connect = function(id){
+    var socket = io();
+    console.log(id, 'this is what im passing')
+    console.log('LOOKING TO CONNECTION')
+    socket.emit('connecting', id)
+     socket.on('message-append', function(id, message){
+      console.log(id, message)
+        self.sendMessage(id, message)
+      })
+  }
+  self.liveUpdate = function(chatId, message){
+    var socket = io();
+      socket.emit('chatroom id', chatId, message);
+    }
   $scope.showPopup = function() {
   $scope.data = {};
-  var myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)" href=#/tab/message>{{friend.username}}</a></div></div></div>',
+   $scope.myPopup = $ionicPopup.show({
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)" href=#>{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [
       { text: 'Cancel' },
     ]
   });
-  myPopup.then(function(res) {
+  $scope.myPopup.then(function(res) {
     console.log('Tapped!', res);
     self.list = Social.searchResultsList(res);
   });

@@ -196,13 +196,14 @@ angular.module('crptFit.services', [])
 .factory('Message', ['$http', function($http){
   var messages = {};
   var messageReturn = [];
-//get user message table from db
+  //get user message table from db
   var room_ids = {};
   var capChat;
   var friends = [];
   return {
     messageToPage : function(){
       newRet = messageReturn;
+      console.log('LOOKING FOR THE DOUBLER', newRet)
       return newRet;
     },
     messageList : function(){
@@ -252,8 +253,7 @@ angular.module('crptFit.services', [])
               // if(m.user_id !== 1){
                 friends.forEach(function(friend){
                   if(friend.id === m.user_id){
-                    room_ids[y.id] = friend.username;
-                    console.log(y.id, friend.username, 'made it to the middle')
+                    room_ids[y.id] = [friend.username, y.created_at];
                   }
                 });
               // }
