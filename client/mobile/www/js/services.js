@@ -97,18 +97,24 @@ angular.module('crptFit.services', [])
     getFriendsLength: function(){
       return friends.length;
     },
+    getFriendRequests: function() {
+      return $http({
+        method: 'GET',
+        url: '/auth/friendrequests' 
+      });
+    },
     sendFriendRequest: function(friend){
       // This function needs the proper AJAX request
-      $http({
-        method: 'POST',
-        url: '/auth/friendrequests/'
-      })
-      .then(function(response){
-        friendsPendingRequest = response.data;
-        console.log("WHAT IS THIS", friendsPendingRequest)
-      }, function(error){
-        console.log(error);
-      });
+      // $http({
+      //   method: 'POST',
+      //   url: '/auth/friendrequests/'
+      // })
+      // .then(function(response){
+      //   friendsPendingRequest = response.data;
+      //   console.log("WHAT IS THIS", friendsPendingRequest)
+      // }, function(error){
+      //   console.log(error);
+      // });
       // return friendsPendingRequest;
     },
     addFriend: function(friendId){

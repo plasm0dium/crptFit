@@ -355,14 +355,16 @@ app.get('/auth/search/:id', function (req, res) {
 });
 
 //Notifications for Pending Friend Requests
-app.get('/auth/friendrequests/:id', function (req, res) {
+app.get('/auth/friendrequests', function (req, res) {
   var userId = req.user.attributes.id;
   db.collection('friendRequests').fetchByUser(userId)
   .then(function(friendRequests) {
-    return Promise.all(friendRequests.models.map(function(filtered) {
-      if(result.attributes.status === 0) {
-        console.log('this is the result', filtered)
-        return filtered;
+    return Promise.all(friendRequests.models.map(function(friends) {
+      if(friends.attributes.status === 0) {
+        console.log('this is the result', friends);
+        return db.model('User').fetchById({
+          id: friends.attributes.friend_id
+        })
       }
     })).then(function(result) {
       console.log('this is the final result of friend_requests :', result)
@@ -591,14 +593,12 @@ app.post('/auth/confirmfriend/:id', function (req, res){
   var friendId = req.params.id;
   db.model('friendRequest').acceptFriendRequest({
     friend_id: friendId,
-    user_id: userId,
-    updated_at: new Date()
+    user_id: userId
   })
   .then(function () {
     db.model('friendRequest').acceptFriendRequest({
       friend_id: userId,
-      user_id: friendId,
-      updated_at: new Date()
+      user_id: friendId
     })
   })
   .then(function(){
@@ -614,10 +614,6 @@ app.post('/auth/confirmfriend/:id', function (req, res){
       user_id: friendId
     })
     .save()
-  })
-  .then(function (acceptReq) {
-    console.log('Request accepted', acceptReq);
-    return acceptReq;
   })
   .catch(function(err){
     return err;

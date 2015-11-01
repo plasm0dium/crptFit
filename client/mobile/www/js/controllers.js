@@ -44,6 +44,7 @@ angular.module('crptFit.controllers', ['ionic'])
     method: 'GET',
     url: '/auth/user/' + Social.getUserID() // This self.savedID variable is passed down from the parent controller 'Social Ctrl'
   }).then(function(response){
+    console.log("WHAT IS THIS", response.data);
     var pic = response.data.profile_pic;
     var userName = response.data.username;
     var friends = response.data.friends.length;
@@ -446,6 +447,32 @@ angular.module('crptFit.controllers', ['ionic'])
   // Add a refreshing function here
   Social.friendsList();
   self.list = Social.friendsList();
+  self.reqlist;
+
+  self.showRequests = function(){
+    self.list = [];
+    self.reqlist = [];
+    var friendRequests = Social.getFriendRequests();
+    friendRequests.then(function(response){
+      var filtered = [];
+      response.data.forEach(function(obj){
+        if(obj) {filtered.push(obj);}
+      });
+      self.reqlist = filtered;
+      console.log("SOCIAL CONTR", self.reqlist);
+    })
+  }
+
+  self.acceptFriend = function(friendId){
+      $http({
+        method: 'POST',
+        url: '/auth/confirmfriend/' + friendId
+      })
+      .then(function(){
+        self.reqlist = [];
+        self.showRequests();
+      });
+  }
 
   self.showSearchResults = function(username){
     $http({
@@ -465,13 +492,16 @@ angular.module('crptFit.controllers', ['ionic'])
     Social.userViewerSet(facebookID);
   }
   self.showFriends = function(){
+    self.reqlist = [];
     self.list = Social.friendsList();
     console.log(self.list);
   };
   self.showClients = function(){
+    self.reqlist = [];
     self.list = Social.clientsList();
   };
   self.showTrainers = function(){
+    self.reqlist = [];
     self.list = Social.trainersList();
   }
   $scope.showPopup = function(){
