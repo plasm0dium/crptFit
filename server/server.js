@@ -109,15 +109,16 @@ app.get('/auth/user/:id', function (req, res) {
 
 //Fetch Nearest Users to Logged in User
 app.get('/auth/nearbyusers', function (req, res) {
-  var distPref = req.body.distPref;
-  var inputLat = req.body.inputLat;
-  var inputLng = req.body.inputLng;
+  var inputLat = req.user.relations.geolocations.models[0].attributes.lat;
+  var inputLng = req.user.relations.geolocations.models[0].attributes.lng;
   db.collection('Geolocations').fetchAll()
   .then(function(results) {
     return Promise.all(results.models.filter(function(model){
       var users_lat = model.attributes.lat;
       var users_lng = model.attributes.lng;
-      if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
+      console.log('DISTANCE', geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}))
+      if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < 25) {
+        console.log(model)
         return model;
       }
     }))
@@ -133,6 +134,7 @@ app.get('/auth/nearbyusers', function (req, res) {
             var swipedId = user.attributes.id;
             return db.collection('Swipes').fetchBySwiped(userId, swipedId)
             .then(function(result) {
+              console.log('THISIS RESULT', result)
                if(result.length === 0) {
                 console.log('THIS IS IN IF')
                 return user;
@@ -140,6 +142,7 @@ app.get('/auth/nearbyusers', function (req, res) {
           })
         }))
         .then(function(user) {
+          console.log('THIS IS IN USER', user)
           if(user[0] === undefined ) {
             console.log('{nearbyUsers: None}')
             res.json({nearbyUsers: 'None'})
@@ -731,7 +734,8 @@ app.post('/auth/location', function (req, res) {
   var userId = req.user.attributes.id;
   var lat = req.body.lat;
   var lng = req.body.lng;
-  var locationId = req.user.relations.geolocations.models[0].attributes.id;
+  console.log('THIS IS LAT', lat)
+  console.log('THIS IS LNG', lng)
   db.collection('Geolocations').fetchByUser(userId)
   .then(function(location) {
     if(location.length === 0) {
@@ -744,13 +748,14 @@ app.post('/auth/location', function (req, res) {
       .save();
     } else {
       console.log('SAVING LOCATION TO DB')
+      var locationId = req.user.relations.geolocations.models[0].attributes.id;
       return db.model('Geolocation').updateLocation(locationId,lat, lng);
     };
   });
 });
 
 //User Swiped Left on Swiped User
-app.post('/auth/leftswipe:id', function (req,res) {
+app.post('/auth/leftswipe/:id', function (req,res) {
   var userId = req.user.attributes.id;
   var swipedId = req.params.id;
   db.collection('Swipes').fetchBySwiped(userId, swipedId)
@@ -760,7 +765,7 @@ app.post('/auth/leftswipe:id', function (req,res) {
 })
 
 //User Swipes Right on Swiped User
-app.post('/auth/rightswipe:id', function (req,res) {
+app.post('/auth/rightswipe/:id', function (req,res) {
   var userId = req.user.attributes.id;
   var swipedId = req.params.id;
   db.collection('Swipes').fetchBySwiped(userId, swipedId)
