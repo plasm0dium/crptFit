@@ -5,6 +5,8 @@ var passport = require('passport');
 var morgan = require('morgan');
 var Promise = require('bluebird');
 var app = express();
+// var http = require('http').Server(app);
+// var io = require('socket.io')(http);
 var port = process.env.PORT || 8100;
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
@@ -49,7 +51,6 @@ require('./mysql/collections/swipes');
 require('./mysql/collections/matches');
 
 var session = require("express-session");
-
 app.use(session({
   key: 'crptFit',
   secret: 'Ted',
@@ -89,8 +90,9 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
   console.log('THIS USER IS LOGGED IN', req.user)
-  if(res.user) {
-    res.json(req.user.toJSON());
+  var user = req.user
+  if(user) {
+    res.json(user);
   } else {
     res.redirect('/');
   }
@@ -109,64 +111,80 @@ app.get('/auth/user/:id', function (req, res) {
 
 //Fetch Nearest Users to Logged in User
 app.get('/auth/nearbyusers', function (req, res) {
-  var distPref = req.body.distPref;
-  var inputLat = req.body.inputLat;
-  var inputLng = req.body.inputLng;
+  var inputLat = req.user.relations.geolocations.models[0].attributes.lat;
+  var inputLng = req.user.relations.geolocations.models[0].attributes.lng;
+  var userId = req.user.attributes.id;
   db.collection('Geolocations').fetchAll()
   .then(function(results) {
+    //Find all user's with a 25 mile radius
     return Promise.all(results.models.filter(function(model){
       var users_lat = model.attributes.lat;
       var users_lng = model.attributes.lng;
-      if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < distPref) {
+      console.log('DISTANCE', geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}))
+      if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < 25 && model.attributes.user_id !== userId) {
+        console.log(' 1 THIS IS MODEL', model)
         return model;
       }
     }))
+    //Map the nearby users objects
     .then(function(nearestUsers){
+      console.log(' 2 SECOND BLOCK')
       return Promise.all(nearestUsers.map(function(user) {
         return db.model('User').fetchById({
           id: user.attributes.user_id
           });
         }))
+        //Check if the nearby users are already in the Swipes table
+        //only return those who havent previously been swiped
         .then(function(users) {
-          return Promise.all(users.map(function(user) {
+          console.log(' 3 THIRD BLOCK')
+          return Promise.all(users.filter(function(user) {
             var userId = req.user.attributes.id;
             var swipedId = user.attributes.id;
             return db.collection('Swipes').fetchBySwiped(userId, swipedId)
             .then(function(result) {
+              console.log(' 4 FOURTH BLOCK THIS IS RESULT OF SWIPES FETCH', result)
                if(result.length === 0) {
-                console.log('THIS IS IN IF')
-                return user;
+                 //if they don't exist in user's swipes save them first & return them
+                console.log(' 5 THIS USER ISNT IN SWIPES YET SO SAVE THIS USER & return:', user)
+                db.model('Swipe').newSwipe({
+                  user_id: req.user.attributes.id,
+                  swiped_id: user.attributes.id,
+                  swiped: false,
+                  swiped_left: false,
+                  swiped_right: false
+                })
+                .save()
+                return user
+              } else {
+                result.models.filter(function(user) {
+                  return user.attributes.swiped === 0 || undefined
+                })
               }
           })
         }))
+      })
+    })
+  })
+        //if no users are found nearby then user[0] will be undefined
         .then(function(user) {
+          console.log(' 6 THIS IS USER IN LAST BLOCK', user)
           if(user[0] === undefined ) {
             console.log('{nearbyUsers: None}')
             res.json({nearbyUsers: 'None'})
             return
           } else {
-            console.log('THIS IS IN ELSE AND SAVING', user)
+            console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', user)
             res.json(user);
-            return Promise.all(user.map(function (user) {
-              return db.model('Swipe').newSwipe({
-                user_id: req.user.attributes.id,
-                swiped_id: user.attributes.id,
-                swiped: false,
-                swiped_left: false,
-                swiped_right: false
-              })
-              .save()
-            }))
           }
         })
-      })
-    })
-  })
-});
+        })
+
 //On Right Swipe Check if Swiped User has Also Swiped Right on the User
 app.get('/auth/matchcheck/:id', function (req, res) {
   var swipedId = req.user.attributes.id;
   var userId = req.params.id;
+  console.log('IN MATCHCHECK')
   db.collection('Swipes').fetchBySwiped(userId, swipedId)
   .then(function(exists) {
     if(exists.length === 0) {
@@ -193,7 +211,6 @@ app.get('/auth/newsfeed', function (req, res) {
       }));
     })
       .then(function(results){
-        res.json(results);
         return Promise.all(results.map(function(model) {
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
@@ -221,7 +238,6 @@ app.get('/auth/user', function(req, res){
 
 // Logout User
 app.get('/logout', function(req, res){
-  console.log('LOGOUT REQ.USER', req.user.attributes);
   req.session.destroy();
   req.logout();
   res.redirect('/');
@@ -367,7 +383,6 @@ app.get('/auth/friendrequests', function (req, res) {
         })
       }
     })).then(function(result) {
-      console.log('this is the final result of friend_requests :', result)
       res.json(result);
     });
   });
@@ -380,11 +395,9 @@ app.get('/auth/clientrequests', function (req, res) {
   .then(function(clientRequests) {
     return Promise.all(clientRequests.models.map(function(filtered) {
       if(result.attributes.status === 0) {
-        console.log('this is the result', filtered)
         return filtered;
       }
     })).then(function(result) {
-      console.log('this is the finalresult of client_requests :', result)
       res.json(result);
     });
     });
@@ -396,9 +409,7 @@ db.model('User').fetchById({
   id: userId
   })
   .then(function(result) {
-    console.log('THIS IS USER :', result.relations.chatstores.models);
     return Promise.all(result.relations.chatstores.models.map(function(msg){
-      console.log('CHAT ID :', msg.attributes.chat_id)
       return db.model('Chat').fetchById(msg.attributes.chat_id)
     }))
     .then(function (results){
@@ -428,7 +439,6 @@ app.get('/auth/deadlift/:id', function (req, res){
   var userId = req.params.id;
   db.collection('DeadLifts').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR DEADLIFTS', user);
     res.json(user.toJSON());
   });
 });
@@ -437,7 +447,6 @@ app.get('/auth/squats/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Squats').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR SQUATS', user);
     res.json(user.toJSON());
   });
 });
@@ -446,7 +455,6 @@ app.get('/auth/speeds/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Speeds').fetchByUser(userId)
   .then(function(user){
-    console.log('THIS IS YOUR SPEED', user);
     res.json(user.toJSON());
   });
 });
@@ -464,7 +472,6 @@ app.post('/auth/tasks/:taskname', function (req, res) {
     return task;
   })
   .catch(function (err) {
-    console.log('ERR IN POST /auth/tasks : ', err);
   });
 });
 
@@ -479,7 +486,6 @@ app.post('/auth/tasks/add:userid', function (req, res) {
   })
   .save()
   .catch(function (err) {
-    console.log('ERR IN POST /auth/tasks : ', err);
   });
 });
 
@@ -488,7 +494,6 @@ app.post('/auth/task/complete/:id', function(req, res) {
   var taskId = req.params.id;
   db.model('Task').completeTask(taskId)
   .then(function () {
-    console.log('TASK UPDATED TO COMPLETE :', db.model('Task').fetchByUser(req.user.attributes.id));
   })
   .catch(function (err) {
     return err;
@@ -524,7 +529,6 @@ app.post('/auth/confirmclient', function (req, res) {
   .save()
   })
   .then(function(newClient) {
-    console.log('ADDED NEW CLIENT :', newClient);
     return newClient;
   })
   .catch(function(err) {
@@ -536,7 +540,6 @@ app.post('/auth/confirmclient', function (req, res) {
 app.post('/auth/clientreq/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
-  console.log("After the route is called", clientId)
   db.model('clientRequest').newClientRequest({
     client_id: clientId,
     user_id: userId,
@@ -579,7 +582,6 @@ app.post('/auth/friendreq/add:id', function (req, res){
     .save()
   })
   .then(function (friendreq){
-    console.log('ADD FRIEND REQUEST', friendreq);
     return friendreq;
   })
   .catch(function(err){
@@ -615,10 +617,7 @@ app.post('/auth/confirmfriend/:id', function (req, res){
     })
     .save()
   })
-  .catch(function(err){
-    return err;
-  });
-});
+})
 
 //Creates a Chat Session
 app.post('/auth/chat/add:id', function (req, res){
@@ -631,7 +630,6 @@ app.post('/auth/chat/add:id', function (req, res){
     .save()
     .then(function(result){
       chatId = result.id;
-      console.log("THIS IS MY RESULT: ", result);
       db.model('Chatstore').newChatStore({
         chat_id: result.id,
         user_id: userId1,
@@ -640,7 +638,6 @@ app.post('/auth/chat/add:id', function (req, res){
     .save()
     })
     .then(function(){
-      console.log("THIS IS MY SECOND RESULT: ", chatId);
       db.model('Chatstore').newChatStore({
         chat_id: chatId,
         user_id: userId2,
@@ -655,7 +652,6 @@ app.post('/auth/messages/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
   var body = req.body.message;
-  console.log(chatId, 'this is chatID', userId, 'this is user id', body, 'this is body');
   db.model('Message').newMessage({
     user_id: userId,
     chat_id: chatId,
@@ -712,7 +708,6 @@ app.post('/auth/deadlift/:stat', function (req, res) {
 app.post('/auth/speed/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSpeed = req.params.stat;
-  console.log('YOUR SPEED ON POST BRO', currSpeed);
   db.model('Speed').newSpeed({
     speed: currSpeed,
     user_id: userId,
@@ -726,7 +721,8 @@ app.post('/auth/location', function (req, res) {
   var userId = req.user.attributes.id;
   var lat = req.body.lat;
   var lng = req.body.lng;
-  var locationId = req.user.relations.geolocations.models[0].attributes.id;
+  console.log('THIS IS LAT', lat)
+  console.log('THIS IS LNG', lng)
   db.collection('Geolocations').fetchByUser(userId)
   .then(function(location) {
     if(location.length === 0) {
@@ -739,13 +735,14 @@ app.post('/auth/location', function (req, res) {
       .save();
     } else {
       console.log('SAVING LOCATION TO DB')
+      var locationId = req.user.relations.geolocations.models[0].attributes.id;
       return db.model('Geolocation').updateLocation(locationId,lat, lng);
     };
   });
 });
 
 //User Swiped Left on Swiped User
-app.post('/auth/leftswipe:id', function (req,res) {
+app.post('/auth/leftswipe/:id', function (req,res) {
   var userId = req.user.attributes.id;
   var swipedId = req.params.id;
   db.collection('Swipes').fetchBySwiped(userId, swipedId)
@@ -755,7 +752,7 @@ app.post('/auth/leftswipe:id', function (req,res) {
 })
 
 //User Swipes Right on Swiped User
-app.post('/auth/rightswipe:id', function (req,res) {
+app.post('/auth/rightswipe/:id', function (req,res) {
   var userId = req.user.attributes.id;
   var swipedId = req.params.id;
   db.collection('Swipes').fetchBySwiped(userId, swipedId)
@@ -765,7 +762,6 @@ app.post('/auth/rightswipe:id', function (req,res) {
 })
 
 function ensureAuthenticated(req, res, next) {
-  console.log('AUTHENTICATED FUNCTION');
   if(req.isAuthenticated()) {
     return next();
   } else {
@@ -773,57 +769,77 @@ function ensureAuthenticated(req, res, next) {
   }
 }
 
-// app.listen(port, function(){
+
+// io.on('connection', function(socket){
+//   console.log('someone is fooling around in messages');
+//   socket.on('event:new:message', function(data){
+//     // socket.broadcast.emit('event:outgoing:message', data);
+//     console.log(data)
+//   })
+//   socket.on('event:outgoing:message', function(data){
+//     return data;
+//   })
+// })
+// http.listen(port, function(){
 //   console.log('listening on port...', port);
 // });
 
+server.listen(port, function(){
+  console.log('listening on port...', port);
+});
 
-// io.sockets.on('connection', function (socket){
-//   var userObj = socket.client.request.user;
-//   var chatroomId;
 
-//   if (userObj !== undefined){
-//     // emit user's facebook name
-//     socket.emit('user name', {username: userObj.get('username')});
-//   }
+io.on('connection', function (socket){
+  console.log('youser connected breh')
+  var userObj = socket.client.request.user;
+  var chatroomId;
+  var newMessage;
+  console.log(userObj, '<------ userobj, expect undef', 'will be null ------->', chatroomId)
+  if (userObj !== undefined){
+    // emit user's facebook name
+    socket.emit('user name', {username: userObj.get('username')});
+  }
 
-//   // new chat room
-//   socket.on('chatroom id', function(id){
-//     chatroomId = id;
-//     socket.join(id);
-//     db.model('Chat').fetchById(id)
-//   .then(function (id){
-//     console.log("WHAT IS THIS ID", id)
-//     return Promise.all(id.relations.message.models.map(function(message){
-//       console.log("WHAT IS THIS SHIT", message);
-//       return message;
-//     }))
-//   })
-//   .then(function (messages){
-//     messages.forEach(function (message){
-//       var messageObj = message.toJSON();
-//       db.model('User').fetchById(message.get('user_id'))
-//       .then(function (user){
-//         // console.log("LET ME SEE WHAT THIS IS", user);
-//         messageObj.name = user.get('username');
-//         socket.emit('new chat', messageObj);
-//         });
-//       });
-//     });
-//   });
+  socket.on('connecting', function(id){
+    console.log('i heard it coming from on high, the song that ends the world', id)
+    socket.join(id);
+  })
+  // new chat room
+  socket.on('chatroom id', function(id, message){
+    console.log(id, message)
+    socket.join(id)
+    io.sockets.in(id).emit('message-append', id, message);
+    db.model('Chat').fetchById(id)
+  .then(function (id){
+    return Promise.all(id.relations.message.models.map(function(message){
+      return message;
+    }))
+  })
+  .then(function (messages){
+    messages.forEach(function (message){
+      var messageObj = message.toJSON();
+      db.model('User').fetchById(message.get('user_id'))
+      .then(function (user){
+        // console.log("LET ME SEE WHAT THIS IS", user);
+        messageObj.name = user.get('username');
+        socket.emit('new chat', messageObj);
+        });
+      });
+    });
+  });
 
-//   socket.on('new chat', function(chat){
-//     if(userObj){
-//       var messageObj;
-//       db.model('Message').newMessage(text, chatroomId, userObj)
-//       .then( function(message){
-//         messageObj = message.toJSON();
-//         return db.model('User').fetchById(messageObj.user_id);
-//       })
-//       .then(function(user){
-//         messageObj.name = user.get('username');
-//         io.to(chatroomId).emit('new chat', messageObj);
-//       })
-//     }
-//   });
-// });
+  socket.on('new chat', function(chat){
+    if(userObj){
+      var messageObj;
+      db.model('Message').newMessage(text, chatroomId, userObj)
+      .then( function(message){
+        messageObj = message.toJSON();
+        return db.model('User').fetchById(messageObj.user_id);
+      })
+      .then(function(user){
+        messageObj.name = user.get('username');
+        io.to(chatroomId).emit('new chat', messageObj);
+      })
+    }
+  });
+});
