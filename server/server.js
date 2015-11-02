@@ -216,7 +216,6 @@ app.get('/auth/newsfeed', function (req, res) {
               if (task.attributes.complete === 1){
                 taskStore.push(task);
               }
-
             });
          }));
       })
