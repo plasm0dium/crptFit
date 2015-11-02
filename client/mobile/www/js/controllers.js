@@ -615,9 +615,4 @@ angular.module('crptFit.controllers', ['ionic'])
       self.cards.splice($index, 1);
     };
 
-    self.fadeCard = function($index) {
-      this.swipeCard.el.style.opacity = 0
-    }
-
-
 }])

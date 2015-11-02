@@ -211,6 +211,7 @@ app.get('/auth/newsfeed', function (req, res) {
       }));
     })
       .then(function(results){
+        res.json(results);
         return Promise.all(results.map(function(model) {
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
@@ -617,7 +618,13 @@ app.post('/auth/confirmfriend/:id', function (req, res){
     })
     .save()
   })
-})
+  .then(function (acceptReq) {
+    return acceptReq;
+  })
+  .catch(function(err){
+    return err;
+  });
+});
 
 //Creates a Chat Session
 app.post('/auth/chat/add:id', function (req, res){
