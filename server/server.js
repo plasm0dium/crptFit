@@ -113,6 +113,7 @@ app.get('/auth/user/:id', function (req, res) {
 app.get('/auth/nearbyusers', function (req, res) {
   var inputLat = req.user.relations.geolocations.models[0].attributes.lat;
   var inputLng = req.user.relations.geolocations.models[0].attributes.lng;
+  var userId = req.user.attributes.id;
   db.collection('Geolocations').fetchAll()
   .then(function(results) {
     //Find all user's with a 25 mile radius
@@ -120,13 +121,14 @@ app.get('/auth/nearbyusers', function (req, res) {
       var users_lat = model.attributes.lat;
       var users_lng = model.attributes.lng;
       console.log('DISTANCE', geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}))
-      if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < 25) {
-        console.log(model)
+      if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < 25 && model.attributes.user_id !== userId) {
+        console.log(' 1 THIS IS MODEL', model)
         return model;
       }
     }))
     //Map the nearby users objects
     .then(function(nearestUsers){
+      console.log(' 2 SECOND BLOCK')
       return Promise.all(nearestUsers.map(function(user) {
         return db.model('User').fetchById({
           id: user.attributes.user_id
@@ -135,15 +137,16 @@ app.get('/auth/nearbyusers', function (req, res) {
         //Check if the nearby users are already in the Swipes table
         //only return those who havent previously been swiped
         .then(function(users) {
-          return Promise.all(users.map(function(user) {
+          console.log(' 3 THIRD BLOCK')
+          return Promise.all(users.filter(function(user) {
             var userId = req.user.attributes.id;
             var swipedId = user.attributes.id;
             return db.collection('Swipes').fetchBySwiped(userId, swipedId)
             .then(function(result) {
-              console.log('THIS IS RESULT OF SWIPES FETCH', result)
+              console.log(' 4 FOURTH BLOCK THIS IS RESULT OF SWIPES FETCH', result)
                if(result.length === 0) {
                  //if they don't exist in user's swipes save them first & return them
-                console.log('THIS USER ISNT IN SWIPES YET SO SAVE THIS USER & return:', user)
+                console.log(' 5 THIS USER ISNT IN SWIPES YET SO SAVE THIS USER & return:', user)
                 db.model('Swipe').newSwipe({
                   user_id: req.user.attributes.id,
                   swiped_id: user.attributes.id,
@@ -154,28 +157,28 @@ app.get('/auth/nearbyusers', function (req, res) {
                 .save()
                 return user
               } else {
-                console.log('THIS USER ALREADY EXISTS AND SWIPED = FALSE:', user)
-                //if they already exist and havent been swiped yet return them
-                return user
+                result.models.filter(function(user) {
+                  return user.attributes.swiped === 0 || undefined
+                })
               }
           })
         }))
+      })
+    })
+  })
         //if no users are found nearby then user[0] will be undefined
         .then(function(user) {
-          console.log('THIS IS USER IN LAST BLOCK', user)
+          console.log(' 6 THIS IS USER IN LAST BLOCK', user)
           if(user[0] === undefined ) {
             console.log('{nearbyUsers: None}')
             res.json({nearbyUsers: 'None'})
             return
           } else {
-            console.log('THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', user)
+            console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', user)
             res.json(user);
           }
         })
-      })
-    })
-  })
-});
+        })
 
 //On Right Swipe Check if Swiped User has Also Swiped Right on the User
 app.get('/auth/matchcheck/:id', function (req, res) {

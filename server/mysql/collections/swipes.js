@@ -11,7 +11,6 @@ var Swipes = db.Collection.extend({
     .query(function(qb) {
       qb.where('user_id', '=', userId);
       qb.where('swiped_id', '=', swipedId);
-      qb.where('swiped', '=', 0)
     })
     .fetch();
   },
