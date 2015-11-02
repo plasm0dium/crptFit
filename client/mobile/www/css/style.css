@@ -52,6 +52,9 @@ img{
   text-align: justify;
   font-weight: bold;
 }
+#chat-background {
+  background: #000D28;
+}
 .completedTask{
   font-weight: bold;
   color: green;
