@@ -1,7 +1,7 @@
 <ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getMessagesById()">
   <ion-content has-header="true" padding="true">
-    <div class="messageBubble" ng-repeat="message in ctrl.returnMessage track by $index">
-      {{message}}
+    <div class="item item-avatar-right item-text-wrap bubble" ng-repeat="message in ctrl.returnMessage track by $index">
+      <span class="text"> {{message}} </span>
     </div>
   </ion-content>
     <ion-footer-bar class="messageFoot">

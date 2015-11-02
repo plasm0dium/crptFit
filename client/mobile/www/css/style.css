@@ -35,6 +35,23 @@ img{
   position: absolute;
   top: 20px;
 }
+.bubble {
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+  padding: 5px;
+  background: #52527A;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
+  margin-bottom: 5px;
+}
+.text{
+  color: #FFFFFF;
+  text-align: justify;
+  font-weight: bold;
+}
 .completedTask{
   font-weight: bold;
   color: green;
