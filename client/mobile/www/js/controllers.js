@@ -44,6 +44,7 @@ angular.module('crptFit.controllers', ['ionic'])
     method: 'GET',
     url: '/auth/user/' + Social.getUserID() // This self.savedID variable is passed down from the parent controller 'Social Ctrl'
   }).then(function(response){
+    console.log("WHAT IS THIS", response.data);
     var pic = response.data.profile_pic;
     var userName = response.data.username;
     var friends = response.data.friends.length;
@@ -102,7 +103,7 @@ angular.module('crptFit.controllers', ['ionic'])
   // Add a refreshing function here
  }])
 // Start of HomeCtrl Controller =======================================================
-.controller('HomeCtrl', ['Social', '$http', 'User', function(Social, $http, User) {
+.controller('HomeCtrl', ['Social', '$http', 'User', 'Finder', function(Social, $http, User, Finder) {
   var self = this;
   self.feed = [];
   self.user;
@@ -118,7 +119,7 @@ angular.module('crptFit.controllers', ['ionic'])
       self.feed = response.data;
     })
   }
-
+  Finder.findLocation();
   self.initialize();
 
  }])
@@ -464,6 +465,32 @@ angular.module('crptFit.controllers', ['ionic'])
   // Add a refreshing function here
   Social.friendsList();
   self.list = Social.friendsList();
+  self.reqlist;
+
+  self.showRequests = function(){
+    self.list = [];
+    self.reqlist = [];
+    var friendRequests = Social.getFriendRequests();
+    friendRequests.then(function(response){
+      var filtered = [];
+      response.data.forEach(function(obj){
+        if(obj) {filtered.push(obj);}
+      });
+      self.reqlist = filtered;
+      console.log("SOCIAL CONTR", self.reqlist);
+    })
+  }
+
+  self.acceptFriend = function(friendId){
+      $http({
+        method: 'POST',
+        url: '/auth/confirmfriend/' + friendId
+      })
+      .then(function(){
+        self.reqlist = [];
+        self.showRequests();
+      });
+  }
 
   self.showSearchResults = function(username){
     $http({
@@ -483,13 +510,16 @@ angular.module('crptFit.controllers', ['ionic'])
     Social.userViewerSet(facebookID);
   }
   self.showFriends = function(){
+    self.reqlist = [];
     self.list = Social.friendsList();
     console.log(self.list);
   };
   self.showClients = function(){
+    self.reqlist = [];
     self.list = Social.clientsList();
   };
   self.showTrainers = function(){
+    self.reqlist = [];
     self.list = Social.trainersList();
   }
   $scope.showPopup = function(){
@@ -520,5 +550,74 @@ angular.module('crptFit.controllers', ['ionic'])
       return self.showSearchResults(res);
     })
   };
+
+}])
+
+.controller('CardsCtrl',['$http','Finder', function($http, Finder) {
+  var self = this;
+  self.cards = [];
+  self.cardsLoaded = false;
+
+  self.lat = Finder.returnMyLat();
+  self.lng = Finder.returnMyLng();
+
+  self.storeUserLoc = function () {
+    Finder.postUsersLocation(self.lat, self.lng);
+  },
+
+  self.addCard = function(image, username, id) {
+    var newCard;
+    newCard = {
+      'image': image,
+      'name' : username,
+      'id' : id
+    };
+    self.cards.unshift(angular.extend({}, newCard));
+    };
+
+  self.addCards = function() {
+    $http.get('/auth/nearbyusers').then(function(users) {
+      self.cardsLoaded = true;
+      if(users.data.nearbyUsers === 'None') {
+        alert('Cannot find new users in your area')
+      }
+      console.log('THIS IS SWOLE PATROL', users)
+      angular.forEach(users.data, function(card) {
+        console.log('THIS IS CARD', card)
+        self.addCard(card.profile_pic, card.username, card.id);
+        console.log('THESE ARE CARDS', self.cards)
+      });
+    });
+  };
+
+  self.cardLike = function(card) {
+    // if(self.cards.length < 2) {
+    //   self.addCards();
+    // }
+    Finder.onRightSwipe(self.cards[0].id)
+      $http.get('/auth/matchcheck/' + self.cards[0].id).then(function(response) {
+        console.log('THIS IS RESPONSE FROM matchCheck', response)
+        if(response.data.match === true) {
+          alert('It\'s a Match!')
+        } else {
+          console.log('NO MATCH!')
+          return
+        }
+      })
+  };
+
+    self.cardDislike = function(card) {
+      // self.addCards();
+      Finder.onLeftSwipe(self.cards[0].id)
+    };
+
+    self.removeCard = function($index) {
+      self.cards.splice($index, 1);
+    };
+
+    self.fadeCard = function($index) {
+      this.swipeCard.el.style.opacity = 0
+    }
+
 
 }])

@@ -1,4 +1,4 @@
-angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', 'highcharts-ng'])
+angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', 'highcharts-ng', 'ionic.contrib.ui.tinderCards'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -16,7 +16,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider) { 
 
   $stateProvider
   .state('login', {
@@ -147,6 +147,15 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'social-tab': {
           templateUrl: 'templates/profile-view.html',
+        }
+      }
+    })
+    .state('tab.tinderize', {
+      url: '/tinderize',
+      views: {
+        'tinder-tab' : {
+          templateUrl: 'templates/tinder-tab.html',
+          controller: 'CardsCtrl'
         }
       }
     })

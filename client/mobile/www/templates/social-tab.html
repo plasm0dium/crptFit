@@ -3,16 +3,19 @@
     <div class="tabs-striped tabs-top">
       <!-- Start of social list filtering icons -->
       <div class="row social-menu-container">
-        <a class="tab-item col-25" href="#" ng-click="ctrl.showFriends()">
+        <a class="tab-item col-20" href="#" ng-click="ctrl.showFriends()">
           <i class="icon"><span class="social-icon">F</span></i>
         </a>
-        <a class="tab-item col-25" href="#" ng-click="ctrl.showTrainers()">
+        <a class="tab-item col-20" href="#" ng-click="ctrl.showTrainers()">
           <i class="icon"><span class="social-icon">T</span></i>
         </a>
-        <a class="tab-item col-25" href="#" ng-click="ctrl.showClients()">
+        <a class="tab-item col-20" href="#" ng-click="ctrl.showClients()">
           <i class="icon"><span class="social-icon">C</span></i>
         </a>
-        <a class="tab-item col-25" href="#" ng-click="showPopup()">
+        <a class="tab-item col-20" href="#" ng-click="ctrl.showRequests()">
+          <i class="icon"><span class="social-icon">+</span></i>
+        </a>
+        <a class="tab-item col-20" href="#" ng-click="showPopup()">
           <i class="icon ion-ios-search-strong"></i>
         </a>
       </div>
@@ -21,7 +24,12 @@
         <a class="item item-avatar" href="#/tab/viewuser" ng-click="ctrl.saveUserID({{person.id}})">
           <img ng-src="{{person.profile_pic}}"/>
           <h3>{{person.username}}</h3>
-          <p>{{person.update}}</p>
+        </a>
+      </div>
+      <div ng-repeat="person in ctrl.reqlist">
+        <a class="item item-avatar" ng-click="ctrl.acceptFriend({{person.id}})">
+          <img ng-src="{{person.profile_pic}}"/>
+          <h3>{{person.username}}</h3>
         </a>
       </div>
 

@@ -72,6 +72,7 @@ angular.module('crptFit.services', [])
   var trainers = [];
   var searchResults = [];
   var savedUserID;
+  var friendsPendingRequest = [];
 
   return {
     userViewerSet: function(userID){
@@ -96,8 +97,25 @@ angular.module('crptFit.services', [])
     getFriendsLength: function(){
       return friends.length;
     },
+    getFriendRequests: function() {
+      return $http({
+        method: 'GET',
+        url: '/auth/friendrequests' 
+      });
+    },
     sendFriendRequest: function(friend){
       // This function needs the proper AJAX request
+      // $http({
+      //   method: 'POST',
+      //   url: '/auth/friendrequests/'
+      // })
+      // .then(function(response){
+      //   friendsPendingRequest = response.data;
+      //   console.log("WHAT IS THIS", friendsPendingRequest)
+      // }, function(error){
+      //   console.log(error);
+      // });
+      // return friendsPendingRequest;
     },
     addFriend: function(friendId){
       // This function needs the proper AJAX request
@@ -457,4 +475,82 @@ angular.module('crptFit.services', [])
       });
     }
   };
+}])
+
+.factory('Finder', ['$http', '$q', '$window', function($http, $q, $window) {
+  var nearbyUsers = [];
+  var userLat;
+  var userLng;
+  return {
+    findLocation: function () {
+      var deferred = $q.defer();
+
+        if(!$window.navigator) {
+          deferred.reject(new Error('Geolocation is not supported'));
+        } else {
+          $window.navigator.geolocation.getCurrentPosition(function(position) {
+            deferred.resolve({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            });
+            userLat = position.coords.latitude;
+            userLng = position.coords.longitude;
+            console.log('LAT', userLat);
+            console.log('LNG', userLng)
+          }, deferred.reject);
+        }
+
+        return deferred.promise;
+       },
+    returnMyLat: function () {
+      return userLat
+    },
+    returnMyLng: function () {
+      return userLng
+    },
+    matchCheck: function (userId) {
+      $http({
+        method: 'GET',
+        url: 'auth/matchcheck' + userId
+      }).then(function (response) {
+
+      })
+    },
+    postUsersLocation: function(latitude, longitude) {
+      console.log('SERVICE LAT', latitude);
+      console.log('SERVICE LNG', longitude);
+      $http({
+        method: 'POST',
+        url: '/auth/location',
+        data : {
+          lat: latitude,
+          lng: longitude
+          }
+        })
+      },
+    onLeftSwipe: function(userId) {
+      console.log('ON LEFT SWIPE FIRED', userId)
+      $http({
+        method: 'POST',
+        url: 'auth/leftswipe/' + userId,
+      })
+    },
+   onRightSwipe: function(userId) {
+     console.log('ON RIGHT SWIPE FIRED', userId)
+     $http({
+       method: 'POST',
+       url: 'auth/rightswipe/' + userId
+     })
+    },
+   getNearbyUsers: function() {
+    $http({
+      method: 'GET',
+      url: '/auth/nearbyusers'
+    })
+    .then(function(response) {
+      console.log('THIS IS FINDING RESPONSE', response)
+      nearbyUsers = response.data
+    })
+  }
+}
 }])
