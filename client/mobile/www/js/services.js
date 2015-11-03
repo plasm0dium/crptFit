@@ -100,7 +100,7 @@ angular.module('crptFit.services', [])
     getFriendRequests: function() {
       return $http({
         method: 'GET',
-        url: '/auth/friendrequests' 
+        url: '/auth/friendrequests'
       });
     },
     sendFriendRequest: function(friend){
@@ -485,26 +485,6 @@ angular.module('crptFit.services', [])
   var userLat;
   var userLng;
   return {
-    findLocation: function () {
-      var deferred = $q.defer();
-
-        if(!$window.navigator) {
-          deferred.reject(new Error('Geolocation is not supported'));
-        } else {
-          $window.navigator.geolocation.getCurrentPosition(function(position) {
-            deferred.resolve({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            });
-            userLat = position.coords.latitude;
-            userLng = position.coords.longitude;
-            console.log('LAT', userLat);
-            console.log('LNG', userLng)
-          }, deferred.reject);
-        }
-
-        return deferred.promise;
-       },
     returnMyLat: function () {
       return userLat
     },
@@ -545,14 +525,16 @@ angular.module('crptFit.services', [])
        url: 'auth/rightswipe/' + userId
      })
     },
-   getNearbyUsers: function() {
+    returnNearbyUsers: function () {
+      return nearbyUsers
+    },
+    getNearbyUsers: function() {
     $http({
       method: 'GET',
       url: '/auth/nearbyusers'
     })
     .then(function(response) {
-      console.log('THIS IS FINDING RESPONSE', response)
-      nearbyUsers.push(response)
+      nearbyUsers.push(response.data)
     })
   },
     getUsers: function(){

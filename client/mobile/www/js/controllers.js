@@ -8,20 +8,27 @@ angular.module('crptFit.controllers', ['ionic'])
   self.friendCount;
   self.trainerCount;
   self.clientCount;
+  self.isFriend;
+  self.requested;
   self.userID = Social.getUserID();
 
   self.sendFriendRequest = function(){
     $http({
       method: 'POST',
-      url: '/auth/friendreq/add:' + self.userID
+      url: '/auth/friendreq/' + self.userID
+    }).then(function(response){
+    console.log("CONSOLE LOG FRIEND SEQUENCE", response.data);
+      
     })
   };
+
   self.sendClientRequest = function(){
     $http({
       method: 'POST',
       url: '/auth/clientreq/add:' + self.userID
     })
   };
+
   var setProfileInfo = function(picUrl, username, friends, trainers, clients, activityFeed){
     self.pic = picUrl;
     self.username = username;
@@ -119,7 +126,6 @@ angular.module('crptFit.controllers', ['ionic'])
       self.feed = response.data;
     })
   }
-  Finder.findLocation();
   self.initialize();
 
  }])
@@ -452,6 +458,7 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.data = {};
    $scope.myPopup = $ionicPopup.show({
     template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)">{{friend.username}}</a></div></div></div>',
+
     title: 'Create a message',
     scope: $scope,
     buttons: [
@@ -477,6 +484,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.reqlist = [];
     var friendRequests = Social.getFriendRequests();
     friendRequests.then(function(response){
+      console.log("CONSOLE>LOG THIS IS FRIEND REQUESTS", response)
       var filtered = [];
       response.data.forEach(function(obj){
         if(obj) {filtered.push(obj);}
@@ -558,16 +566,33 @@ angular.module('crptFit.controllers', ['ionic'])
 
 }])
 
-.controller('CardsCtrl',['$http','Finder', function($http, Finder) {
+.controller('CardsCtrl',['$http','Finder', '$ionicLoading','$ionicPopup', function($http, Finder, $ionicLoading, $ionicPopup) {
   var self = this;
   self.cards = [];
   self.cardsLoaded = false;
+  self.lat;
+  self.lng;
+  self.loading = $ionicLoading.show({
+          template: '<p class="loading-text">Finding Nearby Users...</p><ion-spinner icon="ripple"></ion-spinner>',
+        });
 
-  self.lat = Finder.returnMyLat();
-  self.lng = Finder.returnMyLng();
-  self.storeUserLoc = function () {
+
+  self.getLocation = function () {
+    navigator.geolocation.getCurrentPosition(function(position) {
+    self.lat = position.coords.latitude;
+    self.lng = position.coords.longitude;
     Finder.postUsersLocation(self.lat, self.lng);
-  },
+    $ionicLoading.hide();
+    self.addCards();
+    }, function(error) {
+      alert('Unable to get location: ' + error.message);
+      });
+    };
+    // self.getLocation();
+
+  // self.storeUserLoc = function () {
+  //   Finder.postUsersLocation(self.lat, self.lng);
+  // };
 
   self.addCard = function(image, username, id) {
     var newCard;
@@ -579,27 +604,38 @@ angular.module('crptFit.controllers', ['ionic'])
     self.cards.unshift(angular.extend({}, newCard));
     };
 
-  self.addCards = function() {
-    Finder.getNearbyUsers()
-      self.cardsLoaded = true;
-      // if(users.data.nearbyUsers === 'None') {
-      //   alert('Cannot find new users in your area')
-      // }
-      // console.log('THIS IS SWOLE PATROL', users)
-      //   self.addCard(users.data.profile_pic, users.data.username, users.data.id);
-     
-    };
-  
-
+ self.addCards = function() {
+     $http.get('/auth/nearbyusers').then(function(users) {
+       self.cardsLoaded = true;
+       console.log(users.data)
+       if(users.data.nearbyUsers === 'None') {
+         alert('Cannot find new users in your area')
+       }
+       else {
+         console.log('THIS IS SWOLE PATROL', users)
+       angular.forEach(users.data, function(card) {
+         console.log('THIS IS CARD', card)
+         if(card[0] === null) {
+           return
+         } else {
+         self.addCard(card[0].profile_pic, card[0].username, card[0].id);
+         console.log('THESE ARE CARDS', self.cards)
+       }
+       });
+     }
+     });
+   };
   self.cardLike = function(card) {
-    // if(self.cards.length < 2) {
-    //   self.addCards();
-    // }
     Finder.onRightSwipe(self.cards[0].id)
       $http.get('/auth/matchcheck/' + self.cards[0].id).then(function(response) {
         console.log('THIS IS RESPONSE FROM matchCheck', response)
         if(response.data.match === true) {
-          alert('It\'s a Match!')
+          $ionicPopup.alert({
+            title: 'You\'ve Found a Match!',
+
+            cssClass: 'matchPopup'
+            //template: '<div class="popupImage"><img src="https://developer.apple.com/watch/human-interface-guidelines/icons-and-images/images/icon-and-image-large-icon-fitness.png"></div>'
+     });
         } else {
           console.log('NO MATCH!')
           return
@@ -608,7 +644,6 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
     self.cardDislike = function(card) {
-      // self.addCards();
       Finder.onLeftSwipe(self.cards[0].id)
     };
 

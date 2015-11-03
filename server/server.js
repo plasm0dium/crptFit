@@ -109,6 +109,10 @@ app.get('/auth/user/:id', function (req, res) {
   });
 });
 
+app.get('/auth/getmatches', function (req, res) {
+
+})
+
 //Fetch Nearest Users to Logged in User
 app.get('/auth/nearbyusers', function (req, res) {
   var inputLat = req.user.relations.geolocations.models[0].attributes.lat;
@@ -156,7 +160,8 @@ app.get('/auth/nearbyusers', function (req, res) {
                   swiped_right: false
                 })
                 .save()
-                return user
+                console.log('USER BEFORE RETURN', user)
+                return [user];
               } else {
                 console.log('BLOCK 5 in ELSE')
                 return Promise.all(result.models.map(function(existingUser) {
@@ -168,21 +173,22 @@ app.get('/auth/nearbyusers', function (req, res) {
                   }))
                 }
               }))
-            })).then( function(user) {
-              console.log(' 6 THIS IS USER IN LAST BLOCK', user)
-              if(user[0] === undefined ) {
+            })).then(function(result) {
+              console.log(' 6 THIS IS USER IN LAST BLOCK', result)
+              if(result === undefined) {
                 console.log('{nearbyUsers: None}')
                 res.json({nearbyUsers: 'None'})
                 return
               } else {
-                console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', user)
-                res.json(user);
+                console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', result)
+                res.json(result);
               }
             })
             })
           })
         })
       })
+
 //On Right Swipe Check if Swiped User has Also Swiped Right on the User
 app.get('/auth/matchcheck/:id', function (req, res) {
   var swipedId = req.user.attributes.id;
@@ -375,12 +381,14 @@ app.get('/auth/search/:id', function (req, res) {
 });
 
 //Notifications for Pending Friend Requests
-app.get('/auth/friendrequests', function (req, res) {
+app.get('/auth/friendrequests/', function (req, res) {
   var userId = req.user.attributes.id;
   db.collection('friendRequests').fetchByUser(userId)
   .then(function(friendRequests) {
+    console.log("YO WHERE IS MY SHIT", friendRequests);
     return Promise.all(friendRequests.models.map(function(friends) {
-      if(friends.attributes.status === 0) {
+      console.log("WHERE ARE MY FRIENDS", friends)
+      if(friends.attributes.status === 0 && friends.attributes.friend_req === 1) {
         console.log('this is the result', friends);
         return db.model('User').fetchById({
           id: friends.attributes.friend_id
@@ -388,9 +396,11 @@ app.get('/auth/friendrequests', function (req, res) {
       }
     })).then(function(result) {
       res.json(result);
+      console.log("WHERE IS MY RESULT", result);
     });
   });
 });
+
 
 //Notifications for Pending Friend Requests
 app.get('/auth/clientrequests', function (req, res) {
@@ -398,14 +408,17 @@ app.get('/auth/clientrequests', function (req, res) {
   db.collection('clientRequests').fetchByUser(userId)
   .then(function(clientRequests) {
     return Promise.all(clientRequests.models.map(function(filtered) {
-      if(result.attributes.status === 0) {
-        return filtered;
+      if(filtered.attributes.status === 0) {
+        return db.model('User').fetchById({
+          id: filtered.attributes.client_id
+        });
       }
     })).then(function(result) {
       res.json(result);
     });
     });
 });
+
 // Fetch a User's Chat Sessions
 app.get('/auth/chatsessions', function(req, res) {
 var userId = req.user.attributes.id;
@@ -563,17 +576,17 @@ app.post('/auth/clientreq/add:id', function (req, res){
   .catch(function (err){
     return err;
   })
-})
+});
 
 // Send a friend request
-app.post('/auth/friendreq/add:id', function (req, res){
+app.post('/auth/friendreq/:id', function (req, res){
   var userId = req.user.attributes.id;
   var friendId = req.params.id;
   db.model('friendRequest').newFriendRequest({
     friend_id: friendId,
     user_id: userId,
     status: 0,
-    created_at: new Date()
+    friend_req: false
   })
   .save()
   .then(function (){
@@ -581,17 +594,31 @@ app.post('/auth/friendreq/add:id', function (req, res){
       friend_id: userId,
       user_id: friendId,
       status: 0,
-      created_at: new Date()
+      friend_req: true
     })
-    .save()
-  })
-  .then(function (friendreq){
-    return friendreq;
+    .save();
   })
   .catch(function(err){
     return err;
-  })
-})
+  });
+});
+
+// db.model('friendRequest').newFriendRequest({
+//     friend_id: 4,
+//     user_id: 1,
+//     status: 0,
+//     friend_req: false
+//   })
+//   .save()
+//   .then(function (){
+//     db.model('friendRequest').newFriendRequest({
+//       friend_id: 1,
+//       user_id: 4,
+//       status: 0,
+//       friend_req: true
+//     })
+//     .save();
+//   })
 
 // Confirm friend request and add each other as friend
 app.post('/auth/confirmfriend/:id', function (req, res){
@@ -612,7 +639,7 @@ app.post('/auth/confirmfriend/:id', function (req, res){
       friends_id: friendId,
       user_id: userId
     })
-    .save()
+    .save();
   })
   .then(function() {
     db.model('Friend').newFriend({

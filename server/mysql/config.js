@@ -108,6 +108,7 @@ db.knex.schema.hasTable('friend_request').then(function(exists) {
       t.integer('friend_id');
       t.integer('user_id');
       t.integer('status', 10);
+      t.boolean('friend_req');
       t.timestamp('created_at');
       t.timestamp('updated_at');
     });
