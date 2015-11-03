@@ -91,6 +91,7 @@ var userFriendRequest = buildTable('friend_request', function(t) {
       t.integer('user_id');
       t.integer('status', 10);
       t.timestamps();
+      t.boolean('friend_req');
 });
 
 var userClientRequest = buildTable('client_request', function(t) {
@@ -139,7 +140,7 @@ var userDeadLifts = buildTable('deadlifts', function(t) {
       t.integer('deadlift');
       t.integer('user_id');
       t.timestamps();
-    });
+});
 
 var userSpeeds = buildTable('speeds', function(t) {
       t.increments('id').primary();
@@ -154,6 +155,24 @@ var userGeolocations = buildTable('geolocations', function(t) {
       t.integer('latitude');
       t.integer('user_id');
       t.timestamps();
+      t.float('lat');
+      t.float('lng');
+      t.integer('user_id')
+});
+
+var Swipes = buildTable('swipes', function(t) {
+      t.increments('id').primary();
+      t.integer('user_id');
+      t.integer('swiped_id');
+      t.boolean('swiped');
+      t.boolean('swiped_left');
+      t.boolean('swiped_right');
+});
+
+var Matches = buildTable('matches', function(t) {
+      t.increments('id').primary();
+      t.integer('user_id');
+      t.integer('match_id');
 });
 
 var tables = [userProfiles, userTasks, userClients, userTrainers, userFriends, userMessages, userFriendRequest, userClientRequest, userWeights, userChat, userChatStore, userBenchPress, userSquats, userDeadLifts, userSpeeds, userGeolocations];
@@ -168,3 +187,5 @@ Promise.all(tables)
     }
   });
 });
+
+module.exports = db;

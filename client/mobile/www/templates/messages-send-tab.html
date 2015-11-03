@@ -1,16 +1,18 @@
-<ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getMessagesById()">
-  <ion-content has-header="true" padding="true">
-    <div class="messageBubble" ng-repeat="message in ctrl.returnMessage track by $index">
-      {{message}}
+<ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getMessagesById(); ctrl.connect(ctrl.sendHelp)">
+  <ion-content id="chat-background" has-header="true" padding="true">
+    <div class="item item-avatar-right item-text-wrap bubble" ng-repeat="message in ctrl.returnMessage track by $index">
+      <span class="text"> {{message}} </span>
     </div>
   </ion-content>
     <ion-footer-bar class="messageFoot">
       <div class="list messageFoot2">
         <div class="item item-input-inset">
           <div class="item-input-wrapper">
-            <input class="messageInput" type="text" placeholder="Type here..." ng-model="ctrl.sendTo.val">
+            <form>
+            <input id="messageIn" class="messageInput" type="text" placeholder="Type here..." ng-model="ctrl.sendTo.val">
+          </form>
           </div>
-          <button type="submit" class="button button-small" ng-click="ctrl.sendMessage(ctrl.sendHelp, ctrl.sendTo.val); ctrl.showMessages()">
+          <button type="submit" class="messageHandle button button-small" ng-click="ctrl.liveUpdate(ctrl.sendHelp, ctrl.sendTo.val)">
             Send
           </button>
         </div>

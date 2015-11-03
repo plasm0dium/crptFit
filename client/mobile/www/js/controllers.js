@@ -8,21 +8,27 @@ angular.module('crptFit.controllers', ['ionic'])
   self.friendCount;
   self.trainerCount;
   self.clientCount;
+  self.isFriend;
+  self.requested;
   self.userID = Social.getUserID();
-  console.log("inside ViewProfileCtrl:", self.userID)
 
   self.sendFriendRequest = function(){
     $http({
       method: 'POST',
-      url: '/auth/friendreq/add:' + self.userID
+      url: '/auth/friendreq/' + self.userID
+    }).then(function(response){
+    console.log("CONSOLE LOG FRIEND SEQUENCE", response.data);
+      
     })
   };
+
   self.sendClientRequest = function(){
     $http({
       method: 'POST',
       url: '/auth/clientreq/add:' + self.userID
     })
   };
+
   var setProfileInfo = function(picUrl, username, friends, trainers, clients, activityFeed){
     self.pic = picUrl;
     self.username = username;
@@ -31,20 +37,30 @@ angular.module('crptFit.controllers', ['ionic'])
     self.clientCount = clients;
     self.feed = activityFeed;
   }
+  var setTasks = function(tasks){
+    var filtered = [];
+    for(var i = 0; i < tasks.length; i++){
+      if(tasks[i].complete === 1){
+        filtered.push(tasks[i]);
+      }
+    }
+    return filtered;
+  }
 
   $http({
     method: 'GET',
     url: '/auth/user/' + Social.getUserID() // This self.savedID variable is passed down from the parent controller 'Social Ctrl'
   }).then(function(response){
-    console.log("Inside ViewProfileCtrl:", response.data);
+    console.log("WHAT IS THIS", response.data);
     var pic = response.data.profile_pic;
     var userName = response.data.username;
     var friends = response.data.friends.length;
     var trainers = response.data.trainers.length;
     var clients = response.data.clients.length;
-    var tasks = response.data.tasks;
+    var tasks = setTasks(response.data.tasks);
     setProfileInfo(pic, userName, friends, trainers, clients, tasks);
   })
+
 }])
 // Start of Profile Controller =======================================================
 .controller('ProfileCtrl', ['Social', '$http', function(Social, $http) {
@@ -53,25 +69,32 @@ angular.module('crptFit.controllers', ['ionic'])
   self.pic;
   self.username;
   self.feed;
+  self.Id;
 
   self.friendCount = Social.getFriendsLength();
   self.trainerCount = Social.getTrainersLength();
   self.clientCount = Social.getClientsLength();
   // Helper function for extracting profile info dynamically and setting it in the controller
-  var setUserInfo = function(picUrl, username){
+  var setUserInfo = function(picUrl, username, id){
      self.pic = picUrl;
      self.username = username;
+     self.Id = id;
   };
 
   var setTasks = function(tasks){
-    self.feed = tasks;
+    var filtered = [];
+    for(var i = 0; i < tasks.length; i++){
+      if(tasks[i]){
+        filtered.push(tasks[i]);
+      }
+    }
+    self.feed = filtered;
   }
   // Grab a users tasks - extract into a factory later
   $http({
     method: 'GET',
-    url: '/auth/tasks'
+    url: '/auth/usertask/' + self.Id
   }).then(function(response){
-    console.log("inside of the ProfileCtrl call:", response);
     setTasks(response.data);
   })
   // Grab a users profile information - extract into a factory later
@@ -81,12 +104,13 @@ angular.module('crptFit.controllers', ['ionic'])
   }).then(function(response){
     var picUrl = response.data.profile_pic;
     var userName = response.data.username;
-    setUserInfo(picUrl, userName);
+    var currentUserId = response.data.id;
+    setUserInfo(picUrl, userName, currentUserId);
   });
   // Add a refreshing function here
  }])
 // Start of HomeCtrl Controller =======================================================
-.controller('HomeCtrl', ['Social', '$http', 'User', function(Social, $http, User) {
+.controller('HomeCtrl', ['Social', '$http', 'User', 'Finder', function(Social, $http, User, Finder) {
   var self = this;
   self.feed = [];
   self.user;
@@ -102,7 +126,7 @@ angular.module('crptFit.controllers', ['ionic'])
       self.feed = response.data;
     })
   }
-
+  Finder.findLocation();
   self.initialize();
 
  }])
@@ -124,8 +148,9 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
+          console.log(response, 'THIS IS THE USER OBJ')
         self.uId = response.data.id;
         self.checkMe(self.uId);
         });
@@ -169,7 +194,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
         self.uId = response.data.id;
         self.checkMe(self.uId);
@@ -214,7 +239,7 @@ angular.module('crptFit.controllers', ['ionic'])
   self.getUid = function(){
       $http({
         method: 'GET',
-        url: '/auth/picture'
+        url: '/auth/user'
       }).then(function(response){
       self.uId = response.data.id;
       self.checkMe(self.uId);
@@ -267,7 +292,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
         self.uId = response.data.id;
         self.checkMe(self.uId);
@@ -308,7 +333,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.getUid = function(){
         $http({
           method: 'GET',
-          url: '/auth/picture'
+          url: '/auth/user'
         }).then(function(response){
         self.uId = response.data.id;
         self.checkMe(self.uId);
@@ -363,10 +388,14 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 }])
 
-.controller('MessagesCtrl', ['$scope', '$ionicPopup', 'Message', 'Social', function($scope, $ionicPopup, Message, Social) {
+.controller('MessagesCtrl', ['$scope','$state', '$ionicPopup', 'Message', 'Social', function($scope,$state, $ionicPopup, Message, Social) {
 //NOTE Refactor me
   var self = this;
+  self.sendTo = {
+    val: null
+  }
   self.search = Social.friendsList();
+
   self.getFriends = function(){
     Message.getFriends();
   };
@@ -378,7 +407,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   self.showMessages = function(){
-   Message.getMessage();
+    Message.getMessage();
   };
 
   Message.messageList();
@@ -392,14 +421,13 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   self.captureMessages = Message.messageList();
-
   self.makeChat = function(userId){
-    console.log('clicked');
-    // Message.getFriendIds();
+    $scope.myPopup.close();
     self.chat = Message.makeChat(userId);
+    $state.go($state.current, {}, {reload: true});
   };
   self.sendMessage = function(chatId, val){
-    console.log(chatId)
+    console.log(chatId, val)
     self.send = Message.sendMessage(chatId, val);
      self.sendTo.val = null;
      self.returnMessage = Message.messageToPage();
@@ -408,17 +436,31 @@ angular.module('crptFit.controllers', ['ionic'])
     Message.getRoom(chatId);
   };
 
+  self.connect = function(id){
+    var socket = io();
+    console.log(id, 'this is what im passing')
+    console.log('LOOKING TO CONNECTION')
+    socket.emit('connecting', id)
+     socket.on('message-append', function(id, message){
+      console.log(id, message)
+        self.sendMessage(id, message)
+      })
+  }
+  self.liveUpdate = function(chatId, message){
+    var socket = io();
+      socket.emit('chatroom id', chatId, message);
+    }
   $scope.showPopup = function() {
   $scope.data = {};
-  var myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)" href=#/tab/message>{{friend.username}}</a></div></div></div>',
+   $scope.myPopup = $ionicPopup.show({
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)" >{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [
       { text: 'Cancel' },
     ]
   });
-  myPopup.then(function(res) {
+  $scope.myPopup.then(function(res) {
     console.log('Tapped!', res);
     self.list = Social.searchResultsList(res);
   });
@@ -430,6 +472,33 @@ angular.module('crptFit.controllers', ['ionic'])
   // Add a refreshing function here
   Social.friendsList();
   self.list = Social.friendsList();
+  self.reqlist;
+
+  self.showRequests = function(){
+    self.list = [];
+    self.reqlist = [];
+    var friendRequests = Social.getFriendRequests();
+    friendRequests.then(function(response){
+      console.log("CONSOLE>LOG THIS IS FRIEND REQUESTS", response)
+      var filtered = [];
+      response.data.forEach(function(obj){
+        if(obj) {filtered.push(obj);}
+      });
+      self.reqlist = filtered;
+      console.log("SOCIAL CONTR", self.reqlist);
+    })
+  }
+
+  self.acceptFriend = function(friendId){
+      $http({
+        method: 'POST',
+        url: '/auth/confirmfriend/' + friendId
+      })
+      .then(function(){
+        self.reqlist = [];
+        self.showRequests();
+      });
+  }
 
   self.showSearchResults = function(username){
     $http({
@@ -449,13 +518,16 @@ angular.module('crptFit.controllers', ['ionic'])
     Social.userViewerSet(facebookID);
   }
   self.showFriends = function(){
+    self.reqlist = [];
     self.list = Social.friendsList();
     console.log(self.list);
   };
   self.showClients = function(){
+    self.reqlist = [];
     self.list = Social.clientsList();
   };
   self.showTrainers = function(){
+    self.reqlist = [];
     self.list = Social.trainersList();
   }
   $scope.showPopup = function(){
@@ -486,5 +558,74 @@ angular.module('crptFit.controllers', ['ionic'])
       return self.showSearchResults(res);
     })
   };
+
+}])
+
+.controller('CardsCtrl',['$http','Finder', function($http, Finder) {
+  var self = this;
+  self.cards = [];
+  self.cardsLoaded = false;
+
+  self.lat = Finder.returnMyLat();
+  self.lng = Finder.returnMyLng();
+
+  self.storeUserLoc = function () {
+    Finder.postUsersLocation(self.lat, self.lng);
+  },
+
+  self.addCard = function(image, username, id) {
+    var newCard;
+    newCard = {
+      'image': image,
+      'name' : username,
+      'id' : id
+    };
+    self.cards.unshift(angular.extend({}, newCard));
+    };
+
+  self.addCards = function() {
+    $http.get('/auth/nearbyusers').then(function(users) {
+      self.cardsLoaded = true;
+      if(users.data.nearbyUsers === 'None') {
+        alert('Cannot find new users in your area')
+      }
+      console.log('THIS IS SWOLE PATROL', users)
+      angular.forEach(users.data, function(card) {
+        console.log('THIS IS CARD', card)
+        self.addCard(card.profile_pic, card.username, card.id);
+        console.log('THESE ARE CARDS', self.cards)
+      });
+    });
+  };
+
+  self.cardLike = function(card) {
+    // if(self.cards.length < 2) {
+    //   self.addCards();
+    // }
+    Finder.onRightSwipe(self.cards[0].id)
+      $http.get('/auth/matchcheck/' + self.cards[0].id).then(function(response) {
+        console.log('THIS IS RESPONSE FROM matchCheck', response)
+        if(response.data.match === true) {
+          alert('It\'s a Match!')
+        } else {
+          console.log('NO MATCH!')
+          return
+        }
+      })
+  };
+
+    self.cardDislike = function(card) {
+      // self.addCards();
+      Finder.onLeftSwipe(self.cards[0].id)
+    };
+
+    self.removeCard = function($index) {
+      self.cards.splice($index, 1);
+    };
+
+    self.fadeCard = function($index) {
+      this.swipeCard.el.style.opacity = 0
+    }
+
 
 }])
