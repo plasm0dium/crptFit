@@ -26,7 +26,7 @@ module.exports = function (passport) {
       passReqToCallback: true,
       enabledProof: false,
       profileFields: ['id', 'birthday', 'email', 'displayName', 'gender', 'picture.type(large)', 'friends', 'about'],
-      callbackURL: "http://shrouded-fortress-1062.herokuapp.com//auth/facebook/callback"
+      callbackURL: "http://shrouded-fortress-1062.herokuapp.com/auth/facebook/callback"
     },
   function(req, accessToken, refreshToken, profile, done) {
     db.model('User').fetchById({
