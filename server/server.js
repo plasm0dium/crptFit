@@ -224,7 +224,6 @@ app.get('/auth/newsfeed', function (req, res) {
               if (task.attributes.complete === 1){
                 taskStore.push(task);
               }
-
             });
          }));
       })
@@ -626,7 +625,13 @@ app.post('/auth/confirmfriend/:id', function (req, res){
     })
     .save()
   })
-})
+  .then(function (acceptReq) {
+    return acceptReq;
+  })
+  .catch(function(err){
+    return err;
+  });
+});
 
 //Creates a Chat Session
 app.post('/auth/chat/add:id', function (req, res){
