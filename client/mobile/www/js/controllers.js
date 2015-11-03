@@ -9,20 +9,27 @@ angular.module('crptFit.controllers', ['ionic'])
   self.friendCount;
   self.trainerCount;
   self.clientCount;
+  self.isFriend;
+  self.requested;
   self.userID = Social.getUserID();
 
   self.sendFriendRequest = function(){
     $http({
       method: 'POST',
-      url: '/auth/friendreq/add:' + self.userID
+      url: '/auth/friendreq/' + self.userID
+    }).then(function(response){
+    console.log("CONSOLE LOG FRIEND SEQUENCE", response.data);
+      
     })
   };
+
   self.sendClientRequest = function(){
     $http({
       method: 'POST',
       url: '/auth/clientreq/add:' + self.userID
     })
   };
+
   var setProfileInfo = function(picUrl, username, friends, trainers, clients, activityFeed){
     self.pic = picUrl;
     self.username = username;
@@ -474,6 +481,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.reqlist = [];
     var friendRequests = Social.getFriendRequests();
     friendRequests.then(function(response){
+      console.log("CONSOLE>LOG THIS IS FRIEND REQUESTS", response)
       var filtered = [];
       response.data.forEach(function(obj){
         if(obj) {filtered.push(obj);}
@@ -559,7 +567,6 @@ angular.module('crptFit.controllers', ['ionic'])
   var self = this;
   self.cards = [];
   self.cardsLoaded = false;
-
   self.lat = Finder.returnMyLat();
   self.lng = Finder.returnMyLng();
 
@@ -580,18 +587,24 @@ angular.module('crptFit.controllers', ['ionic'])
   self.addCards = function() {
     $http.get('/auth/nearbyusers').then(function(users) {
       self.cardsLoaded = true;
+      console.log(users.data)
       if(users.data.nearbyUsers === 'None') {
         alert('Cannot find new users in your area')
       }
-      console.log('THIS IS SWOLE PATROL', users)
+      else {
+        console.log('THIS IS SWOLE PATROL', users)
       angular.forEach(users.data, function(card) {
         console.log('THIS IS CARD', card)
-        self.addCard(card.profile_pic, card.username, card.id);
+        if(card[0] === null) {
+          return
+        } else {
+        self.addCard(card[0].profile_pic, card[0].username, card[0].id);
         console.log('THESE ARE CARDS', self.cards)
+      }
       });
+    }
     });
   };
-
   self.cardLike = function(card) {
     // if(self.cards.length < 2) {
     //   self.addCards();
@@ -617,4 +630,9 @@ angular.module('crptFit.controllers', ['ionic'])
       self.cards.splice($index, 1);
     };
 
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> 0b18cda0080db4ee6f580eea92626c6c6775ea3f
 }])
