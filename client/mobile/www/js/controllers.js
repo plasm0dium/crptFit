@@ -453,7 +453,7 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.showPopup = function() {
   $scope.data = {};
    $scope.myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)" href=#>{{friend.username}}</a></div></div></div>',
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)" >{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [

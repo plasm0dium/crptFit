@@ -391,23 +391,6 @@ app.get('/auth/friendrequests/', function (req, res) {
   });
 });
 
-// db.collection('friendRequests').fetchByUser(1)
-//   .then(function(friendRequests) {
-//     console.log("YO WHERE IS MY SHIT", friendRequests);
-//     return Promise.all(friendRequests.models.map(function(friends) {
-//       console.log("WHERE ARE MY FRIENDS", friends)
-//       if(friends.attributes.status === 0 && friends.attributes.friend_req === 1) {
-//         console.log('this is the result', friends);
-//         return db.model('User').fetchById({
-//           id: friends.attributes.friend_id
-//         })
-//       }
-//     }))
-//     .then(function(result) {
-//       // res.json(result);
-//       console.log("WHERE IS MY RESULT", result);
-//     });
-//   });
 
 //Notifications for Pending Friend Requests
 app.get('/auth/clientrequests', function (req, res) {
