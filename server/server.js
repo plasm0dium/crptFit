@@ -109,8 +109,26 @@ app.get('/auth/user/:id', function (req, res) {
   });
 });
 
+//Fetches a User's Matches
 app.get('/auth/getmatches', function (req, res) {
-
+  var userId = req.user.attributes.id;
+  db.collection('Matches').fetchByUser(userId)
+  .then(function(results) {
+    console.log('THESE ARE RESULTS', results)
+    if(results.length === 0) {
+      res.json({matches: 'None'})
+    } else {
+      return Promise.all(results.models.map(function(match) {
+        return db.model('User').fetchById({
+          id: match.attributes.match_id
+        })
+      }))
+      .then(function(userObjects) {
+        console.log('THESE ARE YOUR MATCHES', userObjects)
+        res.json(userObjects)
+      })
+    }
+  })
 })
 
 //Fetch Nearest Users to Logged in User

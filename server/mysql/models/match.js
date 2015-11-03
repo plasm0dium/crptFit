@@ -6,7 +6,7 @@ var Match = db.Model.extend({
   tableName: 'matches',
   user: function () {
     return this.belongsTo('User');
-  }
+  },
 }, {
   newMatch: function (options) {
     return new this(options);
