@@ -630,9 +630,4 @@ angular.module('crptFit.controllers', ['ionic'])
       self.cards.splice($index, 1);
     };
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 0b18cda0080db4ee6f580eea92626c6c6775ea3f
 }])
