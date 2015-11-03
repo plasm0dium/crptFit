@@ -8,20 +8,27 @@ angular.module('crptFit.controllers', ['ionic'])
   self.friendCount;
   self.trainerCount;
   self.clientCount;
+  self.isFriend;
+  self.requested;
   self.userID = Social.getUserID();
 
   self.sendFriendRequest = function(){
     $http({
       method: 'POST',
-      url: '/auth/friendreq/add:' + self.userID
+      url: '/auth/friendreq/' + self.userID
+    }).then(function(response){
+    console.log("CONSOLE LOG FRIEND SEQUENCE", response.data);
+      
     })
   };
+
   self.sendClientRequest = function(){
     $http({
       method: 'POST',
       url: '/auth/clientreq/add:' + self.userID
     })
   };
+
   var setProfileInfo = function(picUrl, username, friends, trainers, clients, activityFeed){
     self.pic = picUrl;
     self.username = username;
@@ -446,7 +453,7 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.showPopup = function() {
   $scope.data = {};
    $scope.myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)" href=#>{{friend.username}}</a></div></div></div>',
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)" >{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [
@@ -472,6 +479,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.reqlist = [];
     var friendRequests = Social.getFriendRequests();
     friendRequests.then(function(response){
+      console.log("CONSOLE>LOG THIS IS FRIEND REQUESTS", response)
       var filtered = [];
       response.data.forEach(function(obj){
         if(obj) {filtered.push(obj);}
