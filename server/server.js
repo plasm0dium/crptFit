@@ -109,6 +109,10 @@ app.get('/auth/user/:id', function (req, res) {
   });
 });
 
+app.get('/auth/getmatches', function (req, res) {
+
+})
+
 //Fetch Nearest Users to Logged in User
 app.get('/auth/nearbyusers', function (req, res) {
   var inputLat = req.user.relations.geolocations.models[0].attributes.lat;
