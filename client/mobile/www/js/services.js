@@ -100,7 +100,7 @@ angular.module('crptFit.services', [])
     getFriendRequests: function() {
       return $http({
         method: 'GET',
-        url: '/auth/friendrequests' 
+        url: '/auth/friendrequests'
       });
     },
     sendFriendRequest: function(friend){
@@ -542,14 +542,16 @@ angular.module('crptFit.services', [])
        url: 'auth/rightswipe/' + userId
      })
     },
-   getNearbyUsers: function() {
+    returnNearbyUsers: function () {
+      return nearbyUsers
+    },
+    getNearbyUsers: function() {
     $http({
       method: 'GET',
       url: '/auth/nearbyusers'
     })
     .then(function(response) {
-      console.log('THIS IS FINDING RESPONSE', response)
-      nearbyUsers = response.data
+      nearbyUsers.push(response.data)
     })
   }
 }

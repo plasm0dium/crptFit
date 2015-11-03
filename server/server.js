@@ -171,7 +171,7 @@ app.get('/auth/nearbyusers', function (req, res) {
               }))
             })).then(function(result) {
               console.log(' 6 THIS IS USER IN LAST BLOCK', result)
-              if(result === undefined ) {
+              if(result === undefined) {
                 console.log('{nearbyUsers: None}')
                 res.json({nearbyUsers: 'None'})
                 return
