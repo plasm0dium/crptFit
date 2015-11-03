@@ -151,12 +151,10 @@ var userSpeeds = buildTable('speeds', function(t) {
 
 var userGeolocations = buildTable('geolocations', function(t) {
       t.increments('id').primary();
-      t.integer('longtitude');
-      t.integer('latitude');
-      t.integer('user_id');
-      t.timestamps();
       t.float('lat');
       t.float('lng');
+      t.integer('user_id');
+      t.timestamps();
 });
 
 var Swipes = buildTable('swipes', function(t) {
