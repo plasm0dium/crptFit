@@ -644,7 +644,8 @@ app.post('/auth/confirmfriend/:id', function (req, res){
       friends_id: userId,
       user_id: friendId
     })
-    .save();
+    .save()
+  })
   .catch(function(err){
     return err;
   });
