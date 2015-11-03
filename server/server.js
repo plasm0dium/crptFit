@@ -175,15 +175,21 @@ app.get('/auth/nearbyusers', function (req, res) {
               }))
             })).then(function(result) {
               console.log(' 6 THIS IS USER IN LAST BLOCK', result)
-              if(result === undefined) {
-                console.log('{nearbyUsers: None}')
-                res.json({nearbyUsers: 'None'})
-                return
-              } else {
+              return Promise.all(result.filter(function (user) {
+                return user[0] !== undefined
+              }))
+              .then(function (finalResult) {
+                console.log('THIS IS FINAL RESULT BEFORE IF', finalResult)
+                if(finalResult.length === 0) {
+                  console.log('{nearbyUsers: None}')
+                  res.json({nearbyUsers: 'None'})
+                  return
+                } else {
 
-                console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', result)
-                res.json(result);
-              }
+                  console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', finalResult)
+                  res.json(finalResult);
+                }
+              })
             })
             })
           })

@@ -19,7 +19,7 @@ angular.module('crptFit.controllers', ['ionic'])
       url: '/auth/friendreq/' + self.userID
     }).then(function(response){
     console.log("CONSOLE LOG FRIEND SEQUENCE", response.data);
-      
+
     })
   };
 
@@ -604,7 +604,12 @@ angular.module('crptFit.controllers', ['ionic'])
       self.cardsLoaded = true;
       console.log(users.data)
       if(users.data.nearbyUsers === 'None') {
-        alert('Cannot find new users in your area')
+        $ionicPopup.alert({
+          title: 'We Couldnt Find New Users in Your Area',
+          template: 'Please Check Back Later',
+          cssClass: 'matchPopup'
+          //template: '<div class="popupImage"><img src="https://developer.apple.com/watch/human-interface-guidelines/icons-and-images/images/icon-and-image-large-icon-fitness.png"></div>'
+   });
       }
       else {
         console.log('THIS IS SWOLE PATROL', users)
