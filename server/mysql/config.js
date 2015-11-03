@@ -157,7 +157,6 @@ var userGeolocations = buildTable('geolocations', function(t) {
       t.timestamps();
       t.float('lat');
       t.float('lng');
-      t.integer('user_id')
 });
 
 var Swipes = buildTable('swipes', function(t) {
