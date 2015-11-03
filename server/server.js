@@ -138,10 +138,11 @@ app.get('/auth/nearbyusers', function (req, res) {
         //only return those who havent previously been swiped
         .then(function(users) {
           console.log(' 3 THIRD BLOCK')
-          return Promise.all(users.filter(function(user) {
+          return Promise.all(users.map(function(user) {
+            console.log('INSIDE 3.5')
             var userId = req.user.attributes.id;
             var swipedId = user.attributes.id;
-            return db.collection('Swipes').fetchBySwiped(userId, swipedId)
+            return Promise.all(db.collection('Swipes').fetchBySwiped(userId, swipedId)
             .then(function(result) {
               console.log(' 4 FOURTH BLOCK THIS IS RESULT OF SWIPES FETCH', result)
                if(result.length === 0) {
@@ -155,30 +156,36 @@ app.get('/auth/nearbyusers', function (req, res) {
                   swiped_right: false
                 })
                 .save()
-                return user
+                console.log('USER BEFORE RETURN', user)
+                return [user];
               } else {
-                result.models.filter(function(user) {
-                  return user.attributes.swiped === 0 || undefined
-                })
+                console.log('BLOCK 5 in ELSE')
+                return Promise.all(result.models.map(function(existingUser) {
+                  console.log('INSIDE BLOCK 5 PROMISE', user)
+                  if(existingUser.attributes.swiped === 0) {
+                    console.log('THIS IS IN FINAL FILTER', user)
+                    return user
+                  }
+                  }))
+                }
+              }))
+            })).then(function(result) {
+              console.log(' 6 THIS IS USER IN LAST BLOCK', result)
+              if(result === undefined ) {
+                console.log('{nearbyUsers: None}')
+                res.json({nearbyUsers: 'None'})
+                return
+              } else {
+
+                console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', result)
+                res.json(result);
               }
+            })
+            })
           })
-        }))
+        })
       })
-    })
-  })
         //if no users are found nearby then user[0] will be undefined
-        .then(function(user) {
-          console.log(' 6 THIS IS USER IN LAST BLOCK', user)
-          if(user[0] === undefined ) {
-            console.log('{nearbyUsers: None}')
-            res.json({nearbyUsers: 'None'})
-            return
-          } else {
-            console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', user)
-            res.json(user);
-          }
-        })
-        })
 
 //On Right Swipe Check if Swiped User has Also Swiped Right on the User
 app.get('/auth/matchcheck/:id', function (req, res) {
@@ -211,6 +218,7 @@ app.get('/auth/newsfeed', function (req, res) {
       }));
     })
       .then(function(results){
+        res.json(results);
         return Promise.all(results.map(function(model) {
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
