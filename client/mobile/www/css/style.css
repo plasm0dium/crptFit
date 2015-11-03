@@ -198,3 +198,12 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
   color: tomato;
   right: 0;
 }
+.spinner svg {
+  width: 50px;
+  height: 50px;
+  stroke: #CCFF33;
+  fill: #CCFF33;
+}
+.loading-text {
+  color: #CCFF33;
+}

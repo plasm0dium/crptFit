@@ -482,26 +482,6 @@ angular.module('crptFit.services', [])
   var userLat;
   var userLng;
   return {
-    findLocation: function () {
-      var deferred = $q.defer();
-
-        if(!$window.navigator) {
-          deferred.reject(new Error('Geolocation is not supported'));
-        } else {
-          $window.navigator.geolocation.getCurrentPosition(function(position) {
-            deferred.resolve({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            });
-            userLat = position.coords.latitude;
-            userLng = position.coords.longitude;
-            console.log('LAT', userLat);
-            console.log('LNG', userLng)
-          }, deferred.reject);
-        }
-
-        return deferred.promise;
-       },
     returnMyLat: function () {
       return userLat
     },
