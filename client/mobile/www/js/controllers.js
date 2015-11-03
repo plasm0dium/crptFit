@@ -446,7 +446,7 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.showPopup = function() {
   $scope.data = {};
    $scope.myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)" href=#>{{friend.username}}</a></div></div></div>',
+    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)">{{friend.username}}</a></div></div></div>',
     title: 'Create a message',
     scope: $scope,
     buttons: [
@@ -576,19 +576,17 @@ angular.module('crptFit.controllers', ['ionic'])
     };
 
   self.addCards = function() {
-    $http.get('/auth/nearbyusers').then(function(users) {
+    Finder.getNearbyUsers();
       self.cardsLoaded = true;
-      if(users.data.nearbyUsers === 'None') {
-        alert('Cannot find new users in your area')
-      }
-      console.log('THIS IS SWOLE PATROL', users)
-      angular.forEach(users.data, function(card) {
-        console.log('THIS IS CARD', card)
-        self.addCard(card.profile_pic, card.username, card.id);
-        console.log('THESE ARE CARDS', self.cards)
-      });
-    });
-  };
+      console.log(Finder.getUsers(), 'this is it, the datums')
+      // if(users.data.nearbyUsers === 'None') {
+      //   alert('Cannot find new users in your area')
+      // }
+      // console.log('THIS IS SWOLE PATROL', users)
+      //   self.addCard(users.data.profile_pic, users.data.username, users.data.id);
+     
+    };
+  
 
   self.cardLike = function(card) {
     // if(self.cards.length < 2) {

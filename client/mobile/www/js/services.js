@@ -482,6 +482,9 @@ angular.module('crptFit.services', [])
   var userLat;
   var userLng;
   return {
+    getUsers: function(){
+      return nearbyUsers;
+    },
     findLocation: function () {
       var deferred = $q.defer();
 
@@ -549,7 +552,7 @@ angular.module('crptFit.services', [])
     })
     .then(function(response) {
       console.log('THIS IS FINDING RESPONSE', response)
-      nearbyUsers = response.data
+      nearbyUsers.push(response)
     })
   }
 }
