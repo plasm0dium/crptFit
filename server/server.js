@@ -211,6 +211,7 @@ app.get('/auth/newsfeed', function (req, res) {
       }));
     })
       .then(function(results){
+        res.json(results);
         return Promise.all(results.map(function(model) {
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
@@ -637,6 +638,8 @@ app.post('/auth/confirmfriend/:id', function (req, res){
       user_id: friendId
     })
     .save();
+  .catch(function(err){
+    return err;
   });
 });
 
