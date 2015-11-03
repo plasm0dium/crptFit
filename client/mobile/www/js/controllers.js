@@ -119,7 +119,6 @@ angular.module('crptFit.controllers', ['ionic'])
       self.feed = response.data;
     })
   }
-  Finder.findLocation();
   self.initialize();
 
  }])
@@ -553,16 +552,29 @@ angular.module('crptFit.controllers', ['ionic'])
 
 }])
 
-.controller('CardsCtrl',['$http','Finder', function($http, Finder) {
+.controller('CardsCtrl',['$http','Finder', '$ionicLoading','$ionicPopup', function($http, Finder, $ionicLoading, $ionicPopup) {
   var self = this;
   self.cards = [];
   self.cardsLoaded = false;
-  self.lat = Finder.returnMyLat();
-  self.lng = Finder.returnMyLng();
+  self.lat;
+  self.lng;
+  self.loading = $ionicLoading.show({
+          template: '<p class="loading-text">Finding Nearby Users...</p><ion-spinner icon="ripple"></ion-spinner>',
+        });
+
+  navigator.geolocation.getCurrentPosition(function(position) {
+    self.lat = position.coords.latitude;
+    self.lng = position.coords.longitude;
+    Finder.postUsersLocation(self.lat, self.lng);
+    self.addCards();
+    $ionicLoading.hide();
+    }, function(error) {
+      alert('Unable to get location: ' + error.message);
+      });
 
   self.storeUserLoc = function () {
     Finder.postUsersLocation(self.lat, self.lng);
-  },
+  };
 
   self.addCard = function(image, username, id) {
     var newCard;
@@ -603,7 +615,12 @@ angular.module('crptFit.controllers', ['ionic'])
       $http.get('/auth/matchcheck/' + self.cards[0].id).then(function(response) {
         console.log('THIS IS RESPONSE FROM matchCheck', response)
         if(response.data.match === true) {
-          alert('It\'s a Match!')
+          $ionicPopup.alert({
+            title: 'You\'ve Found a Match!',
+
+            cssClass: 'matchPopup'
+            //template: '<div class="popupImage"><img src="https://developer.apple.com/watch/human-interface-guidelines/icons-and-images/images/icon-and-image-large-icon-fitness.png"></div>'
+     });
         } else {
           console.log('NO MATCH!')
           return
@@ -620,9 +637,4 @@ angular.module('crptFit.controllers', ['ionic'])
       self.cards.splice($index, 1);
     };
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 0b18cda0080db4ee6f580eea92626c6c6775ea3f
 }])
