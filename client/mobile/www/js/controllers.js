@@ -612,7 +612,7 @@ angular.module('crptFit.controllers', ['ionic'])
    });
       }
       else {
-        console.log('THIS IS SWOLE PATROL', users)
+        console.log('THIS IS SWOLE PATROL', users)     
       angular.forEach(users.data, function(card) {
         console.log('THIS IS CARD', card)
         if(card[0] === null) {
