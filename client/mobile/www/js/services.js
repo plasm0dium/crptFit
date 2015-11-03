@@ -214,6 +214,9 @@ angular.module('crptFit.services', [])
         }
       }
     },
+    messageUpdate: function(mess){
+      messageReturn.push(mess);
+    },
     clearCap: function(){
       return capChat;
     },
@@ -240,6 +243,7 @@ angular.module('crptFit.services', [])
       }, function(error){
         console.log(error);
       });
+      return friends;
     },
     getMessage : function(){
       //NOTE refactor for time complexity
@@ -253,7 +257,7 @@ angular.module('crptFit.services', [])
               // if(m.user_id !== 1){
                 friends.forEach(function(friend){
                   if(friend.id === m.user_id){
-                    room_ids[y.id] = [friend.username, y.created_at];
+                    room_ids[y.id] = [friend.username, y.created_at, friend.profile_pic];
                   }
                 });
               // }
@@ -276,7 +280,6 @@ angular.module('crptFit.services', [])
       });
     },
     sendMessage: function(id, val){
-      messageReturn.push(val);
       console.log(id);
       $http({
         method: 'POST',
@@ -482,9 +485,6 @@ angular.module('crptFit.services', [])
   var userLat;
   var userLng;
   return {
-    getUsers: function(){
-      return nearbyUsers;
-    },
     findLocation: function () {
       var deferred = $q.defer();
 
@@ -554,6 +554,10 @@ angular.module('crptFit.services', [])
       console.log('THIS IS FINDING RESPONSE', response)
       nearbyUsers.push(response)
     })
-  }
+  },
+    getUsers: function(){
+      console.log(nearbyUsers)
+      return nearbyUsers;
+    }
 }
 }])

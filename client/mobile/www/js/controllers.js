@@ -381,7 +381,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 }])
 
-.controller('MessagesCtrl', ['$scope','$state', '$ionicPopup', 'Message', 'Social', function($scope,$state, $ionicPopup, Message, Social) {
+.controller('MessagesCtrl', ['$scope','$state', '$location', '$ionicPopup', 'Message', 'Social', function($scope, $state, $location, $ionicPopup, Message, Social) {
 //NOTE Refactor me
   var self = this;
   self.sendTo = {
@@ -422,6 +422,7 @@ angular.module('crptFit.controllers', ['ionic'])
   self.sendMessage = function(chatId, val){
     console.log(chatId, val)
     self.send = Message.sendMessage(chatId, val);
+      Message.messageUpdate(val)
      self.sendTo.val = null;
      self.returnMessage = Message.messageToPage();
   };
@@ -438,11 +439,15 @@ angular.module('crptFit.controllers', ['ionic'])
       console.log(id, message)
         self.sendMessage(id, message)
       })
-  }
+     $scope.$on('$destroy', function(event){
+      console.log('the dc event actually fired', id)
+      socket.emit('leave', id)
+     })
+  };
   self.liveUpdate = function(chatId, message){
     var socket = io();
       socket.emit('chatroom id', chatId, message);
-    }
+    };
   $scope.showPopup = function() {
   $scope.data = {};
    $scope.myPopup = $ionicPopup.show({
@@ -560,7 +565,6 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.lat = Finder.returnMyLat();
   self.lng = Finder.returnMyLng();
-
   self.storeUserLoc = function () {
     Finder.postUsersLocation(self.lat, self.lng);
   },
@@ -576,9 +580,8 @@ angular.module('crptFit.controllers', ['ionic'])
     };
 
   self.addCards = function() {
-    Finder.getNearbyUsers();
+    Finder.getNearbyUsers()
       self.cardsLoaded = true;
-      console.log(Finder.getUsers(), 'this is it, the datums')
       // if(users.data.nearbyUsers === 'None') {
       //   alert('Cannot find new users in your area')
       // }
@@ -612,5 +615,6 @@ angular.module('crptFit.controllers', ['ionic'])
     self.removeCard = function($index) {
       self.cards.splice($index, 1);
     };
+  self.find = Finder.getUsers();
 
 }])
