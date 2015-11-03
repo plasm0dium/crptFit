@@ -202,7 +202,19 @@ app.get('/auth/matchcheck/:id', function (req, res) {
       res.json({match: false});
     } else {
       if(exists.models[0].attributes.swiped_right === 1) {
-        res.json({match: true});
+          res.json({match: true})
+          db.model('Match').newMatch({
+            user_id: swipedId,
+            match_id: userId
+          })
+          .save()
+          .then(function () {
+          db.model('Match').newMatch({
+            user_id: userId,
+            match_id: swipedId
+            })
+            .save()
+          })
       } else {
         res.json({match: false});
       };
