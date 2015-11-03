@@ -558,7 +558,7 @@ app.post('/auth/messages/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
   var body = req.body.message;
-  console.log(chatId, 'this is chatID', userId, 'this is user id', body, 'this is body')
+  console.log(chatId, 'this is chatID', userId, 'this is user id', body, 'this is body');
   db.model('Message').newMessage({
     user_id: userId,
     chat_id: chatId,
