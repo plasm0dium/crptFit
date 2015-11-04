@@ -14,6 +14,7 @@ require('./deadlift');
 require('./speed');
 require('./chatstore');
 require('./geolocation');
+require('./match');
 
 var User = db.Model.extend({
   //User Properties
@@ -57,11 +58,14 @@ var User = db.Model.extend({
   },
   clientrequests: function() {
     return this.hasMany('clientRequest');
-  }
+  },
+  matches: function() {
+    return this.hasMany('Match')
+  },
 }, {
   //User Class Methods
 fetchById: function(options) {
-  return new this(options).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores', 'geolocations', 'friendrequests', 'clientrequests']});
+  return new this(options).fetch({withRelated: ['tasks', 'clients', 'friends', 'trainers', 'weights', 'benchpresses', 'deadlifts', 'speeds', 'squats', 'chatstores', 'geolocations', 'friendrequests', 'clientrequests', 'matches']});
   },
 fetchByUsername: function (username) {
   return this({
@@ -75,6 +79,17 @@ fetchByName: function (name) {
   },
 newUser: function (options) {
   return new this(options);
+},
+updateProfile: function(id, updatedProfile) {
+  return new this({
+    id: id
+    })
+    .fetch()
+    .then(function (result) {
+      result.save({
+        profile: updatedProfile
+      }, {patch: true});
+    })
   }
 });
 
