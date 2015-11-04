@@ -439,9 +439,9 @@ angular.module('crptFit.controllers', ['ionic'])
   self.sendMessage = function(chatId, val){
     console.log(chatId, val)
     self.send = Message.sendMessage(chatId, val);
-      Message.messageUpdate(val)
-     self.sendTo.val = null;
-     self.returnMessage = Message.messageToPage();
+    Message.messageUpdate(val)
+    self.sendTo.val = null;
+    self.returnMessage = Message.messageToPage();
   };
   self.capChatId = function(chatId){
     Message.getRoom(chatId);
@@ -452,14 +452,14 @@ angular.module('crptFit.controllers', ['ionic'])
     console.log(id, 'this is what im passing')
     console.log('LOOKING TO CONNECTION')
     socket.emit('connecting', id)
-     socket.on('message-append', function(id, message){
+    socket.on('message-append', function(id, message){
       console.log(id, message)
-        self.sendMessage(id, message)
-      })
-     $scope.$on('$destroy', function(event){
+      self.sendMessage(id, message)
+    })
+    $scope.$on('$ionicView.leave', function(event){
       console.log('the dc event actually fired', id)
-      socket.emit('leave', id)
-     })
+      socket.emit('disconnect', id)
+    })
   };
   self.liveUpdate = function(chatId, message){
     var socket = io();

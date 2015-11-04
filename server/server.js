@@ -835,19 +835,21 @@ io.on('connection', function (socket){
   //   socket.emit('user name', {username: userObj.get('username')});
   // }
 
-  socket.on('connecting', function(id){
-    console.log(id)
-    socket.join(id);
+  socket.on('connecting', function(room){
+    console.log(room)
+    socket.join(room);
   })
   // new chat room
-  socket.on('chatroom id', function(id, message){
-    console.log(id, message)
-    socket.join(id);
-    io.sockets.in(id).emit('message-append', id, message);
+  socket.on('chatroom id', function(room, message){
+    console.log(room, message)
+    socket.join(room);
+    io.sockets.to(room).emit('message-append', room, message);
   })
-  socket.on('disconnect', function(id){
-    console.log('leaving chat: should not double if dc', id);
-    socket.leave(id);
+  socket.on('disconnect', function(room){
+    socket.leave(room, function(err){
+      console.log(err)
+    });
+    console.log('leaving chat: should not double if dc', room);
   })
 })
 //     db.model('Chat').fetchById(id)
