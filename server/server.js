@@ -243,7 +243,7 @@ app.get('/auth/newsfeed', function (req, res) {
 app.get('/auth/user', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
-   console.log('THIS IS AUTH?PICTURE', user)
+   console.log('User object:', user)
    res.json(user);
  });
 });
