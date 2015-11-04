@@ -15,7 +15,6 @@ require('./speed');
 require('./chatstore');
 require('./geolocation');
 require('./match');
-require('./activity');
 
 var User = db.Model.extend({
   //User Properties
@@ -62,7 +61,7 @@ var User = db.Model.extend({
   },
   matches: function() {
     return this.hasMany('Match')
-  }
+  },
 }, {
   //User Class Methods
 fetchById: function(options) {
@@ -80,6 +79,17 @@ fetchByName: function (name) {
   },
 newUser: function (options) {
   return new this(options);
+},
+updateProfile: function(id, updatedProfile) {
+  return new this({
+    id: id
+    })
+    .fetch()
+    .then(function (result) {
+      result.save({
+        profile: updatedProfile
+      }, {patch: true});
+    })
   }
 });
 

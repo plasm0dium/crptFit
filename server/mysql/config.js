@@ -172,12 +172,7 @@ var Matches = buildTable('matches', function(t) {
       t.integer('match_id');
 });
 
-var Activities = buildTable('Activities', function(t) {
-  t.increments('id').primary();
-  t.string('activity', 100);
-})
-
-var tables = [userProfiles, userTasks, userClients, userTrainers, userFriends, userMessages, userFriendRequest, userClientRequest, userWeights, userChat, userChatStore, userBenchPress, userSquats, userDeadLifts, userSpeeds, userGeolocations, Activities];
+var tables = [userProfiles, userTasks, userClients, userTrainers, userFriends, userMessages, userFriendRequest, userClientRequest, userWeights, userChat, userChatStore, userBenchPress, userSquats, userDeadLifts, userSpeeds, userGeolocations];
 
 Promise.all(tables)
 .then(function(tables){

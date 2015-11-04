@@ -834,6 +834,12 @@ app.post('/auth/rightswipe/:id', function (req,res) {
   })
 })
 
+app.post('auth/updateprofile', function(req, res) {
+  var userId = req.user.attributes.id;
+  var newProfile = req.body.profile;
+  db.model('User').updateProfile(userId, newProfile)
+});
+
 function ensureAuthenticated(req, res, next) {
   if(req.isAuthenticated()) {
     return next();
