@@ -1,6 +1,6 @@
 angular.module('crptFit.controllers', ['ionic'])
 
-.controller('ViewProfileCtrl', ['$http', 'Social', function($http, Social){
+.controller('ViewProfileCtrl', ['$http', 'Social', 'User', function($http, Social, User){
   console.log("instantiated ViewProfileCtrl");
   var self = this;
   self.pic;
@@ -9,25 +9,37 @@ angular.module('crptFit.controllers', ['ionic'])
   self.friendCount;
   self.trainerCount;
   self.clientCount;
-  self.isFriend;
+  self.isFriend = false;
   self.requested;
   self.userID = Social.getUserID();
+
+
+  var userObj = User.getUserObject();
+  userObj.then(function(response){
+    for(var i = 0; i < response.data.friends.length; i++){
+      if(response.data.friends[i].friends_id === self.userID){
+        self.isFriend = true;
+      }
+    }
+  });
+
 
   self.sendFriendRequest = function(){
     $http({
       method: 'POST',
       url: '/auth/friendreq/' + self.userID
-    }).then(function(response){
-    console.log("CONSOLE LOG FRIEND SEQUENCE", response.data);
-
     })
+    .then(function(response){
+      console.log("CONSOLE LOG FRIEND SEQUENCE", response.data);
+      })
+    });
   };
 
   self.sendClientRequest = function(){
     $http({
       method: 'POST',
       url: '/auth/clientreq/add:' + self.userID
-    })
+    });
   };
 
   var setProfileInfo = function(picUrl, username, friends, trainers, clients, activityFeed){
@@ -37,7 +49,8 @@ angular.module('crptFit.controllers', ['ionic'])
     self.trainerCount = trainers;
     self.clientCount = clients;
     self.feed = activityFeed;
-  }
+  };
+
   var setTasks = function(tasks){
     var filtered = [];
     for(var i = 0; i < tasks.length; i++){
