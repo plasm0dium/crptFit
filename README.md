@@ -45,14 +45,8 @@
 
 ### MySQL Database
 
-[Install Postgres](https://wiki.postgresql.org/wiki/Detailed_installation_guides). For Mac development, use [Postgres.app](http://postgresapp.com/).
+[Install MySQL](). For Mac development, use .
 
-With Postgres installed, set up the database with the following commands:
-```
-CREATE DATABASE fiddio;
-CREATE USER root PASSWORD '';
-ALTER USER root with SUPERUSER;
-```
 
 ### Environment Configuration File
 
@@ -60,4 +54,4 @@ ALTER USER root with SUPERUSER;
 
 ## Contributing
 
-Fitt.io welcomes contributors. To begin contributing, please, see the [contributing guidelines](CONTRIBUTING.md).
+Fitt.io welcomes contributors.
