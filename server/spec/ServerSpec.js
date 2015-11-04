@@ -90,8 +90,8 @@ describe('User', function(){
         res.should.have.length(1);
         done();
       });
-    })
-  })
+    });
+  });
 });
 
 describe('chats', function(){
