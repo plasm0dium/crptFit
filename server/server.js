@@ -109,6 +109,10 @@ app.get('/auth/user/:id', function (req, res) {
   });
 });
 
+app.get('/auth/getmatches', function (req, res) {
+
+})
+
 //Fetch Nearest Users to Logged in User
 app.get('/auth/nearbyusers', function (req, res) {
   var inputLat = req.user.relations.geolocations.models[0].attributes.lat;
@@ -239,7 +243,7 @@ app.get('/auth/newsfeed', function (req, res) {
 app.get('/auth/user', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
-   console.log('THIS IS AUTH?PICTURE', user)
+   console.log('User object:', user)
    res.json(user);
  });
 });
@@ -646,9 +650,6 @@ app.post('/auth/confirmfriend/:id', function (req, res){
     })
     .save()
   })
-  .then(function (acceptReq) {
-    return acceptReq;
-  })
   .catch(function(err){
     return err;
   });
@@ -706,6 +707,7 @@ app.post('/auth/weight/:stat', function (req, res) {
   })
   .save();
 });
+
 //Add Current Bench Press
 app.post('/auth/bench/:stat', function (req, res) {
   var userId = req.user.attributes.id;

@@ -5,11 +5,8 @@ angular.module('crptFit.services', [])
     return $http({
       method: 'get',
       url: '/auth/user'
-    }).then(function(response){
-      return response.data;
     })
   };
-
   return {
     getUserObject: getUserObject
   };
@@ -26,7 +23,7 @@ angular.module('crptFit.services', [])
       console.log(taskId, task)
       $http({
         method: 'POST',
-        url: '/auth/task/complete/' +taskId,
+        url: '/auth/task/complete/' + taskId,
       });
       console.log(task, 'clicked');
       tasks.splice(tasks.indexOf(task), 1);
@@ -102,20 +99,6 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/friendrequests'
       });
-    },
-    sendFriendRequest: function(friend){
-      // This function needs the proper AJAX request
-      // $http({
-      //   method: 'POST',
-      //   url: '/auth/friendrequests/'
-      // })
-      // .then(function(response){
-      //   friendsPendingRequest = response.data;
-      //   console.log("WHAT IS THIS", friendsPendingRequest)
-      // }, function(error){
-      //   console.log(error);
-      // });
-      // return friendsPendingRequest;
     },
     addFriend: function(friendId){
       // This function needs the proper AJAX request
@@ -482,26 +465,6 @@ angular.module('crptFit.services', [])
   var userLat;
   var userLng;
   return {
-    findLocation: function () {
-      var deferred = $q.defer();
-
-        if(!$window.navigator) {
-          deferred.reject(new Error('Geolocation is not supported'));
-        } else {
-          $window.navigator.geolocation.getCurrentPosition(function(position) {
-            deferred.resolve({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            });
-            userLat = position.coords.latitude;
-            userLng = position.coords.longitude;
-            console.log('LAT', userLat);
-            console.log('LNG', userLng)
-          }, deferred.reject);
-        }
-
-        return deferred.promise;
-       },
     returnMyLat: function () {
       return userLat
     },
