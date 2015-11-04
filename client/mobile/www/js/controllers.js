@@ -401,7 +401,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 }])
 
-.controller('MessagesCtrl', ['$scope','$state', '$ionicPopup', 'Message', 'Social', function($scope,$state, $ionicPopup, Message, Social) {
+.controller('MessagesCtrl', ['$scope','$state', '$location', '$ionicPopup', 'Message', 'Social', function($scope, $state, $location, $ionicPopup, Message, Social) {
 //NOTE Refactor me
   var self = this;
   self.sendTo = {
@@ -442,8 +442,9 @@ angular.module('crptFit.controllers', ['ionic'])
   self.sendMessage = function(chatId, val){
     console.log(chatId, val)
     self.send = Message.sendMessage(chatId, val);
-     self.sendTo.val = null;
-     self.returnMessage = Message.messageToPage();
+    Message.messageUpdate(val)
+    self.sendTo.val = null;
+    self.returnMessage = Message.messageToPage();
   };
   self.capChatId = function(chatId){
     Message.getRoom(chatId);
@@ -454,15 +455,19 @@ angular.module('crptFit.controllers', ['ionic'])
     console.log(id, 'this is what im passing')
     console.log('LOOKING TO CONNECTION')
     socket.emit('connecting', id)
-     socket.on('message-append', function(id, message){
+    socket.on('message-append', function(id, message){
       console.log(id, message)
-        self.sendMessage(id, message)
-      })
-  }
+      self.sendMessage(id, message)
+    })
+    $scope.$on('$ionicView.leave', function(event){
+      console.log('the dc event actually fired', id)
+      socket.emit('disconnect', id)
+    })
+  };
   self.liveUpdate = function(chatId, message){
     var socket = io();
       socket.emit('chatroom id', chatId, message);
-    }
+    };
   $scope.showPopup = function() {
   $scope.data = {};
    $scope.myPopup = $ionicPopup.show({
@@ -588,6 +593,7 @@ angular.module('crptFit.controllers', ['ionic'])
           template: '<p class="loading-text">Finding Nearby Users...</p><ion-spinner icon="ripple"></ion-spinner>',
         });
 
+
   self.getLocation = function () {
     navigator.geolocation.getCurrentPosition(function(position) {
     self.lat = position.coords.latitude;
@@ -641,6 +647,29 @@ angular.module('crptFit.controllers', ['ionic'])
     }
     });
   };
+
+ self.addCards = function() {
+     $http.get('/auth/nearbyusers').then(function(users) {
+       self.cardsLoaded = true;
+       console.log(users.data)
+       if(users.data.nearbyUsers === 'None') {
+         alert('Cannot find new users in your area')
+       }
+       else {
+         console.log('THIS IS SWOLE PATROL', users)
+       angular.forEach(users.data, function(card) {
+         console.log('THIS IS CARD', card)
+         if(card[0] === null) {
+           return
+         } else {
+         self.addCard(card[0].profile_pic, card[0].username, card[0].id);
+         console.log('THESE ARE CARDS', self.cards)
+       }
+       });
+     }
+     });
+   };
+
   self.cardLike = function(card) {
     Finder.onRightSwipe(self.cards[0].id)
       $http.get('/auth/matchcheck/' + self.cards[0].id).then(function(response) {
@@ -666,5 +695,6 @@ angular.module('crptFit.controllers', ['ionic'])
     self.removeCard = function($index) {
       self.cards.splice($index, 1);
     };
+  self.find = Finder.getUsers();
 
 }])

@@ -31,7 +31,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://rawgit.com/driftyco/ionic-ion-tinder-cards/master/ionic.tdcards.js"></script>
   </head>
-  <body ng-app="crptFit" class="slide-left-right-ios7">
+  <body ng-app="crptFit">
+
+    <ion-nav-view>
     <ion-side-menus>
       <ion-side-menu side="right">
         <ion-content>
@@ -48,8 +50,9 @@
           </ion-nav-back-button>
         </ion-nav-bar>
         <!-- main view controller -->
-        <ion-nav-view class="slide-left-right"></ion-nav-view>
+        <ion-nav-view name="app-nav"></ion-nav-view>
       </ion-side-menu-content>
     </ion-side-menus>
+    </ion-nav-view>
   </body>
 </html>
