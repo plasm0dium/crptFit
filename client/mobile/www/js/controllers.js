@@ -523,6 +523,10 @@ angular.module('crptFit.controllers', ['ionic'])
     self.list = Social.friendsList();
     console.log(self.list);
   };
+  self.showMatches = function () {
+    self.reqlist = [];
+    self.list = Social.matchesList();
+  }
   self.showClients = function(){
     self.reqlist = [];
     self.list = Social.clientsList();
@@ -609,10 +613,10 @@ angular.module('crptFit.controllers', ['ionic'])
           template: 'Please Check Back Later',
           cssClass: 'matchPopup'
           //template: '<div class="popupImage"><img src="https://developer.apple.com/watch/human-interface-guidelines/icons-and-images/images/icon-and-image-large-icon-fitness.png"></div>'
-   });
+        });
       }
       else {
-        console.log('THIS IS SWOLE PATROL', users)     
+        console.log('THIS IS SWOLE PATROL', users)
       angular.forEach(users.data, function(card) {
         console.log('THIS IS CARD', card)
         if(card[0] === null) {
