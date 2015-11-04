@@ -648,9 +648,6 @@ app.post('/auth/confirmfriend/:id', function (req, res){
     })
     .save()
   })
-  .then(function (acceptReq) {
-    return acceptReq;
-  })
   .catch(function(err){
     return err;
   });
@@ -708,6 +705,7 @@ app.post('/auth/weight/:stat', function (req, res) {
   })
   .save();
 });
+
 //Add Current Bench Press
 app.post('/auth/bench/:stat', function (req, res) {
   var userId = req.user.attributes.id;

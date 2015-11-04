@@ -1,6 +1,7 @@
 angular.module('crptFit.controllers', ['ionic'])
 
 .controller('ViewProfileCtrl', ['$http', 'Social', function($http, Social){
+  console.log("instantiated ViewProfileCtrl");
   var self = this;
   self.pic;
   self.username;
@@ -102,6 +103,7 @@ angular.module('crptFit.controllers', ['ionic'])
     method: 'GET',
     url: '/auth/user'
   }).then(function(response){
+    console.log("this is the user object:", response.data);
     var picUrl = response.data.profile_pic;
     var userName = response.data.username;
     var currentUserId = response.data.id;
@@ -458,7 +460,6 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.data = {};
    $scope.myPopup = $ionicPopup.show({
     template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)">{{friend.username}}</a></div></div></div>',
-
     title: 'Create a message',
     scope: $scope,
     buttons: [
