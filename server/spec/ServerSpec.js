@@ -3,7 +3,7 @@ var expect = require('../../node_modules/chai/chai').expect;
 var server = require('../server');
 var stubs = require('./Stubs');
 var db = require('../mysql/config');
-var User = require('../mysql/collections/users');
+var User = require('../mysql/models/users');
 
 
 describe('server', function() {
@@ -53,7 +53,7 @@ describe('Routing', function () {
 
   it('Should have /login state, template, and no controller', function() {
     expect($state.state['/login']).to.be.ok();
-    expect($state.state['/login'].controller).to.be(undefined);
+    expect($state.state['/login'].controller).to.be(false);
     expect($state.state['/login'].templateUrl).to.be('templates/login-tab.html');
   });
 
@@ -65,11 +65,34 @@ describe('Routing', function () {
 
   it('Should have /viewuser state, template, and controller', function(){
     expect($state.state['/viewuser']).to.be.ok();
-    expect($state.state['/viewuser'].controller).to.be(undefined);
+    expect($state.state['/viewuser'].controller).to.be(false);
     expect($state.state['/viewuser'].templateUrl).to.be('templates/profile-view.html');
   });
 });
 
+describe('User', function(){
+  var db = new User,
+  chris = new User('chris'),
+  ricky = new User('ricky'),
+  paul = new User('paul');
+
+  beforeEach(function(done){
+    db.clear(function(err){
+      if (err) return done(err);
+      db.save([chris, ricky, paul], done);
+    });
+  });
+
+  describe('fetchById()', function(){
+    it('response profile accordingly to user_id', function(done){
+      db.fetchById({type: 'User'}, function(err, res){
+        if(err) return done(err);
+        res.should.have.length(1);
+        done();
+      });
+    })
+  })
+});
 
 describe('chats', function(){
     var db;
