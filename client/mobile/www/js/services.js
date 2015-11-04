@@ -7,7 +7,6 @@ angular.module('crptFit.services', [])
       url: '/auth/user'
     })
   };
-
   return {
     getUserObject: getUserObject
   };
@@ -24,7 +23,7 @@ angular.module('crptFit.services', [])
       console.log(taskId, task)
       $http({
         method: 'POST',
-        url: '/auth/task/complete/' +taskId,
+        url: '/auth/task/complete/' + taskId,
       });
       console.log(task, 'clicked');
       tasks.splice(tasks.indexOf(task), 1);
@@ -101,20 +100,6 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/friendrequests'
       });
-    },
-    sendFriendRequest: function(friend){
-      // This function needs the proper AJAX request
-      // $http({
-      //   method: 'POST',
-      //   url: '/auth/friendrequests/'
-      // })
-      // .then(function(response){
-      //   friendsPendingRequest = response.data;
-      //   console.log("WHAT IS THIS", friendsPendingRequest)
-      // }, function(error){
-      //   console.log(error);
-      // });
-      // return friendsPendingRequest;
     },
     addFriend: function(friendId){
       // This function needs the proper AJAX request
