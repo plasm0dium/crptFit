@@ -9,7 +9,7 @@ var Users = db.Collection.extend({
     return db.collection('Users')
     .forge()
     .query(function(qb){
-      qb.select('username', 'id').from('users').where('username', 'like', '%' + searchUser + '%')
+      qb.select('username', 'id').from('users').where('username', 'like', '%' + searchUser + '%');
     })
     .fetch();
   },
