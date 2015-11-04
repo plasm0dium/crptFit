@@ -3,4 +3,3 @@ module.exports = Auth = {
   clientSecret: "d53a148e59de23865ef871bced0e1fe3",
   accessToken: "cd16047540cf58626adb172d3f90e2be"
 }
-

@@ -65,6 +65,7 @@ angular.module('crptFit.services', [])
 .factory('Social', ['$http', function($http){
   // Set up functions for ajax
   var friends = [];
+  var matches = [];
   var clients = [];
   var trainers = [];
   var searchResults = [];
@@ -107,6 +108,19 @@ angular.module('crptFit.services', [])
         url: '/auth/friends/add:' + friendId
       });
       this.friendsList();
+    },
+    matchesList: function () {
+      $http({
+        method: 'GET',
+        url: '/auth/getmatches'
+      })
+      .then(function(response) {
+        matches = response.data
+        console.log('MATCHES :', response.data)
+      }, function(error) {
+        console.log(error)
+      });
+      return matches
     },
     clientsList: function(){
       // This function needs the proper AJAX request
