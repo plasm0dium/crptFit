@@ -109,8 +109,26 @@ app.get('/auth/user/:id', function (req, res) {
   });
 });
 
+//Fetches a User's Matches
 app.get('/auth/getmatches', function (req, res) {
-
+  var userId = req.user.attributes.id;
+  db.collection('Matches').fetchByUser(userId)
+  .then(function(results) {
+    console.log('THESE ARE RESULTS', results)
+    if(results.length === 0) {
+      res.json({matches: 'None'})
+    } else {
+      return Promise.all(results.models.map(function(match) {
+        return db.model('User').fetchById({
+          id: match.attributes.match_id
+        })
+      }))
+      .then(function(userObjects) {
+        console.log('THESE ARE YOUR MATCHES', userObjects)
+        res.json(userObjects)
+      })
+    }
+  })
 })
 
 //Fetch Nearest Users to Logged in User
@@ -124,7 +142,6 @@ app.get('/auth/nearbyusers', function (req, res) {
     return Promise.all(results.models.filter(function(model){
       var users_lat = model.attributes.lat;
       var users_lng = model.attributes.lng;
-      console.log('DISTANCE', geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}))
       if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < 25 && model.attributes.user_id !== userId) {
         console.log(' 1 THIS IS MODEL', model)
         return model;
@@ -132,63 +149,55 @@ app.get('/auth/nearbyusers', function (req, res) {
     }))
     //Map the nearby users objects
     .then(function(nearestUsers){
-      console.log(' 2 SECOND BLOCK')
       return Promise.all(nearestUsers.map(function(user) {
         return db.model('User').fetchById({
           id: user.attributes.user_id
-          });
-        }))
+        });
+      }))
         //Check if the nearby users are already in the Swipes table
         //only return those who havent previously been swiped
-        .then(function(users) {
-          console.log(' 3 THIRD BLOCK')
-          return Promise.all(users.map(function(user) {
-            console.log('INSIDE 3.5')
-            var userId = req.user.attributes.id;
-            var swipedId = user.attributes.id;
-            return Promise.all(db.collection('Swipes').fetchBySwiped(userId, swipedId)
-            .then(function(result) {
-              console.log(' 4 FOURTH BLOCK THIS IS RESULT OF SWIPES FETCH', result)
-               if(result.length === 0) {
-                 //if they don't exist in user's swipes save them first & return them
-                console.log(' 5 THIS USER ISNT IN SWIPES YET SO SAVE THIS USER & return:', user)
-                db.model('Swipe').newSwipe({
-                  user_id: req.user.attributes.id,
-                  swiped_id: user.attributes.id,
-                  swiped: false,
-                  swiped_left: false,
-                  swiped_right: false
-                })
-                .save()
-                console.log('USER BEFORE RETURN', user)
-                return [user];
-              } else {
-                console.log('BLOCK 5 in ELSE')
-                return Promise.all(result.models.map(function(existingUser) {
-                  console.log('INSIDE BLOCK 5 PROMISE', user)
-                  if(existingUser.attributes.swiped === 0) {
-                    console.log('THIS IS IN FINAL FILTER', user)
-                    return user
-                  }
-                  }))
+      .then(function(users) {
+        return Promise.all(users.map(function(user) {
+          var userId = req.user.attributes.id;
+          var swipedId = user.attributes.id;
+          return Promise.all(db.collection('Swipes').fetchBySwiped(userId, swipedId)
+          .then(function(result) {
+            if(result.length === 0) {
+              //if they don't exist in user's swipes save them first & return them
+              db.model('Swipe').newSwipe({
+                user_id: req.user.attributes.id,
+                swiped_id: user.attributes.id,
+                swiped: false,
+                swiped_left: false,
+                swiped_right: false
+              })
+              .save()
+              return [user];
+            } else {
+              return Promise.all(result.models.map(function(existingUser) {
+                if(existingUser.attributes.swiped === 0) {
+                  return user
                 }
               }))
-            })).then(function(result) {
-              console.log(' 6 THIS IS USER IN LAST BLOCK', result)
-              if(result === undefined) {
-                console.log('{nearbyUsers: None}')
-                res.json({nearbyUsers: 'None'})
-                return
-              } else {
-
-                console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', result)
-                res.json(result);
               }
-            })
-            })
+            }))
+          })).then(function(result) {
+            return Promise.all(result.filter(function (user) {
+              return user[0] !== undefined
+            }))
+            .then(function (finalResult) {
+              if(finalResult.length === 0) {
+              res.json({nearbyUsers: 'None'})
+              return
+            } else {
+              res.json(finalResult);
+            }
           })
         })
       })
+    })
+  })
+})
         //if no users are found nearby then user[0] will be undefined
 
 //On Right Swipe Check if Swiped User has Also Swiped Right on the User
@@ -202,7 +211,19 @@ app.get('/auth/matchcheck/:id', function (req, res) {
       res.json({match: false});
     } else {
       if(exists.models[0].attributes.swiped_right === 1) {
-        res.json({match: true});
+          res.json({match: true})
+          db.model('Match').newMatch({
+            user_id: swipedId,
+            match_id: userId
+          })
+          .save()
+          .then(function () {
+          db.model('Match').newMatch({
+            user_id: userId,
+            match_id: swipedId
+            })
+            .save()
+          })
       } else {
         res.json({match: false});
       };
@@ -797,6 +818,12 @@ app.post('/auth/rightswipe/:id', function (req,res) {
     db.model('Swipe').updateRightSwipe(result.models[0].attributes.id)
   })
 })
+
+app.post('auth/updateprofile', function(req, res) {
+  var userId = req.user.attributes.id;
+  var newProfile = req.body.profile;
+  db.model('User').updateProfile(userId, newProfile)
+});
 
 function ensureAuthenticated(req, res, next) {
   if(req.isAuthenticated()) {

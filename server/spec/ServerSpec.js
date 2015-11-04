@@ -4,6 +4,10 @@ var server = require('../server');
 var stubs = require('./Stubs');
 var db = require('../mysql/config');
 var User = require('../mysql/collections/users');
+supertest = require('supertest');
+api = supertest('http://localhost:8100')
+require('../mysql/collections/geolocations');
+require('../mysql/models/geolocation');
 
 
 describe('server', function() {
@@ -63,3 +67,19 @@ describe('chats', function(){
       });
     });
 });
+
+describe('GET route auth/user:id', function() {
+  it('should return an object with keys and values', function (done) {
+    api.get('/auth/user1')
+    .set('Accept', 'application/json')
+    .end(function(err, res) {
+    .expect(res.data).to.have.property('username');
+    .expect(res.data.username).to.not.equal(null);
+    .expect(res.data).to.have.property('profile_pic');
+    .expect(res.data.profile_pic).to.not.equal(null);
+    .expect(res.data).to.have.property('relations');
+    .expect(res.data.relations).to.not.equal(null)
+    done()
+    })
+  })
+}
