@@ -89,8 +89,7 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 });
 
 app.get('/tab/homepage', ensureAuthenticated, function (req,res) {
-  console.log('THIS USER IS LOGGED IN', req.user)
-  var user = req.user
+  var user = req.user;
   if(user) {
     res.json(user);
   } else {
@@ -124,15 +123,12 @@ app.get('/auth/nearbyusers', function (req, res) {
     return Promise.all(results.models.filter(function(model){
       var users_lat = model.attributes.lat;
       var users_lng = model.attributes.lng;
-      console.log('DISTANCE', geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}))
       if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < 25 && model.attributes.user_id !== userId) {
-        console.log(' 1 THIS IS MODEL', model)
         return model;
       }
     }))
     //Map the nearby users objects
     .then(function(nearestUsers){
-      console.log(' 2 SECOND BLOCK')
       return Promise.all(nearestUsers.map(function(user) {
         return db.model('User').fetchById({
           id: user.attributes.user_id
@@ -141,17 +137,13 @@ app.get('/auth/nearbyusers', function (req, res) {
         //Check if the nearby users are already in the Swipes table
         //only return those who havent previously been swiped
         .then(function(users) {
-          console.log(' 3 THIRD BLOCK')
           return Promise.all(users.map(function(user) {
-            console.log('INSIDE 3.5')
             var userId = req.user.attributes.id;
             var swipedId = user.attributes.id;
             return Promise.all(db.collection('Swipes').fetchBySwiped(userId, swipedId)
             .then(function(result) {
-              console.log(' 4 FOURTH BLOCK THIS IS RESULT OF SWIPES FETCH', result)
                if(result.length === 0) {
                  //if they don't exist in user's swipes save them first & return them
-                console.log(' 5 THIS USER ISNT IN SWIPES YET SO SAVE THIS USER & return:', user)
                 db.model('Swipe').newSwipe({
                   user_id: req.user.attributes.id,
                   swiped_id: user.attributes.id,
@@ -159,43 +151,34 @@ app.get('/auth/nearbyusers', function (req, res) {
                   swiped_left: false,
                   swiped_right: false
                 })
-                .save()
-                console.log('USER BEFORE RETURN', user)
+                .save();
                 return [user];
               } else {
-                console.log('BLOCK 5 in ELSE')
                 return Promise.all(result.models.map(function(existingUser) {
-                  console.log('INSIDE BLOCK 5 PROMISE', user)
                   if(existingUser.attributes.swiped === 0) {
-                    console.log('THIS IS IN FINAL FILTER', user)
-                    return user
+                    return user;
                   }
-                  }))
+                }));
                 }
-              }))
+              }));
             })).then(function(result) {
-              console.log(' 6 THIS IS USER IN LAST BLOCK', result)
               if(result === undefined) {
-                console.log('{nearbyUsers: None}')
-                res.json({nearbyUsers: 'None'})
-                return
+                res.json({nearbyUsers: 'None'});
+                return;
               } else {
-
-                console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', result)
                 res.json(result);
               }
-            })
-            })
-          })
-        })
-      })
+            });
+          });
+        });
+      });
+    });
         //if no users are found nearby then user[0] will be undefined
 
 //On Right Swipe Check if Swiped User has Also Swiped Right on the User
 app.get('/auth/matchcheck/:id', function (req, res) {
   var swipedId = req.user.attributes.id;
   var userId = req.params.id;
-  console.log('IN MATCHCHECK')
   db.collection('Swipes').fetchBySwiped(userId, swipedId)
   .then(function(exists) {
     if(exists.length === 0) {
@@ -205,8 +188,8 @@ app.get('/auth/matchcheck/:id', function (req, res) {
         res.json({match: true});
       } else {
         res.json({match: false});
-      };
-    };
+      }
+    }
   });
 });
 
@@ -245,7 +228,6 @@ app.get('/auth/newsfeed', function (req, res) {
 app.get('/auth/user', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
-   console.log('THIS IS AUTH?PICTURE', user)
    res.json(user);
  });
 });
@@ -272,9 +254,7 @@ var userId = req.user.attributes.id;
     id: userId
   })
   .then(function(user){
-    console.log("THIS IS CURRENT USER", user)
     return Promise.all(user.relations.tasks.models.map(function(tasks){
-      console.log("TASKS ARE HERE", tasks)
           if(tasks.attributes.complete === 1){
             return tasks;
           }
@@ -365,7 +345,7 @@ app.get('/auth/trainers', ensureAuthenticated, function (req, res) {
           return res.json(storage);
         }).then(function () {
           storage = [];
-        })
+        });
     });
 
 //Search All Users to Add as Friend
@@ -376,7 +356,7 @@ app.get('/auth/search/:id', function (req, res) {
     return Promise.all(username.models.map(function(friend){
       return db.model('User').fetchById({
         id: friend.attributes.id
-      })
+      });
     }))
       .then(function (results){
         return res.json(results);
@@ -393,7 +373,7 @@ app.get('/auth/friendrequests/', function (req, res) {
       if(friends.attributes.status === 0 && friends.attributes.friend_req === 1) {
         return db.model('User').fetchById({
           id: friends.attributes.friend_id
-        })
+        });
       }
     })).then(function(result) {
       res.json(result);
@@ -533,21 +513,21 @@ app.post('/auth/confirmclient', function (req, res) {
     db.model('clientRequest').acceptClientRequest({
       user_id: clientId,
       client_id: userId
-    })
+    });
   })
   .then(function (){
   db.model('Client').newClient({
     client_id: userId,
     user_id: clientId
   })
-  .save()
+  .save();
   })
   .then(function (){
   db.model('Trainer').newTrainer({
     trainer_id: clientId,
     user_id: user_id
   })
-  .save()
+  .save();
   })
   .then(function(newClient) {
     return newClient;
@@ -575,7 +555,7 @@ app.post('/auth/clientreq/add:id', function (req, res){
       status: 0,
       created_at: new Date()
     })
-    .save()
+    .save();
   })
   .catch(function (err){
     return err;
@@ -793,30 +773,30 @@ server.listen(port, function(){
 
 
 io.on('connection', function (socket){
-  console.log('youser connected breh')
+  console.log('youser connected breh');
   var userObj = socket.client.request.user;
   var chatroomId;
   var newMessage;
-  console.log(userObj, '<------ userobj, expect undef', 'will be null ------->', chatroomId)
+  console.log(userObj, '<------ userobj, expect undef', 'will be null ------->', chatroomId);
   if (userObj !== undefined){
     // emit user's facebook name
     socket.emit('user name', {username: userObj.get('username')});
   }
 
   socket.on('connecting', function(id){
-    console.log('i heard it coming from on high, the song that ends the world', id)
+    console.log('i heard it coming from on high, the song that ends the world', id);
     socket.join(id);
-  })
+  });
   // new chat room
   socket.on('chatroom id', function(id, message){
-    console.log(id, message)
-    socket.join(id)
+    console.log(id, message);
+    socket.join(id);
     io.sockets.in(id).emit('message-append', id, message);
     db.model('Chat').fetchById(id)
   .then(function (id){
     return Promise.all(id.relations.message.models.map(function(message){
       return message;
-    }))
+    }));
   })
   .then(function (messages){
     messages.forEach(function (message){
@@ -842,7 +822,7 @@ io.on('connection', function (socket){
       .then(function(user){
         messageObj.name = user.get('username');
         io.to(chatroomId).emit('new chat', messageObj);
-      })
+      });
     }
   });
 });
