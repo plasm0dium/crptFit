@@ -5,8 +5,6 @@ angular.module('crptFit.services', [])
     return $http({
       method: 'get',
       url: '/auth/user'
-    }).then(function(response){
-      return response.data;
     })
   };
 
