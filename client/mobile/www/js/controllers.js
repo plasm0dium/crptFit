@@ -32,7 +32,6 @@ angular.module('crptFit.controllers', ['ionic'])
     .then(function(response){
       console.log("CONSOLE LOG FRIEND SEQUENCE", response.data);
       })
-    });
   };
 
   self.sendClientRequest = function(){
