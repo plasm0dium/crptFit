@@ -40,7 +40,9 @@
   text-rendering: auto;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
+  -moz-osx-font-smoothing: grayscale; 
+  color: #25B3F4;
+}
 
 .ion-alert:before {
   content: "\f101"; }

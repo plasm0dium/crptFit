@@ -35,6 +35,16 @@ img{
   position: absolute;
   top: 20px;
 }
+.bar-custom{
+  color:  #FFFEFF;
+  background-color: #1A161D;
+  border-bottom: 3px solid #25B3F4;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+.neon{
+  background-color: #25B3F4;
+}
 .bubble {
   position: relative;
   width: 100%;
