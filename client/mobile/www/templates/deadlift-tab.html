@@ -1,12 +1,12 @@
-<ion-view title="Deadlift" ng-controller="ProgressCtrlDead as ctrl">
-  <ion-content has-header="true">
+<ion-view title="Deadlift" ng-controller="ProgressCtrlDead as ctrl" class="overAll">
+  <ion-content has-header="true" class="overAll">
     <highchart id="chart1" config="chartConfig"></highchart>
-    <div class="list list-inset">
-      <form name="dedForm" ng-submit="ctrl.pushMe()">
-      <label class="item item-input dead-weight">
-        <input type="number" placeholder="How much did you deadlift?" ng-model="ctrl.deadData.weight">Lbs.
+    <div class="list list-inset overAll">
+      <form name="dedForm" ng-submit="ctrl.pushMe()" class="overAll">
+      <label class="item item-input dead-weight overAll">
+        <input type="number" placeholder="How much did you deadlift?" style="color:white;" ng-model="ctrl.deadData.weight">Lbs.
       </label>
-      <input type="submit" value="Submit">
+      <input type="submit" class="genButton" value="Submit">
     </form>
     </div>
   </ion-content>
