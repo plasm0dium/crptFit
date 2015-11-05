@@ -117,7 +117,6 @@ angular.module('crptFit.services', [])
       })
       .then(function(response) {
         matches = response.data
-        console.log('MATCHES :', response.data)
       }, function(error) {
         console.log(error)
       });
@@ -156,7 +155,6 @@ angular.module('crptFit.services', [])
       })
       .then(function(response){
         trainers = response.data;
-        console.log("Trainers :", response.data);
       }, function(error){
         console.log(error);
       });
@@ -178,10 +176,8 @@ angular.module('crptFit.services', [])
         url: '/auth/search/' + username
       })
       .then(function(response){
-        console.log("inside of the service calling SRL:", response.data)
         return response.data;
       }).then(function(response){
-        console.log("final part of SRL from service:", response);
         searchResults = response;
         return searchResults;
       });
@@ -200,7 +196,6 @@ angular.module('crptFit.services', [])
   return {
     messageToPage : function(){
       newRet = messageReturn;
-      console.log('LOOKING FOR THE DOUBLER', newRet)
       return newRet;
     },
     messageList : function(){
@@ -235,10 +230,8 @@ angular.module('crptFit.services', [])
         url: '/auth/friends'
       })
       .then(function(response){
-        console.log(response.data);
         friends = response.data;
       }, function(error){
-        console.log(error);
       });
       return friends;
     },
@@ -248,7 +241,6 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/chatsessions'
       }).then(function(response){
-        console.log(response, 'response data');
           response.data.forEach(function(y){
             y.chatstore.forEach(function(m){
               // if(m.user_id !== 1){
@@ -277,13 +269,11 @@ angular.module('crptFit.services', [])
       });
     },
     sendMessage: function(id, val){
-      console.log(id);
       $http({
         method: 'POST',
         url: '/auth/messages/add' + id,
         data: {message: val}
       }).then(function(data){
-        console.log(data);
       }, function(error){
         console.log(error);
       });
