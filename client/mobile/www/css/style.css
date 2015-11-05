@@ -6,6 +6,9 @@ img{
 body, html{
   height: 100%;
 }
+.highcharts-background{
+  background-color: black;
+}
 .loginImg{
   background-image: url("../img/login.jpg");
   width: 100%;
@@ -151,7 +154,7 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=2,Color=#3300000
   width: 50px;
   background-color:rgba(0,0,0,0.5);
 
-  -webkit-border-top-left-radius: 5px;
+-webkit-border-top-left-radius: 5px;
 -webkit-border-bottom-left-radius: 5px;
 -moz-border-radius-topleft: 5px;
 -moz-border-radius-bottomleft: 5px;
