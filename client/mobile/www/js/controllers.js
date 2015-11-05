@@ -148,8 +148,7 @@ angular.module('crptFit.controllers', ['ionic'])
 
   benchProgress.Bench = Progress.getBnch();
   benchProgress.benchData = {
-    weight: null,
-    reps: null,
+    weight: null
   };
 
   benchProgress.pushMe = function(){
@@ -200,6 +199,12 @@ angular.module('crptFit.controllers', ['ionic'])
 
   var deadliftProgress = this;
 
+  deadliftProgress.Dead = Progress.getDed();
+  deadliftProgress.uId = null;
+  deadliftProgress.deadData = {
+       weight: null
+    };
+
   deadliftProgress.pushMe =  function(){
     Progress.pushDed(deadliftProgress.deadData.weight);
     Progress.postDed(deadliftProgress.deadData.weight);
@@ -207,125 +212,188 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   deadliftProgress.getUid = function(){
-      $http({
-        method: 'GET',
-        url: '/auth/user'
-      }).then(function(response){
+    $http({
+      method: 'GET',
+      url: '/auth/user'
+    }).then(function(response){
       deadliftProgress.uId = response.data.id;
       deadliftProgress.checkMe(deadliftProgress.uId);
-      });
+    });
   };
-  deadliftProgress.uId = null;
-  deadliftProgress.getUid();
-  deadliftProgress.deadData = {
-       weight: null,
-       reps: null,
-     };
-     deadliftProgress.Dead = Progress.getDed();
+  
+  deadliftProgress.checkMe = function(val){
+    deadliftProgress.deadData.weight = null;
+    Progress.queryDed(val);
+    deadliftProgress.Dead = Progress.getDed();
+  };
 
-     deadliftProgress.checkMe = function(val){
-       deadliftProgress.deadData.weight = null;
-       Progress.queryDed(val);
-       deadliftProgress.Dead = Progress.getDed();
-     };
-     $scope.chartConfig = {
-       options: {
-         chart: {
-           type: 'spline'
-         }
-       },
-       series: [{
-         data: deadliftProgress.Dead
-       }],
-       title: {
-         text: 'Deadlift'
-       },
-       loading: false
-        };
-  }])
-// Start of Progress Squat Controller =======================================================
+  deadliftProgress.getUid();
+
+ $scope.chartConfig = {
+   options: {
+     chart: {
+       type: 'spline'
+     }
+   },
+   series: [{
+     data: deadliftProgress.Dead
+   }],
+   title: {
+     text: 'Deadlift'
+   },
+   loading: false
+  };
+}])
+
+// Start of SQUAT PROGRESS CTRL ===============================================
 //=============================================================================
 
 .controller('ProgressCtrlSquats', ['$scope', '$http', 'Progress', function($scope, $http, Progress){
-  var self = this;
-  self.pushMe =  function(){
-    Progress.pushSqu(self.squatData.weight);
-    Progress.postSqu(self.squatData.weight);
-    self.squatData.weight = null;
+
+  var squatProgress = this;
+
+  squatProgress.Squat = Progress.getSqu();
+  squatProgress.uId = null;
+  squatProgress.squatData = {
+    weight: null
   };
-  self.getUid = function(){
+  
+  squatProgress.pushMe = function(){
+    Progress.pushSqu(squatProgress.squatData.weight);
+    Progress.postSqu(squatProgress.squatData.weight);
+    squatProgress.squatData.weight = null;
+  };
+
+  squatProgress.getUid = function(){
+    $http({
+      method: 'GET',
+      url: '/auth/user'
+    }).then(function(response){
+      squatProgress.uId = response.data.id;
+      squatProgress.checkMe(squatProgress.uId);
+    });
+  };
+  
+  squatProgress.checkMe = function(val){
+    squatProgress.squatData.weight = null;
+    Progress.querySqu(val);
+    squatProgress.Squat = Progress.getSqu();
+  };
+
+  squatProgress.getUid();
+
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        type: 'spline'
+      }
+    },
+    series: [{
+      data: squatProgress.Squat
+    }],
+    title: {
+      text: 'Squats'
+    },
+    loading: false
+  };
+}])
+
+// Start of SPEED PROGRESS CTRL ===============================================
+//=============================================================================
+
+.controller('ProgressCtrlSpd', ['$scope', '$http', 'Progress', function($scope, $http, Progress){
+
+  var speedProgress = this;
+
+  speedProgress.Speed = Progress.getSpd();
+  speedProgress.timeSpd = {
+    val: null
+  };
+  speedProgress.distance={
+    val: null
+  };
+  speedProgress.uId = null;
+
+  speedProgress.pushMe = function(){
+    Progress.pushSpd((speedProgress.distance.val/speedProgress.timeSpd.val)*60);
+    Progress.postSpd((speedProgress.distance.val/speedProgress.timeSpd.val)*60);
+    speedProgress.distance.val = null;
+    speedProgress.timeSpd.val = null;
+    Progress.getSpd();
+  };
+  
+  speedProgress.getUid = function(){
+    $http({
+      method: 'GET',
+      url: '/auth/user'
+    }).then(function(response){
+      speedProgress.uId = response.data.id;
+      speedProgress.checkMe(speedProgress.uId);
+    });
+  };
+  
+  speedProgress.checkMe = function(val){
+    speedProgress.timeSpd.val = null;
+    speedProgress.distance.val = null;
+    Progress.querySpd(val);
+    speedProgress.Speed = Progress.getSpd();
+  };
+
+  speedProgress.getUid();
+
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        type: 'spline'
+      }
+    },
+    series: [{
+      data: speedProgress.Speed
+    }],
+    title: {
+      text: ''
+    },
+    loading: false
+  };
+}])
+
+// Start of WEIGHT PROGRESS CTRL ==============================================
+//=============================================================================
+
+.controller('ProgressCtrlWgt', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
+
+    var weightProgress = this;
+
+    weightProgress.uId = null;
+    weightProgress.weight = {
+      weight: null,
+    };
+    weightProgress.Weight = Progress.getWgt();
+
+    weightProgress.pushMe = function(){
+      Progress.pushWgt(weightProgress.weight.weight);
+      Progress.postWgt(weightProgress.weight.weight);
+      weightProgress.weight.weight = null;
+    };
+
+    weightProgress.getUid = function(){
       $http({
         method: 'GET',
         url: '/auth/user'
       }).then(function(response){
-      self.uId = response.data.id;
-      self.checkMe(self.uId);
+        weightProgress.uId = response.data.id;
+        weightProgress.checkMe(weightProgress.uId);
       });
-  };
-  self.uId = null;
-  self.getUid();
-  self.squatData = {
-       weight: null,
-       reps: null,
-     };
-     self.Squat = Progress.getSqu();
+    };
+    
+    weightProgress.checkMe = function(val){
+      weightProgress.weight.weight = null;
+      Progress.queryWgt(val);
+      weightProgress.Weight = Progress.getWgt();
+    };
 
-     self.checkMe = function(val){
-       self.squatData.weight = null;
-       Progress.querySqu(val);
-       self.Squat = Progress.getSqu();
-     };
-     $scope.chartConfig = {
-       options: {
-         chart: {
-           type: 'spline'
-         }
-       },
-       series: [{
-         data: self.Squat
-       }],
-       title: {
-         text: 'Squats'
-       },
-       loading: false
-      };
-}])
-// Start of Progress Speed Controller =======================================================
-//=============================================================================
+    weightProgress.getUid();
 
-  .controller('ProgressCtrlSpd', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
-    var self = this;
-    self.pushMe =  function(){
-      Progress.pushSpd((self.distance.val/self.timeSpd.val)*60);
-      Progress.postSpd((self.distance.val/self.timeSpd.val)*60);
-      self.distance.val = null;
-      self.timeSpd.val = null;
-      Progress.getSpd();
-    };
-    self.timeSpd = {
-      val: null
-    };
-    self.distance={
-      val: null
-    };
-    self.getUid = function(){
-        $http({
-          method: 'GET',
-          url: '/auth/user'
-        }).then(function(response){
-        self.uId = response.data.id;
-        self.checkMe(self.uId);
-        });
-    };
-    self.uId = null;
-    self.getUid();
-    self.Speed = Progress.getSpd();
-    self.checkMe = function(val){
-      self.timeSpd.val = null;
-      self.distance.val = null;
-      Progress.querySpd(val);
-      self.Speed = Progress.getSpd();
-    };
     $scope.chartConfig = {
       options: {
         chart: {
@@ -333,61 +401,16 @@ angular.module('crptFit.controllers', ['ionic'])
         }
       },
       series: [{
-        data: self.Speed
-      }],
-        title: {
-          text: ''
-        },
-        loading: false
-    };
-  }])
-// Start of Progress Weight Controller =======================================================
-//=============================================================================
-
-  .controller('ProgressCtrlWgt', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
-    var self = this;
-    self.pushMe =  function(){
-      Progress.pushWgt(self.weight.weight);
-      Progress.postWgt(self.weight.weight);
-      self.weight.weight = null;
-    };
-    self.getUid = function(){
-        $http({
-          method: 'GET',
-          url: '/auth/user'
-        }).then(function(response){
-        self.uId = response.data.id;
-        self.checkMe(self.uId);
-        });
-    };
-    self.uId = null;
-    self.getUid();
-    self.weight = {
-         weight: null,
-       };
-       self.Weight = Progress.getWgt();
-
-       self.checkMe = function(val){
-         self.weight.weight = null;
-         Progress.queryWgt(val);
-         self.Weight = Progress.getWgt();
-       };
-    $scope.chartConfig = {
-      options: {
-        chart: {
-          type: 'spline'
-        }
-      },
-      series: [{
-        data: self.Weight
+        data: weightProgress.Weight
       }],
       title: {
         text: ''
       },
       loading: false
     };
-  }])
-// Start of Progress Task Controller =======================================================
+}])
+
+// Start of TASK CTRL =========================================================
 //=============================================================================
 
 .controller('ProgressCtrlTask', ['Tasks', function(Tasks){
