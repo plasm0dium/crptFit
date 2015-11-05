@@ -135,11 +135,11 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
     })
     .state('messages-send-tab', {
       url: '/message',
-        // views: {
-        // 'app-nav': {
+        views: {
+        'app-nav': {
           templateUrl: 'templates/messages-send-tab.html',
-      //   }
-      // }
+        }
+      }
     })
     .state('social', {
       url: '/social',

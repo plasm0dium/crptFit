@@ -50,8 +50,8 @@ body, html{
   z-index: 100;
 }
 .social-icon{
-  position: absolute;
-  top: 20px;
+  /*position: absolute;*/
+  top: 5px;
 }
 .bar-custom{
   color:  #FFFEFF;
@@ -306,15 +306,15 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
 .spinner svg {
   width: 50px;
   height: 50px;
-  stroke: #CCFF33;
-  fill: #CCFF33;
-}
-.loading-text {
-  color: #CCFF33;
+  stroke: #25B3F4;
+  fill: #25B3F4;
 }
 /*.loading-text {
-  color: white ;
+  color: #CCFF33;
 }*/
+.loading-text {
+  color: white ;
+}
 
 .profile {
   padding: 15px;
