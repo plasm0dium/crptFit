@@ -16,8 +16,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) { 
-
+.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
   .state('login', {
         url: '/login',
@@ -51,7 +50,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
     views: {
         'app-nav': {
           templateUrl: 'templates/progress-tab.html',
-          controller: 'ProgressCtrl'
+          // controller: 'ProgressCtrl'
         }
       }
     })
@@ -60,7 +59,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         views: {
           'app-nav': {
             templateUrl: 'templates/strength-tab.html',
-            controller: 'ProgressCtrlStr'
+            // controller: 'ProgressCtrlStr'
         }
       }
     })
@@ -78,7 +77,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
        views: {
         'app-nav': {
           templateUrl: 'templates/deadlift-tab.html',
-          controller: 'ProgressCtrlDead'
+          controller: 'ProgressCtrlDeadlift'
         }
       }
     })
@@ -166,7 +165,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
           controller: 'CardsCtrl'
         }
       }
-    })
+    });
   $urlRouterProvider.otherwise('/login');
 
-})
+});

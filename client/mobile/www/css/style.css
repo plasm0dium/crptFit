@@ -3,6 +3,24 @@ img{
   height: 200px;
   width: 200px;
 }
+body, html{
+  height: 100%;
+}
+.highcharts-background{
+  background-color: black;
+}
+.loginImg{
+  background-image: url("../img/login.jpg");
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.mainlogo{
+  margin: 0 auto;
+  margin-top: 20px;
+}
 .profile-pic{
   margin-top: 20px;
 }
@@ -196,7 +214,7 @@ body { text-align: center; background: #F5F5F5; }
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 15px;
+  top: 220px;
 
 
   border-radius: 5px;
@@ -219,7 +237,7 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=2,Color=#3300000
   width: 50px;
   background-color:rgba(0,0,0,0.5);
 
-  -webkit-border-top-left-radius: 5px;
+-webkit-border-top-left-radius: 5px;
 -webkit-border-bottom-left-radius: 5px;
 -moz-border-radius-topleft: 5px;
 -moz-border-radius-bottomleft: 5px;

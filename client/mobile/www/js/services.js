@@ -5,7 +5,7 @@ angular.module('crptFit.services', [])
     return $http({
       method: 'get',
       url: '/auth/user'
-    })
+    });
   };
 
   return {
@@ -24,7 +24,7 @@ angular.module('crptFit.services', [])
       console.log(taskId, task)
       $http({
         method: 'POST',
-        url: '/auth/task/complete/' +taskId,
+        url: '/auth/task/complete/' + taskId,
       });
       console.log(task, 'clicked');
       tasks.splice(tasks.indexOf(task), 1);
@@ -66,6 +66,7 @@ angular.module('crptFit.services', [])
 .factory('Social', ['$http', function($http){
   // Set up functions for ajax
   var friends = [];
+  var matches = [];
   var clients = [];
   var trainers = [];
   var searchResults = [];
@@ -101,20 +102,6 @@ angular.module('crptFit.services', [])
         url: '/auth/friendrequests'
       });
     },
-    sendFriendRequest: function(friend){
-      // This function needs the proper AJAX request
-      // $http({
-      //   method: 'POST',
-      //   url: '/auth/friendrequests/'
-      // })
-      // .then(function(response){
-      //   friendsPendingRequest = response.data;
-      //   console.log("WHAT IS THIS", friendsPendingRequest)
-      // }, function(error){
-      //   console.log(error);
-      // });
-      // return friendsPendingRequest;
-    },
     addFriend: function(friendId){
       // This function needs the proper AJAX request
       $http({
@@ -122,6 +109,19 @@ angular.module('crptFit.services', [])
         url: '/auth/friends/add:' + friendId
       });
       this.friendsList();
+    },
+    matchesList: function () {
+      $http({
+        method: 'GET',
+        url: '/auth/getmatches'
+      })
+      .then(function(response) {
+        matches = response.data
+        console.log('MATCHES :', response.data)
+      }, function(error) {
+        console.log(error)
+      });
+      return matches
     },
     clientsList: function(){
       // This function needs the proper AJAX request
@@ -132,8 +132,7 @@ angular.module('crptFit.services', [])
       })
       .then(function(response){
         clients = response.data;
-        console.log("CLIENTS :", response.data);
-      }, function(error){
+      },function(error){
         console.log(error);
       });
       return clients;
@@ -236,7 +235,7 @@ angular.module('crptFit.services', [])
         url: '/auth/friends'
       })
       .then(function(response){
-        console.log(response.data)
+        console.log(response.data);
         friends = response.data;
       }, function(error){
         console.log(error);

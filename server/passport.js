@@ -41,9 +41,9 @@ module.exports = function (passport) {
           birthday: profile._json.birthday,
           email: profile._json.email,
           gender: profile._json.gender
-        }).save()
+        })
+        .save();
       } else {
-        console.log('IN CALLBACK: USER ALREADY EXISTS');
         return user;
       }
     }).then(function(user) {
@@ -52,7 +52,5 @@ module.exports = function (passport) {
       console.log(err);
       return done(err, false);
     });
-
-    console.log("PROFILE", profile);
   }));
 };

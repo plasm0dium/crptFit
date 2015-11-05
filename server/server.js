@@ -5,8 +5,6 @@ var passport = require('passport');
 var morgan = require('morgan');
 var Promise = require('bluebird');
 var app = express();
-// var http = require('http').Server(app);
-// var io = require('socket.io')(http);
 var port = process.env.PORT || 8100;
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
@@ -109,9 +107,27 @@ app.get('/auth/user/:id', function (req, res) {
   });
 });
 
+//Fetches a User's Matches
 app.get('/auth/getmatches', function (req, res) {
-
-})
+  var userId = req.user.attributes.id;
+  db.collection('Matches').fetchByUser(userId)
+  .then(function(results) {
+    console.log('THESE ARE RESULTS', results);
+    if(results.length === 0) {
+      res.json({matches: 'None'});
+    } else {
+      return Promise.all(results.models.map(function(match) {
+        return db.model('User').fetchById({
+          id: match.attributes.match_id
+        });
+      }))
+      .then(function(userObjects) {
+        console.log('THESE ARE YOUR MATCHES', userObjects);
+        res.json(userObjects);
+      });
+    }
+  });
+});
 
 //Fetch Nearest Users to Logged in User
 app.get('/auth/nearbyusers', function (req, res) {
@@ -124,54 +140,44 @@ app.get('/auth/nearbyusers', function (req, res) {
     return Promise.all(results.models.filter(function(model){
       var users_lat = model.attributes.lat;
       var users_lng = model.attributes.lng;
-      console.log('DISTANCE', geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}))
       if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < 25 && model.attributes.user_id !== userId) {
-        console.log(' 1 THIS IS MODEL', model)
         return model;
       }
     }))
     //Map the nearby users objects
     .then(function(nearestUsers){
-      console.log(' 2 SECOND BLOCK')
       return Promise.all(nearestUsers.map(function(user) {
         return db.model('User').fetchById({
           id: user.attributes.user_id
-          });
-        }))
+        });
+      }))
         //Check if the nearby users are already in the Swipes table
         //only return those who havent previously been swiped
-        .then(function(users) {
-          console.log(' 3 THIRD BLOCK')
-          return Promise.all(users.map(function(user) {
-            console.log('INSIDE 3.5')
-            var userId = req.user.attributes.id;
-            var swipedId = user.attributes.id;
-            return Promise.all(db.collection('Swipes').fetchBySwiped(userId, swipedId)
-            .then(function(result) {
-              console.log(' 4 FOURTH BLOCK THIS IS RESULT OF SWIPES FETCH', result)
-               if(result.length === 0) {
-                 //if they don't exist in user's swipes save them first & return them
-                console.log(' 5 THIS USER ISNT IN SWIPES YET SO SAVE THIS USER & return:', user)
-                db.model('Swipe').newSwipe({
-                  user_id: req.user.attributes.id,
-                  swiped_id: user.attributes.id,
-                  swiped: false,
-                  swiped_left: false,
-                  swiped_right: false
-                })
-                .save()
-                console.log('USER BEFORE RETURN', user)
-                return [user];
-              } else {
-                console.log('BLOCK 5 in ELSE')
-                return Promise.all(result.models.map(function(existingUser) {
-                  console.log('INSIDE BLOCK 5 PROMISE', user)
-                  if(existingUser.attributes.swiped === 0) {
-                    console.log('THIS IS IN FINAL FILTER', user)
-                    return user
-                  }
-                  }))
+      .then(function(users) {
+        return Promise.all(users.map(function(user) {
+          var userId = req.user.attributes.id;
+          var swipedId = user.attributes.id;
+          return Promise.all(db.collection('Swipes').fetchBySwiped(userId, swipedId)
+          .then(function(result) {
+            if(result.length === 0) {
+              //if they don't exist in user's swipes save them first & return them
+              db.model('Swipe').newSwipe({
+                user_id: req.user.attributes.id,
+                swiped_id: user.attributes.id,
+                swiped: false,
+                swiped_left: false,
+                swiped_right: false
+              })
+              .save();
+              return [user];
+            } else {
+              return Promise.all(result.models.map(function(existingUser) {
+                if(existingUser.attributes.swiped === 0) {
+                  return user;
                 }
+              }));
+              }
+        //if no users are found nearby then user[0] will be undefined
               }))
             })).then(function(result) {
               console.log(' 6 THIS IS USER IN LAST BLOCK', result)
@@ -193,18 +199,29 @@ app.get('/auth/nearbyusers', function (req, res) {
 app.get('/auth/matchcheck/:id', function (req, res) {
   var swipedId = req.user.attributes.id;
   var userId = req.params.id;
-  console.log('IN MATCHCHECK')
   db.collection('Swipes').fetchBySwiped(userId, swipedId)
   .then(function(exists) {
     if(exists.length === 0) {
       res.json({match: false});
     } else {
       if(exists.models[0].attributes.swiped_right === 1) {
-        res.json({match: true});
+          res.json({match: true});
+          db.model('Match').newMatch({
+            user_id: swipedId,
+            match_id: userId
+          })
+          .save()
+          .then(function () {
+          db.model('Match').newMatch({
+            user_id: userId,
+            match_id: swipedId
+            })
+            .save();
+          });
       } else {
         res.json({match: false});
-      };
-    };
+      }
+    }
   });
 });
 
@@ -219,9 +236,11 @@ app.get('/auth/newsfeed', function (req, res) {
         });
       }));
     })
-      .then(function(results){
-        res.json(results);
-        return Promise.all(results.map(function(model) {
+      .then(function(friendProfiles){
+        res.json(friendProfiles);
+      })
+      .then(function(friendTasks){
+        return Promise.all(friendTasks.map(function(model) {
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
                 taskStore.push(task);
@@ -241,7 +260,6 @@ app.get('/auth/newsfeed', function (req, res) {
 app.get('/auth/user', function(req, res){
  db.model('User').fetchById({id: req.user.attributes.id})
  .then(function(user){
-   console.log('THIS IS AUTH?PICTURE', user)
    res.json(user);
  });
 });
@@ -268,9 +286,7 @@ var userId = req.user.attributes.id;
     id: userId
   })
   .then(function(user){
-    console.log("THIS IS CURRENT USER", user)
     return Promise.all(user.relations.tasks.models.map(function(tasks){
-      console.log("TASKS ARE HERE", tasks)
           if(tasks.attributes.complete === 1){
             return tasks;
           }
@@ -361,7 +377,7 @@ app.get('/auth/trainers', ensureAuthenticated, function (req, res) {
           return res.json(storage);
         }).then(function () {
           storage = [];
-        })
+        });
     });
 
 //Search All Users to Add as Friend
@@ -372,7 +388,7 @@ app.get('/auth/search/:id', function (req, res) {
     return Promise.all(username.models.map(function(friend){
       return db.model('User').fetchById({
         id: friend.attributes.id
-      })
+      });
     }))
       .then(function (results){
         return res.json(results);
@@ -385,18 +401,14 @@ app.get('/auth/friendrequests/', function (req, res) {
   var userId = req.user.attributes.id;
   db.collection('friendRequests').fetchByUser(userId)
   .then(function(friendRequests) {
-    console.log("YO WHERE IS MY SHIT", friendRequests);
     return Promise.all(friendRequests.models.map(function(friends) {
-      console.log("WHERE ARE MY FRIENDS", friends)
       if(friends.attributes.status === 0 && friends.attributes.friend_req === 1) {
-        console.log('this is the result', friends);
         return db.model('User').fetchById({
           id: friends.attributes.friend_id
-        })
+        });
       }
     })).then(function(result) {
       res.json(result);
-      console.log("WHERE IS MY RESULT", result);
     });
   });
 });
@@ -427,7 +439,7 @@ db.model('User').fetchById({
   })
   .then(function(result) {
     return Promise.all(result.relations.chatstores.models.map(function(msg){
-      return db.model('Chat').fetchById(msg.attributes.chat_id)
+      return db.model('Chat').fetchById(msg.attributes.chat_id);
     }))
     .then(function (results){
       res.json(results);
@@ -435,7 +447,7 @@ db.model('User').fetchById({
   });
 });
 
-// Fetch a User's Weights
+// Fetch User's Weights
 app.get('/auth/weight/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Weights').fetchByUser(userId)
@@ -444,6 +456,7 @@ app.get('/auth/weight/:id', function (req, res){
   });
 });
 
+// Fetch User's Benchpress
 app.get('/auth/benchpress/:id', function (req, res){
   var userId = req.params.id;
   db.collection('BenchPress').fetchByUser(userId)
@@ -452,6 +465,7 @@ app.get('/auth/benchpress/:id', function (req, res){
   });
 });
 
+// Fetch User's Deadlifts
 app.get('/auth/deadlift/:id', function (req, res){
   var userId = req.params.id;
   db.collection('DeadLifts').fetchByUser(userId)
@@ -460,6 +474,7 @@ app.get('/auth/deadlift/:id', function (req, res){
   });
 });
 
+// Fetch User's Squats
 app.get('/auth/squats/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Squats').fetchByUser(userId)
@@ -468,6 +483,7 @@ app.get('/auth/squats/:id', function (req, res){
   });
 });
 
+// Fetch User's Speeds
 app.get('/auth/speeds/:id', function (req, res){
   var userId = req.params.id;
   db.collection('Speeds').fetchByUser(userId)
@@ -492,7 +508,7 @@ app.post('/auth/tasks/:taskname', function (req, res) {
   });
 });
 
-//Add a New Task to Another User
+// Add a New Task to Another User
 app.post('/auth/tasks/add:userid', function (req, res) {
   var userId = req.params.userid;
   var taskname = req.body.taskname;
@@ -517,7 +533,7 @@ app.post('/auth/task/complete/:id', function(req, res) {
   });
 });
 
-//Confirm Client Request and adds Client to User
+// Confirm Client Request and adds Client to User
 app.post('/auth/confirmclient', function (req, res) {
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
@@ -529,21 +545,21 @@ app.post('/auth/confirmclient', function (req, res) {
     db.model('clientRequest').acceptClientRequest({
       user_id: clientId,
       client_id: userId
-    })
+    });
   })
   .then(function (){
   db.model('Client').newClient({
     client_id: userId,
     user_id: clientId
   })
-  .save()
+  .save();
   })
   .then(function (){
   db.model('Trainer').newTrainer({
     trainer_id: clientId,
     user_id: user_id
   })
-  .save()
+  .save();
   })
   .then(function(newClient) {
     return newClient;
@@ -553,7 +569,7 @@ app.post('/auth/confirmclient', function (req, res) {
   });
 });
 
-//Send Client Request
+// Send Client Request
 app.post('/auth/clientreq/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var clientId = req.params.id;
@@ -571,11 +587,11 @@ app.post('/auth/clientreq/add:id', function (req, res){
       status: 0,
       created_at: new Date()
     })
-    .save()
+    .save();
   })
   .catch(function (err){
     return err;
-  })
+  });
 });
 
 // Send a friend request
@@ -603,23 +619,6 @@ app.post('/auth/friendreq/:id', function (req, res){
   });
 });
 
-// db.model('friendRequest').newFriendRequest({
-//     friend_id: 4,
-//     user_id: 1,
-//     status: 0,
-//     friend_req: false
-//   })
-//   .save()
-//   .then(function (){
-//     db.model('friendRequest').newFriendRequest({
-//       friend_id: 1,
-//       user_id: 4,
-//       status: 0,
-//       friend_req: true
-//     })
-//     .save();
-//   })
-
 // Confirm friend request and add each other as friend
 app.post('/auth/confirmfriend/:id', function (req, res){
   var userId = req.user.attributes.id;
@@ -632,7 +631,7 @@ app.post('/auth/confirmfriend/:id', function (req, res){
     db.model('friendRequest').acceptFriendRequest({
       friend_id: userId,
       user_id: friendId
-    })
+    });
   })
   .then(function(){
      db.model('Friend').newFriend({
@@ -646,14 +645,14 @@ app.post('/auth/confirmfriend/:id', function (req, res){
       friends_id: userId,
       user_id: friendId
     })
-    .save()
+    .save();
   })
   .catch(function(err){
     return err;
   });
 });
 
-//Creates a Chat Session
+// Creates a Chat Session
 app.post('/auth/chat/add:id', function (req, res){
   var chatId;
   var userId1 = req.user.attributes.id;
@@ -669,7 +668,7 @@ app.post('/auth/chat/add:id', function (req, res){
         user_id: userId1,
         created_at: new Date()
       })
-    .save()
+    .save();
     })
     .then(function(){
       db.model('Chatstore').newChatStore({
@@ -677,11 +676,11 @@ app.post('/auth/chat/add:id', function (req, res){
         user_id: userId2,
         created_at: new Date()
       })
-      .save()
+      .save();
     });
 });
 
-//Adds Messages to chat session
+// Add Messages to chat session
 app.post('/auth/messages/add:id', function (req, res){
   var userId = req.user.attributes.id;
   var chatId = req.params.id;
@@ -692,9 +691,9 @@ app.post('/auth/messages/add:id', function (req, res){
     text: body,
     created_at: new Date()
   })
-  .save()
+  .save();
 });
-//Add Current Weight
+// Add Current Weight
 app.post('/auth/weight/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currWeight = req.params.stat;
@@ -706,7 +705,7 @@ app.post('/auth/weight/:stat', function (req, res) {
   .save();
 });
 
-//Add Current Bench Press
+// Add Current Bench Press
 app.post('/auth/bench/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currBench = req.params.stat;
@@ -717,7 +716,7 @@ app.post('/auth/bench/:stat', function (req, res) {
   })
   .save();
 });
-//Add Current Squat
+// Add Current Squat
 app.post('/auth/squat/:stat', function (req, res) {
   var userId = req.user.attributes.id;
   var currSquat = req.params.stat;
@@ -751,17 +750,14 @@ app.post('/auth/speed/:stat', function (req, res) {
   .save();
 });
 
-//Store User's Current Location or Update if it Exists
+// Store User's Current Location or Update if it Exists
 app.post('/auth/location', function (req, res) {
   var userId = req.user.attributes.id;
   var lat = req.body.lat;
   var lng = req.body.lng;
-  console.log('THIS IS LAT', lat)
-  console.log('THIS IS LNG', lng)
   db.collection('Geolocations').fetchByUser(userId)
   .then(function(location) {
     if(location.length === 0) {
-      console.log('NO LOCATION FOUND')
       return db.model('Geolocation').newLocation({
         lat: lat,
         lng: lng,
@@ -769,32 +765,37 @@ app.post('/auth/location', function (req, res) {
       })
       .save();
     } else {
-      console.log('SAVING LOCATION TO DB')
       var locationId = req.user.relations.geolocations.models[0].attributes.id;
       return db.model('Geolocation').updateLocation(locationId,lat, lng);
-    };
+    }
   });
 });
 
-//User Swiped Left on Swiped User
+// User Swiped Left on Swiped User
 app.post('/auth/leftswipe/:id', function (req,res) {
   var userId = req.user.attributes.id;
   var swipedId = req.params.id;
   db.collection('Swipes').fetchBySwiped(userId, swipedId)
   .then(function(result) {
-    db.model('Swipe').updateLeftSwipe(result.models[0].attributes.id)
-  })
-})
+    db.model('Swipe').updateLeftSwipe(result.models[0].attributes.id);
+  });
+});
 
-//User Swipes Right on Swiped User
+// User Swipes Right on Swiped User
 app.post('/auth/rightswipe/:id', function (req,res) {
   var userId = req.user.attributes.id;
   var swipedId = req.params.id;
   db.collection('Swipes').fetchBySwiped(userId, swipedId)
   .then(function(result) {
-    db.model('Swipe').updateRightSwipe(result.models[0].attributes.id)
-  })
-})
+    db.model('Swipe').updateRightSwipe(result.models[0].attributes.id);
+  });
+});
+
+app.post('auth/updateprofile', function(req, res) {
+  var userId = req.user.attributes.id;
+  var newProfile = req.body.profile;
+  db.model('User').updateProfile(userId, newProfile);
+});
 
 function ensureAuthenticated(req, res, next) {
   if(req.isAuthenticated()) {
@@ -803,21 +804,6 @@ function ensureAuthenticated(req, res, next) {
     res.redirect('/');
   }
 }
-
-
-// io.on('connection', function(socket){
-//   console.log('someone is fooling around in messages');
-//   socket.on('event:new:message', function(data){
-//     // socket.broadcast.emit('event:outgoing:message', data);
-//     console.log(data)
-//   })
-//   socket.on('event:outgoing:message', function(data){
-//     return data;
-//   })
-// })
-// http.listen(port, function(){
-//   console.log('listening on port...', port);
-// });
 
 server.listen(port, function(){
   console.log('listening on port...', port);
