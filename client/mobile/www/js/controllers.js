@@ -62,7 +62,7 @@ angular.module('crptFit.controllers', ['ionic'])
     var userName = response.data.username;
     var pic = response.data.profile_pic;
 
-    setProfileInfo(pic, userName, friends, clients, tasks);
+    setProfileInfo(pic, userName, friends, tasks);
   });
 }])
 
