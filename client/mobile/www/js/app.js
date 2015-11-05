@@ -16,147 +16,148 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) { 
-
+.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
   .state('login', {
-    url: '/login',
-    templateUrl: 'templates/login-tab.html'
-  })
-    .state('tab', {
-    url: '/tab',
-    abstract: true,
-    templateUrl: 'templates/tabs.html'
-  })
+        url: '/login',
+        templateUrl: 'templates/login-tab.html'
+})
+  //   .state('tab', {
+  //   url: '/tab',
+  //   abstract: true,
+  //   templateUrl: 'templates/tabs.html'
+  // })
 // Each tab has its own nav history stack:
-    .state('tab.profile', {
+    .state('profile', {
       url: '/profile',
       views: {
-        'profile-tab': {
+        'app-nav': {
           templateUrl: 'templates/profile-tab.html',
           controller: 'ProfileCtrl'
         }
       }
     })
-    .state('tab.progress', {
+    .state('progress', {
       url: '/progress',
-      views: {
-        'progress-tab':{
-          templateUrl: 'templates/progress-tab.html'
+    views: {
+        'app-nav': {
+          templateUrl: 'templates/progress-tab.html',
+          controller: 'ProgressCtrl'
         }
       }
     })
-    .state('tab.strength', {
+    .state('strength', {
       url: '/strength',
-      views: {
-        'progress-tab':{
-          templateUrl: 'templates/strength-tab.html',
+        views: {
+          'app-nav': {
+            templateUrl: 'templates/strength-tab.html',
+            controller: 'ProgressCtrlStr'
         }
       }
     })
-    .state('tab.benchpress', {
+    .state('benchpress', {
       url: '/benchpress',
-      views: {
-        'progress-tab':{
+       views: {
+        'app-nav': {
           templateUrl: 'templates/benchpress-tab.html',
           controller: 'ProgressCtrlBench'
         }
       }
     })
-    .state('tab.deadlift', {
+    .state('deadlift', {
       url: '/deadlift',
-      views: {
-        'progress-tab':{
+       views: {
+        'app-nav': {
           templateUrl: 'templates/deadlift-tab.html',
           controller: 'ProgressCtrlDeadlift'
         }
       }
     })
-    .state('tab.squats', {
+    .state('squats', {
       url: '/squats',
-      views: {
-        'progress-tab':{
+       views: {
+        'app-nav': {
           templateUrl: 'templates/squats-tab.html',
           controller: 'ProgressCtrlSquats'
         }
       }
     })
-    .state('tab.weight', {
+    .state('weight', {
       url: '/weight',
-      views: {
-        'progress-tab':{
+        views: {
+        'app-nav': {
           templateUrl: 'templates/weight-tab.html',
           controller: 'ProgressCtrlWgt'
         }
       }
     })
-    .state('tab.speed', {
+    .state('speed', {
       url: '/speed',
-      views: {
-        'progress-tab':{
+        views: {
+        'app-nav': {
           templateUrl: 'templates/speed-tab.html',
           controller: 'ProgressCtrlSpd'
         }
       }
     })
-    .state('tab.tasks', {
+    .state('tasks', {
       url: '/tasks',
-      views: {
-        'progress-tab':{
+        views: {
+        'app-nav': {
           templateUrl: 'templates/task-tab.html',
           controller: 'ProgressCtrlTask'
         }
       }
     })
-    .state('tab.homepage', {
+    .state('homepage', {
       url: '/homepage',
-      views: {
-        'homepage-tab': {
+        views: {
+        'app-nav': {
           templateUrl: 'templates/homepage-tab.html',
         }
       }
     })
-    .state('tab.messages', {
+    .state('messages', {
       url: '/messages',
       views: {
-        'messages-tab': {
+        'app-nav': {
           templateUrl: 'templates/messages-tab.html',
         }
       }
     })
-    .state('tab.messages-send-tab', {
+    .state('messages-send-tab', {
       url: '/message',
-      views: {
-        'messages-tab': {
+        // views: {
+        // 'app-nav': {
           templateUrl: 'templates/messages-send-tab.html',
-        }
-      }
+      //   }
+      // }
     })
-    .state('tab.social', {
+    .state('social', {
       url: '/social',
-      views: {
-        'social-tab': {
+        views: {
+        'app-nav': {
           templateUrl: 'templates/social-tab.html',
         }
       }
     })
-    .state('tab.userProfile', {
+    .state('userProfile', {
       url: '/viewuser',
-      views: {
-        'social-tab': {
+        views: {
+        'app-nav': {
           templateUrl: 'templates/profile-view.html',
         }
       }
     })
-    .state('tab.tinderize', {
+    .state('tinderize', {
       url: '/tinderize',
-      views: {
-        'tinder-tab' : {
+        views: {
+        'app-nav': {
           templateUrl: 'templates/tinder-tab.html',
           controller: 'CardsCtrl'
         }
       }
-    })
+    });
   $urlRouterProvider.otherwise('/login');
 
-})
+});
