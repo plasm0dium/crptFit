@@ -28,6 +28,14 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
   //   templateUrl: 'templates/tabs.html'
   // })
 // Each tab has its own nav history stack:
+.state('dash', {
+  url:'/dash',
+  views: {
+    'app-nav': {
+      templateUrl: 'templates/dashboard.html'
+    }
+  }
+})
     .state('profile', {
       url: '/profile',
       views: {
@@ -42,7 +50,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
     views: {
         'app-nav': {
           templateUrl: 'templates/progress-tab.html',
-          controller: 'ProgressCtrl'
+          // controller: 'ProgressCtrl'
         }
       }
     })
@@ -51,7 +59,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         views: {
           'app-nav': {
             templateUrl: 'templates/strength-tab.html',
-            controller: 'ProgressCtrlStr'
+            // controller: 'ProgressCtrlStr'
         }
       }
     })
@@ -127,11 +135,11 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
     })
     .state('messages-send-tab', {
       url: '/message',
-        // views: {
-        // 'app-nav': {
+        views: {
+        'app-nav': {
           templateUrl: 'templates/messages-send-tab.html',
-      //   }
-      // }
+        }
+      }
     })
     .state('social', {
       url: '/social',

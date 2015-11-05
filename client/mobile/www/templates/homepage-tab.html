@@ -1,12 +1,12 @@
-<ion-view title="Home" ng-controller="HomeCtrl as ctrl">
-  <ion-content>
+<ion-view title="Home" ng-controller="HomeCtrl as ctrl" class="overAll">
+  <ion-content has-header="true">
   <ion-refresher pulling-text="Pull To Refresh" on-refresh="console.log('refreshed')" refreshing-icon="ion-loading-c"></ion-refresher>
-  <div ng-repeat="update in ctrl.feed">
-    <a class="item item-avatar task">
-      <img src="{{update.profile_pic}}"/>
+  <div ng-repeat="update in ctrl.feed" class="taskBox">
+    <!-- <a class="item item-avatar task"> -->
+      <img class="taskPic" src="{{update.profile_pic}}"/>
       <h3>{{update.username}}</h3>
       <p>completed the task "<span class="completedTask">{{update.tasks[0].description.toUpperCase()}}</span>"!</p>
-    </a>
+    <!-- </a> -->
   </div>
   </ion-content>
 </ion-view>
