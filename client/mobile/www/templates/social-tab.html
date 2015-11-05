@@ -21,7 +21,7 @@
       </div>
       <!-- Start of social list -->
       <div ng-repeat="person in ctrl.list">
-        <a class="item item-avatar" href="#/tab/viewuser" ng-click="ctrl.saveUserID({{person.id}})">
+        <a class="item item-avatar" href="#/viewuser" ng-click="ctrl.saveUserID({{person.id}})">
           <img ng-src="{{person.profile_pic}}"/>
           <h3>{{person.username}}</h3>
         </a>

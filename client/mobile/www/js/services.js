@@ -5,8 +5,9 @@ angular.module('crptFit.services', [])
     return $http({
       method: 'get',
       url: '/auth/user'
-    })
+    });
   };
+
   return {
     getUserObject: getUserObject
   };
@@ -211,6 +212,9 @@ angular.module('crptFit.services', [])
         }
       }
     },
+    messageUpdate: function(mess){
+      messageReturn.push(mess);
+    },
     clearCap: function(){
       return capChat;
     },
@@ -232,11 +236,12 @@ angular.module('crptFit.services', [])
         url: '/auth/friends'
       })
       .then(function(response){
-        console.log(response.data)
+        console.log(response.data);
         friends = response.data;
       }, function(error){
         console.log(error);
       });
+      return friends;
     },
     getMessage : function(){
       //NOTE refactor for time complexity
@@ -250,7 +255,7 @@ angular.module('crptFit.services', [])
               // if(m.user_id !== 1){
                 friends.forEach(function(friend){
                   if(friend.id === m.user_id){
-                    room_ids[y.id] = [friend.username, y.created_at];
+                    room_ids[y.id] = [friend.username, y.created_at, friend.profile_pic];
                   }
                 });
               // }
@@ -273,7 +278,6 @@ angular.module('crptFit.services', [])
       });
     },
     sendMessage: function(id, val){
-      messageReturn.push(val);
       console.log(id);
       $http({
         method: 'POST',
@@ -530,6 +534,10 @@ angular.module('crptFit.services', [])
     .then(function(response) {
       nearbyUsers.push(response.data)
     })
-  }
+  },
+    getUsers: function(){
+      console.log(nearbyUsers)
+      return nearbyUsers;
+    }
 }
 }])
