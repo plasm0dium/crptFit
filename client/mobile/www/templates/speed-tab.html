@@ -1,15 +1,15 @@
 <ion-view title="Speed" ng-controller="ProgressCtrlSpd as ctrl">
-  <ion-content has-header="true">
+  <ion-content has-header="true" class="overAll">
     <highchart id="chart1" config="chartConfig"></highchart>
-    <div class="list list-inset">
-      <form name="spdForm" ng-submit="ctrl.pushMe()">
-      <label class="item item-input speed-distance">
-        <input type="number" placeholder="How far did you go?" ng-model="ctrl.distance.val">Miles
+    <div class="list list-inset overAll">
+      <form name="spdForm" ng-submit="ctrl.pushMe()" class="overAll">
+      <label class="item item-input speed-distance overAll">
+        <input type="number" placeholder="How far did you go?" style="color:white;" ng-model="ctrl.distance.val">Miles
       </label>
-      <label class="item item-input speed-time">
-        <input type="number" placeholder="How long did it take?" ng-model="ctrl.timeSpd.val">Minutes
+      <label class="item item-input speed-time overAll">
+        <input type="number" placeholder="How long did it take?" style="color:white;" ng-model="ctrl.timeSpd.val">Minutes
       </label>
-      <input type="submit" value="Submit">
+      <input type="submit" class="genButton" value="Submit">
     </form>
     </div>
   </ion-content>

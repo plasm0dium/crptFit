@@ -13,7 +13,6 @@ angular.module('crptFit.controllers', ['ionic'])
   self.requested;
   self.userID = Social.getUserID();
 
-
   var userObj = User.getUserObject();
   userObj.then(function(response){
     for(var i = 0; i < response.data.friends.length; i++){
