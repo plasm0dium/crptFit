@@ -69,7 +69,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
        views: {
         'app-nav': {
           templateUrl: 'templates/deadlift-tab.html',
-          controller: 'ProgressCtrlDead'
+          controller: 'ProgressCtrlDeadlift'
         }
       }
     })
