@@ -247,18 +247,21 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
 .td-cards {
   max-width: 300px;
   margin: 0 auto;
+  height: 90%;
   position: relative;
 }
 
 .td-card {
   position: absolute;
   width: 100%;
+  height: 90%;
   display: block;
 }
 
 .td-card img {
   max-width: 100%;
   max-height: 100%;
+  word-wrap: break-word;
 }
 
 .td-card__overlay {
@@ -270,6 +273,7 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
   padding: 20px;
   margin-top: -30px;
   background: rgba(255,255,255,0.8);
+  word-wrap: break-word;
 }
 
 .td-card__overlay--like {
@@ -289,4 +293,48 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
 }
 .loading-text {
   color: #CCFF33;
+}
+/*.loading-text {
+  color: white ;
+}*/
+
+.profile {
+  padding: 15px;
+  height: auto;
+  width: auto;
+  font-size: 10px;
+  text-align: left;
+
+}
+
+.tinder-img {
+  border-radius: 100%;
+  border-style: solid;
+  width: 250px;
+  height: 250px;
+  border-width: 8px;
+  border-color: #25B3F4
+}
+.wrap {
+  padding-bottom: 10px;
+  display: -webkit-flex;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;
+   -webkit-align-items: center;
+   align-items: center;
+   -webkit-justify-content: center;
+   justify-content: center;
+}
+.custom-icon-left {
+  font-size: 64px;
+  color: tomato;
+  padding-left: 20px;
+  padding-right: 20px
+}
+.custom-icon-right {
+  font-size: 64px;
+  color: green;
+  padding-left: 20px;
+  padding-right: 20px
 }

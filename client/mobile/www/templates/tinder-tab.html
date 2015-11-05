@@ -13,11 +13,19 @@
                >
                  <div class="card">
                    <figure class="item item-image">
-                     <img ng-src="{{card.image}}">
+                    <p class="name"> {{card.name}}</p>
+                     <img class="tinder-img" ng-src="{{card.image}}">
                      <div class="td-card__overlay td-card__overlay--dislike no-text">Dislike</div>
                      <div class="td-card__overlay td-card__overlay--like yes-text">Like</div>
-                     <p class="name"> {{card.name}}</p>
+                     <div class="profile">
+                       <p> Bio:</p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostru</div>
+                      <div class="wrap">
+                       <div class="ion-close-circled custom-icon-left" ng-click="ctrl.cardDislike(card); ctrl.removeCard($index)"></div>
+                      <div class="ion-checkmark-circled custom-icon-right" ng-click="ctrl.cardLike(card); ctrl.removeCard($index)"></div>
+                    </div>
                    </figure>
+
                  </div>
                </td-card>
              </td-cards>
