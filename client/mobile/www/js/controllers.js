@@ -1,55 +1,48 @@
 angular.module('crptFit.controllers', ['ionic'])
 
+// Start of VIEW PROFILE CTRL =================================================
+//=============================================================================
+
 .controller('ViewProfileCtrl', ['$http', 'Social', 'User', function($http, Social, User){
-  console.log("instantiated ViewProfileCtrl");
-  var self = this;
-  self.pic;
-  self.username;
-  self.feed;            // PLEASE REFACTOR
-  self.friendCount;
-  self.trainerCount;
-  self.clientCount;
-  self.isFriend = false;
-  self.requested;
-  self.userID = Social.getUserID();
-
-
+  var viewedUser = this;
   var userObj = User.getUserObject();
+
+  // Variables for the viewed user profile
+  viewedUser.userID = Social.getUserID();
+  viewedUser.friendCount;
+  viewedUser.username;
+  viewedUser.pic;
+  viewedUser.feed;
+
+  // Variable that controls the disabled state of the 'add friend' button
+  viewedUser.isFriend = false;
+
+  // Check to see if the viewed user is your friend
   userObj.then(function(response){
     for(var i = 0; i < response.data.friends.length; i++){
-      if(response.data.friends[i].friends_id === self.userID){
-        self.isFriend = true;
+      if(response.data.friends[i].friends_id === viewedUser.userID){
+        viewedUser.isFriend = true;
       }
     }
   });
 
-
-  self.sendFriendRequest = function(){
+  // Send the viewed user a friend request
+  viewedUser.sendFriendRequest = function(){
     $http({
       method: 'POST',
-      url: '/auth/friendreq/' + self.userID
-    })
-    .then(function(response){
-      console.log("CONSOLE LOG FRIEND SEQUENCE", response.data);
-      })
-  };
-
-  self.sendClientRequest = function(){
-    $http({
-      method: 'POST',
-      url: '/auth/clientreq/add:' + self.userID
+      url: '/auth/friendreq/' + viewedUser.userID
     });
   };
 
-  var setProfileInfo = function(picUrl, username, friends, trainers, clients, activityFeed){
-    self.pic = picUrl;
-    self.username = username;
-    self.friendCount = friends;
-    self.trainerCount = trainers;
-    self.clientCount = clients;
-    self.feed = activityFeed;
+  // Utility function for setting a viewed user's properties for rendering
+  var setProfileInfo = function(picUrl, username, friends, activityFeed){
+    viewedUser.friendCount = friends;
+    viewedUser.username = username;
+    viewedUser.feed = activityFeed;
+    viewedUser.pic = picUrl;
   };
 
+  // Return a user's completed tasks
   var setTasks = function(tasks){
     var filtered = [];
     for(var i = 0; i < tasks.length; i++){
@@ -60,40 +53,42 @@ angular.module('crptFit.controllers', ['ionic'])
     return filtered;
   }
 
+  // Request the viewed user's object from the server and capture needed properties
   $http({
     method: 'GET',
     url: '/auth/user/' + Social.getUserID() // This self.savedID variable is passed down from the parent controller 'Social Ctrl'
   }).then(function(response){
-    console.log("WHAT IS THIS", response.data);
-    var pic = response.data.profile_pic;
-    var userName = response.data.username;
     var friends = response.data.friends.length;
-    var trainers = response.data.trainers.length;
-    var clients = response.data.clients.length;
     var tasks = setTasks(response.data.tasks);
+    var userName = response.data.username;
+    var pic = response.data.profile_pic;
+
     setProfileInfo(pic, userName, friends, trainers, clients, tasks);
-  })
-
+  });
 }])
-// Start of Profile Controller =======================================================
-.controller('ProfileCtrl', ['Social', '$http', function(Social, $http) {
 
-  var self = this;
-  self.pic;
-  self.username;
-  self.feed;
-  self.Id;
+// Start of PROFILE CTRL ======================================================
+//=============================================================================
 
-  self.friendCount = Social.getFriendsLength();
-  self.trainerCount = Social.getTrainersLength();
-  self.clientCount = Social.getClientsLength();
-  // Helper function for extracting profile info dynamically and setting it in the controller
+.controller('ProfileCtrl', ['Social', '$http', function(Social, $http){
+
+  var userProfile = this;
+
+  // Variables for the user profile
+  userProfile.friendCount = Social.getFriendsLength();
+  userProfile.username;
+  userProfile.feed;
+  userProfile.pic;
+  userProfile.Id;
+
+  // Helper function for setting profile info
   var setUserInfo = function(picUrl, username, id){
-     self.pic = picUrl;
-     self.username = username;
-     self.Id = id;
+     userProfile.pic = picUrl;
+     userProfile.username = username;
+     userProfile.Id = id;
   };
 
+  // Return a user's completed tasks
   var setTasks = function(tasks){
     var filtered = [];
     for(var i = 0; i < tasks.length; i++){
@@ -101,147 +96,156 @@ angular.module('crptFit.controllers', ['ionic'])
         filtered.push(tasks[i]);
       }
     }
-    self.feed = filtered;
+    userProfile.feed = filtered;
   }
-  // Grab a users tasks - extract into a factory later
+
+  // Grab all of the logged in user's tasks - extract into a factory later
   $http({
     method: 'GET',
-    url: '/auth/usertask/' + self.Id
+    url: '/auth/usertask/' + userProfile.Id
   }).then(function(response){
     setTasks(response.data);
   })
-  // Grab a users profile information - extract into a factory later
+
+  // Request and set a user's profile information - extract into a factory later
   $http({
     method: 'GET',
     url: '/auth/user'
   }).then(function(response){
-    console.log("this is the user object:", response.data);
     var picUrl = response.data.profile_pic;
     var userName = response.data.username;
     var currentUserId = response.data.id;
     setUserInfo(picUrl, userName, currentUserId);
   });
-  // Add a refreshing function here
- }])
-// Start of HomeCtrl Controller =======================================================
-.controller('HomeCtrl', ['Social', '$http', 'User', 'Finder', function(Social, $http, User, Finder) {
-  var self = this;
-  self.feed = [];
-  self.user;
+}])
 
-  self.initialize = function(){
-    Social.friendsList();
-    Social.clientsList();
-    Social.trainersList();
+// Start of HOME CTRL =========================================================
+//=============================================================================
+
+.controller('HomeCtrl', ['Social', '$http', function(Social, $http){
+
+  Social.friendsList();
+  var homePage = this;
+
+  homePage.feed = [];
+  homePage.user;
+
+  // Request the logged in user's news feed
+  $http({
+    method: 'get',
+    url: '/auth/newsfeed'
+  }).then(function(response){
+    homePage.feed = response.data;
+  });
+}])
+
+// Start of BENCHPRESS PROGRESS CTRL ==========================================
+//=============================================================================
+
+.controller('ProgressCtrlBench', ['$scope', '$http', 'Progress', 'Social', function($scope, $http, Progress, Social){
+
+  var benchProgress = this;
+
+  benchProgress.Bench = Progress.getBnch();
+  benchProgress.benchData = {
+    weight: null,
+    reps: null,
+  };
+
+  benchProgress.pushMe = function(){
+    Progress.pushBnch(benchProgress.benchData.weight);
+    Progress.postBnch(benchProgress.benchData.weight);
+    benchProgress.benchData.weight = null;
+  };
+
+  benchProgress.getUid = function(){
     $http({
-      method: 'get',
-      url: '/auth/newsfeed'
+      method: 'GET',
+      url: '/auth/user'
     }).then(function(response){
-      self.feed = response.data;
-    })
-  }
-  self.initialize();
+      benchProgress.uId = response.data.id;
+      benchProgress.checkMe(benchProgress.uId);
+    });
+  };
 
- }])
-// Start of Progress Controller =======================================================
-.controller('ProgressCtrl', ['$scope', 'Progress', function($scope, Progress) {
-  var self = this;
- }])
-  .controller('ProgressCtrlStr', ['$scope', 'Progress', function($scope, Progress) {
-    var self = this;
-  }])
-// Start of Progress Benchpress Controller ==================================================
-  .controller('ProgressCtrlBench', ['$scope', '$http', 'Progress', 'Social', function($scope, $http, Progress, Social){
-    var self = this;
-    self.pushMe =  function(){
-      Progress.pushBnch(self.benchData.weight);
-      Progress.postBnch(self.benchData.weight);
-      self.benchData.weight = null;
-    };
-    self.getUid = function(){
-        $http({
-          method: 'GET',
-          url: '/auth/user'
-        }).then(function(response){
-          console.log(response, 'THIS IS THE USER OBJ')
-        self.uId = response.data.id;
-        self.checkMe(self.uId);
-        });
-    };
-    self.uId = null;
-    self.getUid();
-    self.benchData = {
-         weight: null,
-         reps: null,
-       };
-       self.Bench = Progress.getBnch();
+  benchProgress.checkMe = function(val){
+    Progress.queryBnch(val);
+    benchProgress.Bench = Progress.getBnch();
+    benchProgress.benchData.weight = null;
+  };
 
-       self.checkMe = function(val){
-         self.benchData.weight = null;
-         Progress.queryBnch(val);
-         self.Bench = Progress.getBnch();
-       };
-       $scope.chartConfig = {
-         options: {
-           chart: {
-             type: 'spline'
-           }
-         },
-         series: [{
-           data: self.Bench
-         }],
-         title: {
-           text: 'Benchpress'
-         },
-         loading: false
-        };
-  }])
-// Start of Progress Deadlift Controller ====================================================
-  .controller('ProgressCtrlDead', ['$scope','$http', 'Progress', function($scope, $http, Progress){
-    var self = this;
-    self.pushMe =  function(){
-      Progress.pushDed(self.deadData.weight);
-      Progress.postDed(self.deadData.weight);
-      self.deadData.weight = null;
-    };
-    self.getUid = function(){
-        $http({
-          method: 'GET',
-          url: '/auth/user'
-        }).then(function(response){
-        self.uId = response.data.id;
-        self.checkMe(self.uId);
-        });
-    };
-    self.uId = null;
-    self.getUid();
-    self.deadData = {
-         weight: null,
-         reps: null,
-       };
-       self.Dead = Progress.getDed();
+  benchProgress.uId = null;
+  benchProgress.getUid();
 
-       self.checkMe = function(val){
-         self.deadData.weight = null;
-         Progress.queryDed(val);
-         self.Dead = Progress.getDed();
-       };
-       $scope.chartConfig = {
-         options: {
-           chart: {
-             type: 'spline'
-           }
-         },
-         series: [{
-           data: self.Dead
-         }],
-         title: {
-           text: 'Deadlift'
-         },
-         loading: false
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        type: 'spline'
+      }
+    },
+    series: [{
+      data: benchProgress.Bench
+      }],
+    title: {
+      text: 'Benchpress'
+    },
+    loading: false
+  };
+}])
+
+// Start of DEADLIFT PROGRESS CTRL ============================================
+//=============================================================================
+
+.controller('ProgressCtrlDeadlift', ['$scope','$http', 'Progress', function($scope, $http, Progress){
+
+  var deadliftProgress = this;
+
+  deadliftProgress.pushMe =  function(){
+    Progress.pushDed(deadliftProgress.deadData.weight);
+    Progress.postDed(deadliftProgress.deadData.weight);
+    deadliftProgress.deadData.weight = null;
+  };
+
+  deadliftProgress.getUid = function(){
+      $http({
+        method: 'GET',
+        url: '/auth/user'
+      }).then(function(response){
+      deadliftProgress.uId = response.data.id;
+      deadliftProgress.checkMe(deadliftProgress.uId);
+      });
+  };
+  deadliftProgress.uId = null;
+  deadliftProgress.getUid();
+  deadliftProgress.deadData = {
+       weight: null,
+       reps: null,
+     };
+     deadliftProgress.Dead = Progress.getDed();
+
+     deadliftProgress.checkMe = function(val){
+       deadliftProgress.deadData.weight = null;
+       Progress.queryDed(val);
+       deadliftProgress.Dead = Progress.getDed();
+     };
+     $scope.chartConfig = {
+       options: {
+         chart: {
+           type: 'spline'
+         }
+       },
+       series: [{
+         data: deadliftProgress.Dead
+       }],
+       title: {
+         text: 'Deadlift'
+       },
+       loading: false
         };
   }])
 // Start of Progress Squat Controller =======================================================
+//=============================================================================
+
 .controller('ProgressCtrlSquats', ['$scope', '$http', 'Progress', function($scope, $http, Progress){
   var self = this;
   self.pushMe =  function(){
@@ -287,6 +291,8 @@ angular.module('crptFit.controllers', ['ionic'])
       };
 }])
 // Start of Progress Speed Controller =======================================================
+//=============================================================================
+
   .controller('ProgressCtrlSpd', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
     var self = this;
     self.pushMe =  function(){
@@ -336,6 +342,8 @@ angular.module('crptFit.controllers', ['ionic'])
     };
   }])
 // Start of Progress Weight Controller =======================================================
+//=============================================================================
+
   .controller('ProgressCtrlWgt', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
     var self = this;
     self.pushMe =  function(){
@@ -380,6 +388,8 @@ angular.module('crptFit.controllers', ['ionic'])
     };
   }])
 // Start of Progress Task Controller =======================================================
+//=============================================================================
+
 .controller('ProgressCtrlTask', ['Tasks', function(Tasks){
   var self = this;
   self.createTask = function(val){
@@ -480,6 +490,8 @@ angular.module('crptFit.controllers', ['ionic'])
  };
 }])
 // Start of Social Controller =======================================================
+//=============================================================================
+
 .controller('SocialCtrl', ['$scope', '$ionicPopup','Social', '$http', function($scope, $ionicPopup, Social, $http) {
   var self = this;
   // Add a refreshing function here

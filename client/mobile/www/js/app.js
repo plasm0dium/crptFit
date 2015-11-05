@@ -42,8 +42,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       url: '/progress',
       views: {
         'progress-tab':{
-          templateUrl: 'templates/progress-tab.html',
-          controller: 'ProgressCtrl'
+          templateUrl: 'templates/progress-tab.html'
         }
       }
     })
@@ -52,7 +51,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'progress-tab':{
           templateUrl: 'templates/strength-tab.html',
-          controller: 'ProgressCtrlStr'
         }
       }
     })
@@ -70,7 +68,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'progress-tab':{
           templateUrl: 'templates/deadlift-tab.html',
-          controller: 'ProgressCtrlDead'
+          controller: 'ProgressCtrlDeadlift'
         }
       }
     })
