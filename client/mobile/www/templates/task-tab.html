@@ -1,19 +1,19 @@
-<ion-view title="Tasks" ng-controller="ProgressCtrlTask as ctrl" ng-init="ctrl.startTasks()">
+<ion-view title="Tasks" ng-controller="ProgressCtrlTask as ctrl" ng-init="ctrl.startTasks()" class="overAll">
   <ion-content>
+  <p style="color:white;">tap to complete</p>
     <div ng-repeat="task in ctrl.tasks track by $index" ng-click="ctrl.toggle(task)" ng-class="{taskCom : task.toggled}">
-      <button type="button" class="button button-dark destro" ng-click="ctrl.finishTask(task.id, task)">remove</button>
-      <ion-checkbox>
+      <div class="taskBox" ng-click="ctrl.finishTask(task.id, task)">
         {{task.description}}
-      </ion-checkbox>
+      </div>
     </div>
   </ion-content>
-    <ion-footer-bar class="messageFoot">
-      <div class="list messageFoot2">
-        <div class="item item-input-inset">
-          <div class="item-input-wrapper">
-            <input class="messageInput" type="text" placeholder="Enter Task Here..." ng-model="ctrl.sendTo.val">
+    <ion-footer-bar class="messageFoot overAll">
+      <div class="list messageFoot2 overAll">
+        <div class="item item-input-inset overAll">
+          <div class="item-input-wrapper overAll">
+            <input class="messageInput overAll taskInput" style="color:white;" type="text" placeholder="Enter Task Here..." ng-model="ctrl.sendTo.val">
           </div>
-          <button type="submit" class="button button-small" ng-click="ctrl.createTask(ctrl.sendTo.val)">
+          <button type="submit" class="button button-small genButton" ng-click="ctrl.createTask(ctrl.sendTo.val)">
             Add Task
           </button>
         </div>

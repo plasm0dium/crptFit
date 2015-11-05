@@ -81,13 +81,12 @@ app.get('/auth/facebook/callback', function (req, res, next) {
       if (err) { return next(err); }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
-        res.redirect( '/#/homepage' );
+        res.redirect( '/#/dash' );
       });
     })(req, res, next);
 });
 
-
-app.get('/homepage', ensureAuthenticated, function (req,res) {
+app.get('/dash', ensureAuthenticated, function (req,res) {
   console.log('THIS USER IS LOGGED IN', req.user)
   var user = req.user
   if(user) {
