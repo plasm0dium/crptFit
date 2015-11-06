@@ -1,5 +1,7 @@
 angular.module('crptFit.services', [])
-// Start of Logged in User Factory ====================================================
+
+// Start of USER FACTORY ======================================================
+//=============================================================================
 .factory('User', ['$http', '$q', function($http, $q){
   var getUserObject = function(){
     return $http({
@@ -12,38 +14,36 @@ angular.module('crptFit.services', [])
     getUserObject: getUserObject
   };
 }])
-// Start of Tasks Factory ====================================================
+// Start of TASKS FACTORY =====================================================
+//=============================================================================
 .factory('Tasks', ['$http', function($http){
   var tasks = [];
+
   return {
     getTaskHolder: function(val){
       tasks.push({description:val})
       return tasks;
     },
     finishTask : function(taskId, task){
-      console.log(taskId, task)
       $http({
         method: 'POST',
         url: '/auth/task/complete/' + taskId,
       });
-      console.log(task, 'clicked');
       tasks.splice(tasks.indexOf(task), 1);
     },
     getTasksList: function(){
-      console.log(tasks, 'this is tasks as soon as its clicked')
-        tasks = [];
-        $http({
-          method: 'GET',
-          url: '/auth/tasks'
-        }).then(function(response){
-          response.data.forEach(function(x){
-            if(!x.complete){
-              tasks.push(x)
-            }
-          });
-            console.log("Tasks returned from server:", response.data);
-          });
-          return tasks;
+      tasks = [];
+      $http({
+        method: 'GET',
+        url: '/auth/tasks'
+      }).then(function(response){
+        response.data.forEach(function(x){
+          if(!x.complete){
+            tasks.push(x)
+          }
+        });
+      });
+      return tasks;
     },
     addTaskToClient : function(uId, val){
       $http({
@@ -62,7 +62,8 @@ angular.module('crptFit.services', [])
     }
   };
 }])
-// Start of Social Factory ====================================================
+// Start of SOCIAL FACTORY ====================================================
+//=============================================================================
 .factory('Social', ['$http', function($http){
   // Set up functions for ajax
   var friends = [];
@@ -81,7 +82,6 @@ angular.module('crptFit.services', [])
       return savedUserID;
     },
     friendsList: function(){
-      // Grab friends and store it in the friends array above (refactor - DRY)
       $http({
         method: 'GET',
         url: '/auth/friends'
@@ -123,8 +123,6 @@ angular.module('crptFit.services', [])
       return matches
     },
     clientsList: function(){
-      // This function needs the proper AJAX request
-      // Grab clients and store them in the clients array above (refactor - DRY)
       $http({
         method: 'GET',
         url: '/auth/clients'
@@ -136,11 +134,7 @@ angular.module('crptFit.services', [])
       });
       return clients;
     },
-    getClientsLength: function(){
-      return clients.length;
-    },
     addClient: function(clientId){
-      // This function needs the proper AJAX request
       $http({
         method: 'POST',
         url: '/auth/clients/add:' + clientId
