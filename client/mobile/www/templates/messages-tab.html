@@ -1,9 +1,9 @@
-<ion-view title="Messages" cache-view="false" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getFriends(); ctrl.showMessages(); $state.go($state.current, {}, {reload: true})">
-  <ion-content has-header="true" padding="true">
-    <div ng-repeat="(roomkey, roomval) in ctrl.messageToPage">
-      <a class="item item-avatar item-icon-right icon ion-email userMessage" href="#/message" ng-click="ctrl.showId(roomkey)"><img ng-src="{{roomval[2]}}"/>{{roomval[0]}}<i class="icon ion-chevron-right icon-accessory"></i></a>
+<ion-view title="Messages" class="overAll" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getFriends(); ctrl.showMessages();">
+  <ion-content has-header="true" padding="true" class='overAll'>
+    <div ng-repeat="(roomkey, roomval) in ctrl.messageToPage" class="secondaryAll">
+      <a class="item item-avatar item-icon-right icon ion-email userMessage secondaryAll" href="#/message" ng-click="ctrl.showId(roomkey)"><img ng-src="{{roomval[2]}}"/>{{roomval[0]}}<i class="icon ion-chevron-right icon-accessory"></i></a>
     </div>
-    <div class="list messageFoot2">
+    <div class="list messageFoot2" class="overAll">
       <button class="button button-dark" ng-click="showPopup();">Create Message</button>
     </div>
   </ion-content>
