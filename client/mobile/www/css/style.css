@@ -63,6 +63,10 @@ body, html{
 .overAll{
   background-color: #1A161D;
 }
+.animateMe{
+      -webkit-animation: fadeInLeft 1s;
+    animation: fadeInLeft 1s;
+}
 .secondaryAll{
   background-color: #2E2432;
   color: white;
