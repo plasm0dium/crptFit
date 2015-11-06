@@ -18,15 +18,15 @@
       </div>
       <!-- Start of social list -->
       <div ng-repeat="person in ctrl.list" class="secondaryAll">
-        <a class="item item-avatar" href="#/viewuser" ng-click="ctrl.saveUserID({{person.id}})" class="secondaryAll">
+        <a class="item item-avatar secondaryAll" href="#/viewuser" ng-click="ctrl.saveUserID({{person.id}})">
           <img ng-src="{{person.profile_pic}}"/>
-          <h3>{{person.username}}</h3>
+          <h3 class="secondaryAll">{{person.username}}</h3>
         </a>
       </div>
       <div ng-repeat="person in ctrl.reqlist" class='secondaryAll'>
-        <a class="item item-avatar" ng-click="ctrl.acceptFriend({{person.id}})" class="secondaryAll">
+        <a class="item item-avatar secondaryAll" ng-click="ctrl.acceptFriend({{person.id}})">
           <img ng-src="{{person.profile_pic}}"/>
-          <h3>{{person.username}}</h3>
+          <h3 class="secondaryAll">{{person.username}}</h3>
         </a>
       </div>
 

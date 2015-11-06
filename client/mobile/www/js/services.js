@@ -21,7 +21,6 @@ angular.module('crptFit.services', [])
       return tasks;
     },
     finishTask : function(taskId, task){
-      console.log(taskId, task)
       $http({
         method: 'POST',
         url: '/auth/task/complete/' + taskId,
@@ -287,7 +286,7 @@ angular.module('crptFit.services', [])
       }, function(error){
         console.log(error);
       });
-    },
+    }
   };
 }])
 .factory('Progress', ['$http', function($http){
