@@ -511,35 +511,35 @@ angular.module('crptFit.controllers', ['ionic'])
 
 .controller('ProgressCtrlWgt', ['$scope', '$http', 'Progress', function($scope, $http, Progress) {
 
-    var weightProgress = this;
+  var weightProgress = this;
 
-    weightProgress.uId = null;
-    weightProgress.weight = {
-      weight: null,
-    };
+  weightProgress.uId = null;
+  weightProgress.weight = {
+    weight: null,
+  };
+  weightProgress.Weight = Progress.getWgt();
+
+  weightProgress.pushMe = function(){
+    Progress.pushWgt(weightProgress.weight.weight);
+    Progress.postWgt(weightProgress.weight.weight);
+    weightProgress.weight.weight = null;
+  };
+
+  weightProgress.getUid = function(){
+    $http({
+      method: 'GET',
+      url: '/auth/user'
+    }).then(function(response){
+      weightProgress.uId = response.data.id;
+      weightProgress.checkMe(weightProgress.uId);
+    });
+  };
+  
+  weightProgress.checkMe = function(val){
+    weightProgress.weight.weight = null;
+    Progress.queryWgt(val);
     weightProgress.Weight = Progress.getWgt();
-
-    weightProgress.pushMe = function(){
-      Progress.pushWgt(weightProgress.weight.weight);
-      Progress.postWgt(weightProgress.weight.weight);
-      weightProgress.weight.weight = null;
-    };
-
-    weightProgress.getUid = function(){
-      $http({
-        method: 'GET',
-        url: '/auth/user'
-      }).then(function(response){
-        weightProgress.uId = response.data.id;
-        weightProgress.checkMe(weightProgress.uId);
-      });
-    };
-    
-    weightProgress.checkMe = function(val){
-      weightProgress.weight.weight = null;
-      Progress.queryWgt(val);
-      weightProgress.Weight = Progress.getWgt();
-    };
+  };
 
     weightProgress.getUid();
 
@@ -596,53 +596,68 @@ angular.module('crptFit.controllers', ['ionic'])
         };
 }])
 
-// Start of TASK CTRL =========================================================
+// Start of TASKS CTRL ========================================================
 //=============================================================================
 
 .controller('ProgressCtrlTask', ['Tasks', function(Tasks){
-  var self = this;
-  self.createTask = function(val){
-    Tasks.addTaskToSelf(val);
-    Tasks.getTaskHolder(val);
-    self.sendTo.val = null;
-  };
-  self.sendTo = {
+
+  var tasksProgress = this;
+
+  tasksProgress.sendTo = {
     val : null
   };
-  self.startTasks = function(){
-    self.tasks = Tasks.getTasksList();
+
+  tasksProgress.createTask = function(val){
+    Tasks.addTaskTotasksProgress(val);
+    Tasks.getTaskHolder(val);
+    tasksProgress.sendTo.val = null;
   };
-  self.toggle = function(task){
+
+  tasksProgress.startTasks = function(){
+    tasksProgress.tasks = Tasks.getTasksList();
+  };
+
+  tasksProgress.toggle = function(task){
     task.toggled = !task.toggled;
   };
-  self.finishTask = function(taskId, task){
+
+  tasksProgress.finishTask = function(taskId, task){
     self.finish = Tasks.finishTask(taskId, task);
   };
 }])
 
+// Start of MESSAGES CTRL =====================================================
+//=============================================================================
+
 .controller('MessagesCtrl', ['$scope','$state', '$location', '$ionicPopup', 'Message', 'Social', 'User', function($scope, $state, $location, $ionicPopup, Message, Social, User) {
 //NOTE Refactor me
   var self = this;
+  var userObj = User.getUserObject();
+  
+  Message.messageList();
+
   self.sendTo = {
     val: null
   };
   self.search = Social.friendsList();
-  var userObj = User.getUserObject();
   self.userImg;
   self.friendImg;
+  self.messageToPage = Message.captureMessages();
+  self.returnMessage = Message.messageToPage();
+  self.captureMessages = Message.messageList();
 
   userObj.then(function(response){
     self.userImg = response.data.profile_pic;
   });
 
-  
-
   self.getFriends = function(){
     Message.getFriends();
   };
+
   self.showId =function(val){
     Message.capturedChatID(val);
   };
+  
   self.showMessageContent = function(){
     Message.captureMessages();
   };
@@ -651,23 +666,16 @@ angular.module('crptFit.controllers', ['ionic'])
     Message.getMessage();
   };
 
-  Message.messageList();
-
-  self.messageToPage = Message.captureMessages();
-
-  self.returnMessage = Message.messageToPage();
-
   self.getMessagesById = function(){
     self.sendHelp = Message.clearCap();
   };
-
-  self.captureMessages = Message.messageList();
 
   self.makeChat = function(userId){
     $scope.myPopup.close();
     self.chat = Message.makeChat(userId);
     $state.go($state.current, {}, {reload: true});
   };
+
   self.sendMessage = function(chatId, val){
     console.log(chatId, val)
     self.send = Message.sendMessage(chatId, val);
@@ -675,6 +683,7 @@ angular.module('crptFit.controllers', ['ionic'])
     self.sendTo.val = null;
     self.returnMessage = Message.messageToPage();
   };
+
   self.capChatId = function(chatId){
     Message.getRoom(chatId);
   };
@@ -693,48 +702,53 @@ angular.module('crptFit.controllers', ['ionic'])
       socket.emit('disconnect', id)
     })
   };
+
   self.liveUpdate = function(chatId, message){
     var socket = io();
       socket.emit('chatroom id', chatId, message);
-    };
+  };
+
   $scope.showPopup = function() {
-  $scope.data = {};
-   $scope.myPopup = $ionicPopup.show({
-    template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)">{{friend.username}}</a></div></div></div>',
-    title: 'Create a message',
-    scope: $scope,
-    buttons: [
-      { text: 'Cancel' },
-    ]
-  });
-  $scope.myPopup.then(function(res) {
-    console.log('Tapped!', res);
-    self.list = Social.searchResultsList(res);
-  });
- };
+    $scope.data = {};
+    $scope.myPopup = $ionicPopup.show({
+      template: '<div ng-controller="MessagesCtrl as ctrl"><div ng-init="ctrl.getFriends()"><div ng-repeat="friend in ctrl.search"><a class="item" ng-click="ctrl.makeChat(friend.id)">{{friend.username}}</a></div></div></div>',
+      title: 'Create a message',
+      scope: $scope,
+      buttons: [
+        { text: 'Cancel' },
+      ]
+    });
+    $scope.myPopup.then(function(res) {
+      console.log('Tapped!', res);
+      self.list = Social.searchResultsList(res);
+    });
+  };
 }])
-// Start of Social Controller =======================================================
+
+// Start of SOCIAL CTRL =======================================================
 //=============================================================================
 
-.controller('SocialCtrl', ['$scope', '$ionicPopup','Social', '$http', function($scope, $ionicPopup, Social, $http) {
+.controller('SocialCtrl', ['$scope', '$ionicPopup','Social', '$http', function($scope, $ionicPopup, Social, $http){
+
   var self = this;
-  // Add a refreshing function here
+
   Social.friendsList();
+
   self.list = Social.friendsList();
   self.reqlist;
 
   self.showRequests = function(){
-    self.list = [];
     self.reqlist = [];
+    self.list = [];
+
     var friendRequests = Social.getFriendRequests();
+
     friendRequests.then(function(response){
-      console.log("CONSOLE>LOG THIS IS FRIEND REQUESTS", response)
       var filtered = [];
       response.data.forEach(function(obj){
         if(obj) {filtered.push(obj);}
       });
       self.reqlist = filtered;
-      console.log("SOCIAL CONTR", self.reqlist);
     })
   }
 
@@ -751,38 +765,40 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.showSearchResults = function(username){
     $http({
-        method: 'GET',
+      method: 'GET',
         url: '/auth/search/' + username
       })
       .then(function(response){
-        console.log("inside of the service calling SRL:", response.data)
         return response.data;
       }).then(function(response){
-        console.log("final part of SRL from service:", response);
         self.list = response;
       });
   }
+
   self.saveUserID = function(facebookID){
-    console.log("inside of SaveUserID", facebookID);
     Social.userViewerSet(facebookID);
-  }
+  };
+
   self.showFriends = function(){
     self.reqlist = [];
     self.list = Social.friendsList();
-    console.log(self.list);
   };
+
   self.showMatches = function () {
     self.reqlist = [];
     self.list = Social.matchesList();
-  }
+  };
+
   self.showClients = function(){
     self.reqlist = [];
     self.list = Social.clientsList();
   };
+
   self.showTrainers = function(){
     self.reqlist = [];
     self.list = Social.trainersList();
-  }
+  };
+
   $scope.showPopup = function(){
     $scope.data = {};
     // An elaborate, custom popup
@@ -806,6 +822,7 @@ angular.module('crptFit.controllers', ['ionic'])
         }
       ]
     });
+
     myPopup.then(function(res) {
       console.log('Tapped!', res);
       return self.showSearchResults(res);
@@ -814,15 +831,20 @@ angular.module('crptFit.controllers', ['ionic'])
 
 }])
 
-.controller('CardsCtrl',['$http','Finder', '$ionicLoading','$ionicPopup', function($http, Finder, $ionicLoading, $ionicPopup) {
+// Start of CARDS CTRL =======================================================
+//=============================================================================
+
+.controller('CardsCtrl',['$http','Finder', '$ionicLoading','$ionicPopup', function($http, Finder, $ionicLoading, $ionicPopup){
+
   var self = this;
+
   self.cards = [];
   self.cardsLoaded = false;
   self.lat;
   self.lng;
   self.loading = $ionicLoading.show({
-          template: '<p class="loading-text">Finding Nearby Users...</p><ion-spinner icon="ripple"></ion-spinner>',
-        });
+    template: '<p class="loading-text">Finding Nearby Users...</p><ion-spinner icon="ripple"></ion-spinner>',
+  });
 
 
   self.getLocation = function () {
@@ -835,12 +857,7 @@ angular.module('crptFit.controllers', ['ionic'])
     }, function(error) {
       alert('Unable to get location: ' + error.message);
       });
-    };
-    // self.getLocation();
-
-  // self.storeUserLoc = function () {
-  //   Finder.postUsersLocation(self.lat, self.lng);
-  // };
+  };
 
   self.addCard = function(image, username, id) {
     var newCard;
@@ -850,18 +867,16 @@ angular.module('crptFit.controllers', ['ionic'])
       'id' : id
     };
     self.cards.unshift(angular.extend({}, newCard));
-    };
+  };
 
   self.addCards = function() {
     $http.get('/auth/nearbyusers').then(function(users) {
       self.cardsLoaded = true;
-      console.log(users.data)
       if(users.data.nearbyUsers === 'None') {
         $ionicPopup.alert({
           title: 'We Couldnt Find New Users in Your Area',
           template: 'Please Check Back Later',
           cssClass: 'matchPopup'
-          //template: '<div class="popupImage"><img src="https://developer.apple.com/watch/human-interface-guidelines/icons-and-images/images/icon-and-image-large-icon-fitness.png"></div>'
         });
       }
       else {
