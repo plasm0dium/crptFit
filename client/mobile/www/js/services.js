@@ -2,7 +2,10 @@ angular.module('crptFit.services', [])
 
 // Start of USER FACTORY ======================================================
 //=============================================================================
-.factory('User', ['$http', '$q', function($http, $q){
+
+.factory('User', ['$http', function($http){
+
+  // Return a promise, holding a user object, for controllers
   var getUserObject = function(){
     return $http({
       method: 'get',
@@ -14,9 +17,12 @@ angular.module('crptFit.services', [])
     getUserObject: getUserObject
   };
 }])
+
 // Start of TASKS FACTORY =====================================================
 //=============================================================================
+
 .factory('Tasks', ['$http', function($http){
+
   var tasks = [];
 
   return {
@@ -62,14 +68,14 @@ angular.module('crptFit.services', [])
     }
   };
 }])
+
 // Start of SOCIAL FACTORY ====================================================
 //=============================================================================
+
 .factory('Social', ['$http', function($http){
-  // Set up functions for ajax
+
   var friends = [];
   var matches = [];
-  var clients = [];
-  var trainers = [];
   var searchResults = [];
   var savedUserID;
   var friendsPendingRequest = [];
@@ -122,48 +128,6 @@ angular.module('crptFit.services', [])
       });
       return matches
     },
-    clientsList: function(){
-      $http({
-        method: 'GET',
-        url: '/auth/clients'
-      })
-      .then(function(response){
-        clients = response.data;
-      },function(error){
-        console.log(error);
-      });
-      return clients;
-    },
-    addClient: function(clientId){
-      $http({
-        method: 'POST',
-        url: '/auth/clients/add:' + clientId
-      });
-      this.clientsList();
-    },
-    trainersList: function(){
-      // This function needs the proper AJAX request
-      $http({
-        method: 'GET',
-        url: '/auth/trainers'
-      })
-      .then(function(response){
-        trainers = response.data;
-      }, function(error){
-        console.log(error);
-      });
-      return trainers;
-    },
-    getTrainersLength: function(){
-      return trainers.length;
-    },
-    sendTrainerRequest: function(){
-      // This function needs the proper AJAX request
-    },
-    addTrainer: function(trainer){
-      // This function needs the proper AJAX request
-      trainers.push(trainer);
-    },
     searchResultsList: function(username){
       $http({
         method: 'GET',
@@ -179,7 +143,9 @@ angular.module('crptFit.services', [])
   };
 }])
 
-// Start of Messages Factory ====================================================
+// Start of MESSAGES FACTORY ====================================================
+//=============================================================================
+
 .factory('Message', ['$http', function($http){
   var messages = {};
   var messageReturn = [];
@@ -274,6 +240,10 @@ angular.module('crptFit.services', [])
     },
   };
 }])
+
+// Start of PROGRESS FACTORY ====================================================
+//=============================================================================
+
 .factory('Progress', ['$http', function($http){
   var strength = [];
   var weight = [];
@@ -460,6 +430,9 @@ angular.module('crptFit.services', [])
     }
   };
 }])
+
+// Start of MATCHES FACTORY ===================================================
+//=============================================================================
 
 .factory('Finder', ['$http', '$q', '$window', function($http, $q, $window) {
   var nearbyUsers = [];
