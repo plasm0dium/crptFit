@@ -165,7 +165,23 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
           controller: 'CardsCtrl'
         }
       }
-    });
+    })
+    .state('about', {
+      url: '/about',
+        views: {
+          'app-nav' : {
+            templateUrl: 'templates/about.html',
+          }
+        }
+    })
+    .state('how-to', {
+      url: '/how-to',
+        views: {
+          'app-nav': {
+            templateUrl: '/templates/how-to.html'
+          }
+        }
+    })
   $urlRouterProvider.otherwise('/login');
 
 });
