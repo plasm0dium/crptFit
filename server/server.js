@@ -87,8 +87,8 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 });
 
 app.get('/dash', ensureAuthenticated, function (req,res) {
-  console.log('THIS USER IS LOGGED IN', req.user)
-  var user = req.user
+  console.log('THIS USER IS LOGGED IN', req.user);
+  var user = req.user;
   if(user) {
     res.json(user);
   } else {
