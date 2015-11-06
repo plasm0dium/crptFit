@@ -256,7 +256,7 @@ angular.module('crptFit.controllers', ['ionic'])
       deadliftProgress.checkMe(deadliftProgress.uId);
     });
   };
-  
+
   deadliftProgress.checkMe = function(val){
     deadliftProgress.deadData.weight = null;
     Progress.queryDed(val);
@@ -330,7 +330,7 @@ angular.module('crptFit.controllers', ['ionic'])
   squatProgress.squatData = {
     weight: null
   };
-  
+
   squatProgress.pushMe = function(){
     Progress.pushSqu(squatProgress.squatData.weight);
     Progress.postSqu(squatProgress.squatData.weight);
@@ -346,7 +346,7 @@ angular.module('crptFit.controllers', ['ionic'])
       squatProgress.checkMe(squatProgress.uId);
     });
   };
-  
+
   squatProgress.checkMe = function(val){
     squatProgress.squatData.weight = null;
     Progress.querySqu(val);
@@ -431,7 +431,7 @@ angular.module('crptFit.controllers', ['ionic'])
     speedProgress.timeSpd.val = null;
     Progress.getSpd();
   };
-  
+
   speedProgress.getUid = function(){
     $http({
       method: 'GET',
@@ -441,7 +441,7 @@ angular.module('crptFit.controllers', ['ionic'])
       speedProgress.checkMe(speedProgress.uId);
     });
   };
-  
+
   speedProgress.checkMe = function(val){
     speedProgress.timeSpd.val = null;
     speedProgress.distance.val = null;
@@ -532,7 +532,7 @@ angular.module('crptFit.controllers', ['ionic'])
       weightProgress.checkMe(weightProgress.uId);
     });
   };
-  
+
   weightProgress.checkMe = function(val){
     weightProgress.weight.weight = null;
     Progress.queryWgt(val);
@@ -631,7 +631,7 @@ angular.module('crptFit.controllers', ['ionic'])
 //NOTE Refactor me
   var self = this;
   var userObj = User.getUserObject();
-  
+
   Message.messageList();
 
   self.sendTo = {
@@ -655,7 +655,7 @@ angular.module('crptFit.controllers', ['ionic'])
   self.showId =function(val){
     Message.capturedChatID(val);
   };
-  
+
   self.showMessageContent = function(){
     Message.captureMessages();
   };
@@ -897,7 +897,11 @@ angular.module('crptFit.controllers', ['ionic'])
        self.cardsLoaded = true;
        console.log(users.data)
        if(users.data.nearbyUsers === 'None') {
-         alert('Cannot find new users in your area')
+         $ionicPopup.alert({
+          title: 'We Couldnt Find New Users in Your Area',
+          template: 'Please Check Back Later',
+          cssClass: 'matchPopup'
+        });
        }
        else {
          console.log('THIS IS SWOLE PATROL', users)

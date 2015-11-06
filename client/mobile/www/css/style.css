@@ -68,7 +68,7 @@ body, html{
   color: white;
 }
 .genButton{
-  background-color: #E54C42; 
+  background-color: #E54C42;
 }
 .centerOut{
   margin-top: 12em;
@@ -80,8 +80,8 @@ body, html{
   border-radius: 100%;
   border: 1px solid #25B3F4;
   color: white;
-  height: 20%;
-  width: 20%;
+  height: 10%;
+  width: 10%;
 }
 .taskBox{
   margin-top: 10px;
@@ -95,7 +95,7 @@ body, html{
   text-align: center;
   padding: 10px;
   word-wrap: break-word;
-  line-height: 1em; 
+  line-height: 1em;
 }
 .taskInput{
   color: white;
@@ -106,8 +106,8 @@ body, html{
   display: inline-block;
   margin: -1px;
   width: 45px; /* 60*/
-  height: 45px; 
-  font-size:40px; 
+  height: 45px;
+  font-size:40px;
   -moz-border-radius:50%;
   -webkit-border-radius:50%;
   border-radius: 50%;
@@ -334,6 +334,7 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
   border-color: #25B3F4
 }
 .wrap {
+  padding-top: 3px;
   padding-bottom: 10px;
   display: -webkit-flex;
    display: flex;
@@ -341,8 +342,8 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
    flex-direction: row;
    -webkit-align-items: center;
    align-items: center;
-   -webkit-justify-content: center;
-   justify-content: center;
+   -webkit-justify-content: left;
+   justify-content: left;
 }
 .custom-icon-left {
   font-size: 64px;
@@ -355,4 +356,11 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
   color: green;
   padding-left: 20px;
   padding-right: 20px
+}
+.item-divider {
+  background-color: #25B3F4;
+  color: white;
+}
+h3, .name-wrap {
+padding-left: 10px
 }
