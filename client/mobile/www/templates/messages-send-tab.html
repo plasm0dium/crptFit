@@ -1,10 +1,10 @@
 <ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getMessagesById(); ctrl.connect(ctrl.sendHelp)">
   <ion-content id="chat-background" has-header="true" padding="true">
-    <ion-list class="list">
-      <li ng-repeat="message in ctrl.returnMessage track by $index" ng-class"item item-avatar-left item-text-wrap nopadding bubble">
-          <img src="{{ctrl.userImg}}" /> <span class="text">  {{message}} </span>
-     </li>
-    </ion-list>
+    <div>
+      <div ng-repeat="message in ctrl.returnMessage track by $index" ng-class"item item-avatar-left item-text-wrap">
+          <img ng-src="{{ctrl.userImg}}" /> <span class="text"> {{message}} </span>
+     </div>
+   </div>
   </ion-content>
     <ion-footer-bar class="messageFoot">
       <div class="list messageFoot2">

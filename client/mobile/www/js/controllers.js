@@ -639,7 +639,6 @@ angular.module('crptFit.controllers', ['ionic'])
   };
   self.search = Social.friendsList();
   self.userImg;
-  self.friendImg;
   self.messageToPage = Message.captureMessages();
   self.returnMessage = Message.messageToPage();
   self.captureMessages = Message.messageList();
@@ -694,8 +693,7 @@ angular.module('crptFit.controllers', ['ionic'])
     socket.emit('connecting', id);
     socket.on('message-append', function(id, message){
       console.log(id, message);
-      $scope.socketId = id;
-      self.sendMessage($scope.socketId, message);
+      self.sendMessage(id, message);
     });
     $scope.$on('$ionicView.leave', function(event){
       console.log('the dc event actually fired', id);
