@@ -287,7 +287,7 @@ angular.module('crptFit.services', [])
       }, function(error){
         console.log(error);
       });
-    },
+    }
   };
 }])
 .factory('Progress', ['$http', function($http){

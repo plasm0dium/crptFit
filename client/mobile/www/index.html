@@ -33,6 +33,7 @@
   </head>
   <body ng-app="crptFit">
     <ion-nav-view>
+    <ion-nav-view name="mess-nav">
     <ion-side-menus>
       <ion-side-menu side="left">
         <ion-content ng-controller="ProfileCtrl as ctrl" class="sideProfile">
@@ -47,6 +48,10 @@
           </div>
           <div>
             <p style="color:white;"><strong>Dashboard</strong></p>
+          </div>
+          <div>
+            <i class="eyeOf ion-eye hidey-eye"></i>
+            <p id="eye"></p> 
           </div>
         </ion-content>
       </ion-side-menu>
@@ -71,6 +76,7 @@
         <ion-nav-view name="app-nav"></ion-nav-view>
       </ion-side-menu-content>
     </ion-side-menus>
+    </ion-nav-view>
     </ion-nav-view>
   </body>
 </html>

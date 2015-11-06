@@ -22,6 +22,14 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         url: '/login',
         templateUrl: 'templates/login-tab.html'
 })
+  .state('messages-send-tab', {
+      url: '/message',
+        views: {
+        'mess-nav': {
+          templateUrl: 'templates/messages-send-tab.html',
+        }
+      }
+    })
   //   .state('tab', {
   //   url: '/tab',
   //   abstract: true,
@@ -130,14 +138,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/messages-tab.html',
-        }
-      }
-    })
-    .state('messages-send-tab', {
-      url: '/message',
-        views: {
-        'app-nav': {
-          templateUrl: 'templates/messages-send-tab.html',
         }
       }
     })
