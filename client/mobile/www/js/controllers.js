@@ -608,7 +608,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   tasksProgress.createTask = function(val){
-    Tasks.addTaskTotasksProgress(val);
+    Tasks.addTaskToSelf(val);
     Tasks.getTaskHolder(val);
     tasksProgress.sendTo.val = null;
   };

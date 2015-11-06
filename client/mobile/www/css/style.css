@@ -124,12 +124,17 @@ body, html{
 }
 .dashBox{
 }
-.row{
-/*  margin-top: 6em;
-  margin-bottom: 8em;*/
+.row-top-prog{
+  margin-top: 0px !important;
 }
 .topText, .midText, .botText{
   margin-top: 10px;
+  color: white;
+  font-size: 20px;
+  font-style: strong;
+}
+.progText{
+  margin-top: -35px;
   color: white;
   font-size: 20px;
   font-style: strong;

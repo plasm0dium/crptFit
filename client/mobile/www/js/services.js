@@ -21,7 +21,6 @@ angular.module('crptFit.services', [])
       return tasks;
     },
     finishTask : function(taskId, task){
-      console.log(taskId, task)
       $http({
         method: 'POST',
         url: '/auth/task/complete/' + taskId,
