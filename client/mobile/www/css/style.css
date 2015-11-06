@@ -3,7 +3,7 @@ img{
   height: 40px;
   width: 40px;
   border-radius: 100%;
-  position: absolute;
+  position: relative;
 }
 body, html{
   height: 100%;
@@ -138,35 +138,63 @@ body, html{
   margin-bottom: 3em;
 }
 
-.bubble {
-/*background-image: linear-gradient(bottom, rgb(210,244,254) 25%, rgb(149,194,253) 100%);*/
-/*background-image: -o-linear-gradient(bottom, rgb(210,244,254) 25%, rgb(149,194,253) 100%);*/
-/*background-image: -moz-linear-gradient(bottom, rgb(210,244,254) 25%, rgb(149,194,253) 100%);*/
-/*background-image: -webkit-linear-gradient(bottom, rgb(210,244,254) 25%, rgb(149,194,253) 100%);*/
-/*background-image: -ms-linear-gradient(bottom, rgb(210,244,254) 25%, rgb(149,194,253) 100%);*/
-background-image: -webkit-gradient(
-	linear,
-	left bottom,
-	left top,
-	color-stop(0.25, rgb(46, 36, 50)),
-	color-stop(1, rgb(46, 36, 50))
-);
-	border: solid 1px rgba(0, 0, 0, 0.5);
-	/* vendor rules */
-	border-radius: 20px;
-	/* vendor rules */
-	box-shadow: inset 0 5px 5px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
-	/* vendor rules */
-	box-sizing: border-box;
-	clear: both;
-	float: left;
-	margin-top: 10px;
-	padding: 8px 30px;
-	position: relative;
-	/*text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);*/
-	width: auto;
-	max-width: 100%;
-	word-wrap: break-word;
+.bubbleLeft {
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+  padding: 5px;
+  background: #F8BBD0;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
+  margin-bottom: 5px;
+}
+.bubbleLeft:after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-width: 7px 20px 7px 0;
+  border-color: transparent #F8BBD0;
+  display: block;
+  width: 0;
+  z-index: 1;
+  margin-top: -7px;
+  left: -20px;
+  top: 40px;
+}
+.bubbleRight {
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+  padding: 5px;
+  background: #C5CAE9;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
+  margin-bottom: 5px;
+}
+.bubbleRight:after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-width: 7px 0 7px 20px;
+  border-color: transparent #C5CAE9;
+  display: block;
+  width: 0;
+  z-index: 1;
+  margin-top: -7px;
+  right: -20px;
+  top: 40px;
+}
+.noPadding {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  border: none !important;
+}
+.noBg {
+  background-color: transparent !important;
 }
 .text{
   color: #FFFFFF;

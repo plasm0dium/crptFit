@@ -688,12 +688,14 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.connect = function(id){
     var socket = io();
+
     console.log(id, 'this is what im passing');
     console.log('LOOKING TO CONNECTION');
     socket.emit('connecting', id);
     socket.on('message-append', function(id, message){
       console.log(id, message);
-      self.sendMessage(id, message);
+      $scope.socketId = id;
+      self.sendMessage($scope.socketId, message);
     });
     $scope.$on('$ionicView.leave', function(event){
       console.log('the dc event actually fired', id);
