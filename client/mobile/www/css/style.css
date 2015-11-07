@@ -29,6 +29,8 @@ body, html{
 }
 .profile-pic{
   margin-top: 20px;
+  height: 100px;
+  width: 100px;
 }
 .stats{
   margin: 10px auto 0;

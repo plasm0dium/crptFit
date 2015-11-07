@@ -639,13 +639,17 @@ angular.module('crptFit.controllers', ['ionic'])
   };
   self.search = Social.friendsList();
   self.userImg;
+  self.userId;
   self.messageToPage = Message.captureMessages();
   self.returnMessage = Message.messageToPage();
   self.captureMessages = Message.messageList();
 
   userObj.then(function(response){
-    self.userImg = response.data.profile_pic;
+     self.userImg = response.data.profile_pic;
+     self.userId = response.data.id;
   });
+
+  console.log("THIS IS MY USER INFO", self.userImg, self.userId)
 
   self.getFriends = function(){
     Message.getFriends();

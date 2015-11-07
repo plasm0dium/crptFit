@@ -438,6 +438,7 @@ db.model('User').fetchById({
   id: userId
   })
   .then(function(result) {
+    userProfile = result;
     return Promise.all(result.relations.chatstores.models.map(function(msg){
       return db.model('Chat').fetchById(msg.attributes.chat_id);
     }))
