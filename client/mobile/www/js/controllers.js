@@ -2,7 +2,6 @@ angular.module('crptFit.controllers', ['ionic'])
 
 // Start of VIEW PROFILE CTRL =================================================
 //=============================================================================
-
 .controller('ViewProfileCtrl', ['$http', 'Social', 'User', function($http, Social, User){
   var viewedUser = this;
   var userObj = User.getUserObject();
@@ -62,7 +61,7 @@ angular.module('crptFit.controllers', ['ionic'])
     var userName = response.data.username;
     var pic = response.data.profile_pic;
 
-    setProfileInfo(pic, userName, friends, trainers, clients, tasks);
+    setProfileInfo(pic, userName, friends, tasks);
   });
 }])
 
@@ -97,7 +96,10 @@ angular.module('crptFit.controllers', ['ionic'])
     }
     userProfile.feed = filtered;
   }
-
+  // Everyone needs a montage
+  $('.eyeOf').on('click', function(){
+    $('#eye').append('<audio controller loop src="survivor.mp3" autoplay="true"></audio>');
+  })
   // Grab all of the logged in user's tasks - extract into a factory later
   $http({
     method: 'GET',
@@ -606,7 +608,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   tasksProgress.createTask = function(val){
-    Tasks.addTaskTotasksProgress(val);
+    Tasks.addTaskToSelf(val);
     Tasks.getTaskHolder(val);
     tasksProgress.sendTo.val = null;
   };

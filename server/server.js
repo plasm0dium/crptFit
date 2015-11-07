@@ -829,14 +829,10 @@ io.on('connection', function (socket){
   // new chat room
   socket.on('chatroom id', function(room, message){
     console.log(room, message)
-    socket.join(room);
     io.sockets.to(room).emit('message-append', room, message);
   })
   socket.on('disconnect', function(room){
-    socket.leave(room, function(err){
-      console.log(err)
-    });
-    console.log('leaving chat: should not double if dc', room);
+    socket.leave(room)
   })
 })
 //     db.model('Chat').fetchById(id)
