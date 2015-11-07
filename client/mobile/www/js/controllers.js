@@ -151,13 +151,13 @@ angular.module('crptFit.controllers', ['ionic'])
   benchProgress.benchData = {
     weight: null
   };
-
+  //Adds data to database and to visual graph without re-rendering current data
   benchProgress.pushMe = function(){
     Progress.pushBnch(benchProgress.benchData.weight);
     Progress.postBnch(benchProgress.benchData.weight);
     benchProgress.benchData.weight = null;
   };
-
+  //captures user id
   benchProgress.getUid = function(){
     $http({
       method: 'GET',
@@ -167,7 +167,7 @@ angular.module('crptFit.controllers', ['ionic'])
       benchProgress.checkMe(benchProgress.uId);
     });
   };
-
+  //uses captured uID to return the correct data table
   benchProgress.checkMe = function(val){
     Progress.queryBnch(val);
     benchProgress.Bench = Progress.getBnch();
@@ -176,7 +176,7 @@ angular.module('crptFit.controllers', ['ionic'])
 
   benchProgress.uId = null;
   benchProgress.getUid();
-
+  //Controls Highchart options 
   $scope.chartConfig = {
     options: {
       chart: {
@@ -241,13 +241,13 @@ angular.module('crptFit.controllers', ['ionic'])
   deadliftProgress.deadData = {
        weight: null
     };
-
+  //Adds data to database and to visual graph without re-rendering current data
   deadliftProgress.pushMe =  function(){
     Progress.pushDed(deadliftProgress.deadData.weight);
     Progress.postDed(deadliftProgress.deadData.weight);
     deadliftProgress.deadData.weight = null;
   };
-
+  //Captures user id
   deadliftProgress.getUid = function(){
     $http({
       method: 'GET',
@@ -257,7 +257,7 @@ angular.module('crptFit.controllers', ['ionic'])
       deadliftProgress.checkMe(deadliftProgress.uId);
     });
   };
-
+  //Uses captured uID to return the correct data table
   deadliftProgress.checkMe = function(val){
     deadliftProgress.deadData.weight = null;
     Progress.queryDed(val);
@@ -265,7 +265,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   deadliftProgress.getUid();
-
+  //Controls Highchart options
   $scope.chartConfig = {
     options: {
       chart: {
@@ -330,13 +330,13 @@ angular.module('crptFit.controllers', ['ionic'])
   squatProgress.squatData = {
     weight: null
   };
-
+  //Adds data to database and visual graph without re-rendering current data
   squatProgress.pushMe = function(){
     Progress.pushSqu(squatProgress.squatData.weight);
     Progress.postSqu(squatProgress.squatData.weight);
     squatProgress.squatData.weight = null;
   };
-
+  //Capture user id
   squatProgress.getUid = function(){
     $http({
       method: 'GET',
@@ -346,7 +346,7 @@ angular.module('crptFit.controllers', ['ionic'])
       squatProgress.checkMe(squatProgress.uId);
     });
   };
-
+  //Uses captured uID to return the correct data table
   squatProgress.checkMe = function(val){
     squatProgress.squatData.weight = null;
     Progress.querySqu(val);
@@ -354,7 +354,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   squatProgress.getUid();
-
+  //Controls Highchart options
   $scope.chartConfig = {
     options: {
       chart: {
@@ -422,7 +422,7 @@ angular.module('crptFit.controllers', ['ionic'])
     val: null
   };
   speedProgress.uId = null;
-
+  //Adds data to database and visual graph without re-rendering current data
   speedProgress.pushMe = function(){
     Progress.pushSpd((speedProgress.distance.val/speedProgress.timeSpd.val)*60);
     Progress.postSpd((speedProgress.distance.val/speedProgress.timeSpd.val)*60);
@@ -430,7 +430,7 @@ angular.module('crptFit.controllers', ['ionic'])
     speedProgress.timeSpd.val = null;
     Progress.getSpd();
   };
-
+  //Captures user id
   speedProgress.getUid = function(){
     $http({
       method: 'GET',
@@ -440,7 +440,7 @@ angular.module('crptFit.controllers', ['ionic'])
       speedProgress.checkMe(speedProgress.uId);
     });
   };
-
+  //Uses captured uID to return the correct data table
   speedProgress.checkMe = function(val){
     speedProgress.timeSpd.val = null;
     speedProgress.distance.val = null;
@@ -449,7 +449,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   speedProgress.getUid();
-
+  //Controls Highchart options
   $scope.chartConfig = {
     options: {
       chart: {
@@ -514,13 +514,13 @@ angular.module('crptFit.controllers', ['ionic'])
     weight: null,
   };
   weightProgress.Weight = Progress.getWgt();
-
+  //Adds data to database and visual graph without re-rendering current data
   weightProgress.pushMe = function(){
     Progress.pushWgt(weightProgress.weight.weight);
     Progress.postWgt(weightProgress.weight.weight);
     weightProgress.weight.weight = null;
   };
-
+  //Captures user id
   weightProgress.getUid = function(){
     $http({
       method: 'GET',
@@ -530,7 +530,7 @@ angular.module('crptFit.controllers', ['ionic'])
       weightProgress.checkMe(weightProgress.uId);
     });
   };
-
+  //Uses captured uID to return the correct data table
   weightProgress.checkMe = function(val){
     weightProgress.weight.weight = null;
     Progress.queryWgt(val);
@@ -538,7 +538,7 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   weightProgress.getUid();
-
+  //Controls Highchart options
   $scope.chartConfig = {
     options: {
       chart: {
@@ -601,7 +601,7 @@ angular.module('crptFit.controllers', ['ionic'])
   tasksProgress.sendTo = {
     val : null
   };
-
+  //Adds task to task array in services and to the user database
   tasksProgress.createTask = function(val){
     Tasks.addTaskToSelf(val);
     Tasks.getTaskHolder(val);
@@ -611,11 +611,11 @@ angular.module('crptFit.controllers', ['ionic'])
   tasksProgress.startTasks = function(){
     tasksProgress.tasks = Tasks.getTasksList();
   };
-
+  //Function for toggling task class for animations or styles
   tasksProgress.toggle = function(task){
     task.toggled = !task.toggled;
   };
-
+  //Sets task to complete and removes from page
   tasksProgress.finishTask = function(taskId, task){
     self.finish = Tasks.finishTask(taskId, task);
   };
@@ -645,11 +645,11 @@ angular.module('crptFit.controllers', ['ionic'])
   userObj.then(function(response){
     self.userImg = response.data.profile_pic;
   })
-
+  //Returns users friends on the current page
   self.getFriends = function(){
     Message.getFriends();
   };
-
+  //Captures chat room id for comparison with chatstores
   self.showId =function(val){
     Message.capturedChatID(val);
   };
@@ -664,17 +664,17 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.getMessagesById = function(){
     self.sendHelp = Message.clearCap();
-  };
-
+  }; 
+  //Creates a new chatroom, closes friend popup, and forces a page reload so the new chat is immediately ready to use
   self.makeChat = function(userId){
     $scope.myPopup.close();
     self.chat = Message.makeChat(userId);
     $state.go($state.current, {}, {reload: true});
   };
-
+  //Posts message to database under correct chatId for retrieval, pushes message data and user image to retrun array for immediate render
   self.sendMessage = function(chatId, val){
     self.send = Message.sendMessage(chatId, val);
-    Message.messageUpdate(val);
+    Message.messageUpdate(val, self.userImg);
     self.sendTo.val = null;
     self.returnMessage = Message.messageToPage();
   };
@@ -682,7 +682,8 @@ angular.module('crptFit.controllers', ['ionic'])
   self.capChatId = function(chatId){
     Message.getRoom(chatId);
   };
-
+  //Called on page load, connects user to a chat room socket defined by the chatId, any user with chatID relation can join this room
+  //NOTE Refactor for group chat
   self.connect = function(id){
     var socket = io();
     socket.emit('connecting', id)
@@ -693,12 +694,12 @@ angular.module('crptFit.controllers', ['ionic'])
       socket.emit('disconnect', id)
     })
   };
-
+  //Sends message to socket connection in server to relay message content to all users in the socket room for live message update
   self.liveUpdate = function(chatId, message){
     var socket = io();
     socket.emit('chatroom id', chatId, message);
   };
-
+  //Opens separate window with friends list to create new chats
   $scope.showPopup = function() {
     $scope.data = {};
     $scope.myPopup = $ionicPopup.show({
