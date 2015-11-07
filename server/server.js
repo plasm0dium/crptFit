@@ -91,147 +91,20 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
-// Get All User's Tasks
-app.get('/auth/tasks', function (req,res) {
-  db.collection('Tasks').fetchByUser(req.user.attributes.id)
-  .then(function(tasks) {
-    res.json(tasks.toJSON());
-  });
-});
+// Get user tasks
+app.use('/auth', require('./routes/task'));
 
-// Get current user's completed Tasks
-app.get('/auth/usertask/:id', function (req, res){
-var userId = req.user.attributes.id;
-  db.model('User').fetchById({
-    id: userId
-  })
-  .then(function(user){
-    return Promise.all(user.relations.tasks.models.map(function(tasks){
-          if(tasks.attributes.complete === 1){
-            return tasks;
-          }
-      }))
-    .then(function(results){
-      res.json(results);
-    });
-  });
-});
+// Get user's friendlist
+app.use('/auth', require('./routes/friend'));
+
+// Get all users
+app.use('/auth', require('./routes/search'));
+
+// Get all the friend request
+app.use('/auth', require('./routes/friendrequest'));
 
 
-// Fetch Logged in Users Friends
-var storage = [];
-app.get('/auth/friends', function (req, res) {
-  db.collection('Friends').fetchByUser(req.user.attributes.id)
-  .then(function(friends) {
-    var friendsArray = friends.models;
-    for(var i = 0; i < friendsArray.length; i++ ) {
-      db.model('User').fetchById({
-        id: friendsArray[i].attributes.friends_id
-      })
-      .then(function(result) {
-        storage.push(result);
-      })
-    }})
-      .then(function() {
-        return res.json(storage);
-      }).then(function () {
-        storage = [];
-      });
-  });
 
-// Fetch a User's Clients
-var Cstorage = [];
-app.get('/auth/clients', ensureAuthenticated,function (req, res) {
-  db.collection('Clients').fetchByUser(req.user.attributes.id)
-  .then(function(clients) {
-    var clientsArray = clients.models;
-    for(var i = 0; i < clientsArray.length; i++ ) {
-      db.model('User').fetchById({
-        id: clientsArray[i].attributes.clients_id
-      })
-      .then(function(result) {
-        Cstorage.push(result);
-      })
-    }})
-      .then(function() {
-        return res.json(Cstorage);
-      }).then(function () {
-        Cstorage = [];
-      });
-});
-//Fetch a User's Trainers
-var Tstorage = [];
-app.get('/auth/trainers', ensureAuthenticated, function (req, res) {
-  db.collection('Trainers').fetchByUser(req.user.attributes.id)
-  .then(function(trainers) {
-    var trainersArray = trainers.models;
-    for(var i = 0; i < trainersArray.length; i++ ) {
-      db.model('User').fetchById({
-        id: trainersArray[i].attributes.trainer_id
-      })
-      .then(function(result) {
-        Tstorage.push(result);
-      })
-    }})
-      .then(function() {
-        return res.json(Tstorage);
-      }).then(function () {
-        Tstorage = [];
-      });
-});
-
-//Search a Friend's Friends
-  app.get('/auth/friends/:id', function (req, res) {
-    db.collection('Friends').fetchByUser(req.params.id)
-    .then(function(friends) {
-      var friendsArray = friends.models;
-      for(var i = 0; i < friendsArray.length; i++ ) {
-        db.model('User').fetchById({
-          id: friendsArray[i].attributes.friends_id
-        })
-        .then(function(result) {
-          storage.push(result);
-        })
-      }})
-        .then(function() {
-          return res.json(storage);
-        }).then(function () {
-          storage = [];
-        });
-    });
-
-//Search All Users to Add as Friend
-app.get('/auth/search/:id', function (req, res) {
-  var username = req.params.id;
-  db.collection('Users').searchByUsername(username)
-  .then(function (username) {
-    return Promise.all(username.models.map(function(friend){
-      return db.model('User').fetchById({
-        id: friend.attributes.id
-      });
-    }))
-      .then(function (results){
-        return res.json(results);
-      });
-  });
-});
-
-//Notifications for Pending Friend Requests
-app.get('/auth/friendrequests/', function (req, res) {
-  var userId = req.user.attributes.id;
-  db.collection('friendRequests').fetchByUser(userId)
-  .then(function(friendRequests) {
-    return Promise.all(friendRequests.models.map(function(friends) {
-      if(friends.attributes.status === 0 && friends.attributes.friend_req === 1) {
-        return db.model('User').fetchById({
-          id: friends.attributes.friend_id
-        });
-      }
-    })).then(function(result) {
-      res.json(result);
-    });
-  });
-});
 
 
 //Notifications for Pending Friend Requests
