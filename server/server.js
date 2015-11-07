@@ -57,7 +57,6 @@ app.use(session({
   saveUninitialized: true
 }));
 
-
 app.use(express.static(__dirname + '/../client/mobile/www'));
 
 app.use(morgan('dev'));
@@ -68,33 +67,9 @@ require('./passport')(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
-// Direct to Facebook Login
-app.get('/auth/facebook',
-  passport.authenticate('facebook', {
-    scope: ['public_profile', 'email', 'user_friends', 'user_birthday']
- }));
 
-// Facebook Auth Callback
-app.get('/auth/facebook/callback', function (req, res, next) {
-  passport.authenticate('facebook',
-    function(err, user, info) {
-      if (err) { return next(err); }
-      req.logIn(user, function(err) {
-        if (err) { return next(err); }
-        res.redirect( '/#/dash' );
-      });
-    })(req, res, next);
-});
-
-app.get('/dash', ensureAuthenticated, function (req,res) {
-  console.log('THIS USER IS LOGGED IN', req.user);
-  var user = req.user;
-  if(user) {
-    res.json(user);
-  } else {
-    res.redirect('/');
-  }
-});
+var Facebook = require('./routes/facebook');
+app.use('/auth', Facebook);
 
 // Fetch a Specific User by Id
 app.get('/auth/user/:id', function (req, res) {
