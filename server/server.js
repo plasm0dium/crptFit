@@ -108,51 +108,14 @@ app.use('/auth', require('./routes/friendconfirm'));
 // Send a friend request to user
 app.use('/auth', require('./routes/friendreq'));
 
+// Create new Chat Session
+app.use('/auth', require('./routes/createchat'));
+
+// Add message to chat session
+app.use('/auth', require('./routes/addmessage'));
 
 
 
-
-// Creates a Chat Session
-app.post('/auth/chat/add:id', function (req, res){
-  var chatId;
-  var userId1 = req.user.attributes.id;
-  var userId2 = req.params.id;
-  db.model('Chat').newChat({
-      created_at: new Date()
-    })
-    .save()
-    .then(function(result){
-      chatId = result.id;
-      db.model('Chatstore').newChatStore({
-        chat_id: result.id,
-        user_id: userId1,
-        created_at: new Date()
-      })
-    .save();
-    })
-    .then(function(){
-      db.model('Chatstore').newChatStore({
-        chat_id: chatId,
-        user_id: userId2,
-        created_at: new Date()
-      })
-      .save();
-    });
-});
-
-// Add Messages to chat session
-app.post('/auth/messages/add:id', function (req, res){
-  var userId = req.user.attributes.id;
-  var chatId = req.params.id;
-  var body = req.body.message;
-  db.model('Message').newMessage({
-    user_id: userId,
-    chat_id: chatId,
-    text: body,
-    created_at: new Date()
-  })
-  .save();
-});
 // Add Current Weight
 app.post('/auth/weight/:stat', function (req, res) {
   var userId = req.user.attributes.id;
