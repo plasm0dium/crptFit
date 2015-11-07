@@ -1,7 +1,7 @@
 var FacebookStrategy = require('passport-facebook').Strategy;
 var Auth = require('./auth');
 
-require('./mysql/models/user');
+require('../mysql/models/user');
 
 module.exports = function (passport) {
 
