@@ -22,6 +22,14 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         url: '/login',
         templateUrl: 'templates/login-tab.html'
 })
+  .state('messages-send-tab', {
+      url: '/message',
+        views: {
+        'app-nav': {
+          templateUrl: 'templates/messages-send-tab.html',
+        }
+      }
+    })
   //   .state('tab', {
   //   url: '/tab',
   //   abstract: true,
@@ -133,14 +141,6 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         }
       }
     })
-    .state('messages-send-tab', {
-      url: '/message',
-        views: {
-        'app-nav': {
-          templateUrl: 'templates/messages-send-tab.html',
-        }
-      }
-    })
     .state('social', {
       url: '/social',
         views: {
@@ -165,7 +165,23 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
           controller: 'CardsCtrl'
         }
       }
-    });
+    })
+    .state('about', {
+      url: '/about',
+        views: {
+          'app-nav' : {
+            templateUrl: 'templates/about.html',
+          }
+        }
+    })
+    .state('how-to', {
+      url: '/how-to',
+        views: {
+          'app-nav': {
+            templateUrl: '/templates/how-to.html'
+          }
+        }
+    })
   $urlRouterProvider.otherwise('/login');
 
 });

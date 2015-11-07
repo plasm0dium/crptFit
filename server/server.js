@@ -87,8 +87,8 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 });
 
 app.get('/dash', ensureAuthenticated, function (req,res) {
-  console.log('THIS USER IS LOGGED IN', req.user)
-  var user = req.user
+  console.log('THIS USER IS LOGGED IN', req.user);
+  var user = req.user;
   if(user) {
     res.json(user);
   } else {
@@ -439,6 +439,7 @@ db.model('User').fetchById({
   })
   .then(function(result) {
     return Promise.all(result.relations.chatstores.models.map(function(msg){
+      console.log("WHAT ARE THESE MESSAGES", msg);
       return db.model('Chat').fetchById(msg.attributes.chat_id);
     }))
     .then(function (results){
@@ -828,14 +829,10 @@ io.on('connection', function (socket){
   // new chat room
   socket.on('chatroom id', function(room, message){
     console.log(room, message)
-    socket.join(room);
     io.sockets.to(room).emit('message-append', room, message);
   })
   socket.on('disconnect', function(room){
-    socket.leave(room, function(err){
-      console.log(err)
-    });
-    console.log('leaving chat: should not double if dc', room);
+    socket.leave(room)
   })
 })
 //     db.model('Chat').fetchById(id)

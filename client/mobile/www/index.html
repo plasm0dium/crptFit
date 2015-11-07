@@ -7,7 +7,7 @@
     <link href="//code.ionicframework.com/nightly/css/ionic.css" rel="stylesheet">
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-
+    <link href="css/animate.css" rel="stylesheet">
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
@@ -36,23 +36,56 @@
     <ion-side-menus>
       <ion-side-menu side="left">
         <ion-content ng-controller="ProfileCtrl as ctrl" class="sideProfile">
-          <div class="profile-pic">
-            <img ng-src="{{ctrl.pic}}">
+          <div>
+            <img ng-src="{{ctrl.pic}}" class="profile-pic">
           </div>
           <div class="profile-name">
             <h2 style="color:white;">{{ctrl.username}}</h2>
           </div>
           <div>
-            <a class="ion-ios-shuffle-strong neon" href="#/dash"></a>
+            <a menu-close class="ion-ios-home neon" href="#/dash"></a>
           </div>
           <div>
             <p style="color:white;"><strong>Dashboard</strong></p>
+          </div>
+          <div>
+            <i class="eyeOf ion-eye hidey-eye"></i>
+            <p id="eye"></p> 
           </div>
         </ion-content>
       </ion-side-menu>
       <ion-side-menu side="right">
         <ion-content class="overAll">
-          <a class="item item-icon-right secondaryAll centerOut" style="color:white;" href="/logout">Log Out<i class="icon ion-chevron-right icon-accessory"></i></a>
+          <div class="row">
+            <div class="col col-33 col-offset-33">
+              <a menu-close class="icon ion-log-out neon" href="#/logout"></a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-33 col-offset-33 progText">
+              Log Out
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-33 col-offset-33">
+              <a menu-close class="icon ion-help neon" href="#/how-to"></a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-33 col-offset-33 progText">
+              How-To
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-33 col-offset-33">
+              <a menu-close class="icon ion-information-circled neon" href="#/about"></a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-33 col-offset-33 progText">
+              About Us
+            </div>
+          </div>     
         </ion-content>
       </ion-side-menu>
       <ion-side-menu-content class="sideNav" drag-content="false">
@@ -71,6 +104,7 @@
         <ion-nav-view name="app-nav"></ion-nav-view>
       </ion-side-menu-content>
     </ion-side-menus>
+    <ion-nav-view name="mess-nav"></ion-nav-view>
     </ion-nav-view>
   </body>
 </html>

@@ -27,7 +27,7 @@ angular.module('crptFit.services', [])
 
   return {
     getTaskHolder: function(val){
-      tasks.push({description:val})
+      tasks.push({description:val});
       return tasks;
     },
     finishTask : function(taskId, task){
@@ -38,18 +38,18 @@ angular.module('crptFit.services', [])
       tasks.splice(tasks.indexOf(task), 1);
     },
     getTasksList: function(){
-      tasks = [];
-      $http({
-        method: 'GET',
-        url: '/auth/tasks'
-      }).then(function(response){
-        response.data.forEach(function(x){
-          if(!x.complete){
-            tasks.push(x)
-          }
+        tasks = [];
+        $http({
+          method: 'GET',
+          url: '/auth/tasks'
+        }).then(function(response){
+          response.data.forEach(function(x){
+            if(!x.complete){
+              tasks.push(x);
+            }
+          });
         });
-      });
-      return tasks;
+        return tasks;
     },
     addTaskToClient : function(uId, val){
       $http({
@@ -161,13 +161,13 @@ angular.module('crptFit.services', [])
     messageList : function(){
       messageReturn = [];
       for(var key in messages){
-        if(messages[key] === parseInt(capChat)){
-          messageReturn.push(key);
+        if(messages[key][0] === parseInt(capChat)){
+          messageReturn.push([key, messages[key][1], messages[key][2], messages[key][3]]);
         }
       }
     },
     messageUpdate: function(mess){
-      messageReturn.push(mess);
+      messageReturn.push([mess, null, null, null]);
     },
     clearCap: function(){
       return capChat;
@@ -197,22 +197,28 @@ angular.module('crptFit.services', [])
     },
     getMessage : function(){
       //NOTE refactor for time complexity
+      //NOTE refactored for more time complexity, but more use, needs backend fix
       $http({
         method: 'GET',
         url: '/auth/chatsessions'
       }).then(function(response){
-          response.data.forEach(function(y){
-            y.chatstore.forEach(function(m){
-              // if(m.user_id !== 1){
-                friends.forEach(function(friend){
-                  if(friend.id === m.user_id){
-                    room_ids[y.id] = [friend.username, y.created_at, friend.profile_pic];
-                  }
+        console.log(response, 'response data');
+          response.data.forEach(function(messageParts){
+            messageParts.chatstore.forEach(function(session){
+            // if(m.user_id !== 1){
+              friends.forEach(function(friend){
+                if(friend.id === session.user_id){
+                  messageParts.message.forEach(function(innerMessage){
+                    if(innerMessage.user_id === session.user_id){
+                      messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, friend.username, friend.profile_pic];
+                    }else{
+                      messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, "Me", null]
+                    }
+                  room_ids[messageParts.id] = [friend.username, messageParts.created_at, friend.profile_pic];
                 });
-              // }
-            });
-            y.message.forEach(function(z){
-              messages[z.text] = y.id;
+                }
+              });
+            // }
             });
           });
       }, function(error){
@@ -237,7 +243,7 @@ angular.module('crptFit.services', [])
       }, function(error){
         console.log(error);
       });
-    },
+    }
   };
 }])
 
@@ -440,10 +446,10 @@ angular.module('crptFit.services', [])
   var userLng;
   return {
     returnMyLat: function () {
-      return userLat
+      return userLat;
     },
     returnMyLng: function () {
-      return userLng
+      return userLng;
     },
     matchCheck: function (userId) {
       $http({
@@ -451,7 +457,7 @@ angular.module('crptFit.services', [])
         url: 'auth/matchcheck' + userId
       }).then(function (response) {
 
-      })
+      });
     },
     postUsersLocation: function(latitude, longitude) {
       console.log('SERVICE LAT', latitude);
@@ -463,24 +469,22 @@ angular.module('crptFit.services', [])
           lat: latitude,
           lng: longitude
           }
-        })
+        });
       },
     onLeftSwipe: function(userId) {
-      console.log('ON LEFT SWIPE FIRED', userId)
       $http({
         method: 'POST',
         url: 'auth/leftswipe/' + userId,
-      })
+      });
     },
    onRightSwipe: function(userId) {
-     console.log('ON RIGHT SWIPE FIRED', userId)
      $http({
        method: 'POST',
        url: 'auth/rightswipe/' + userId
-     })
+     });
     },
     returnNearbyUsers: function () {
-      return nearbyUsers
+      return nearbyUsers;
     },
     getNearbyUsers: function() {
     $http({
@@ -488,12 +492,11 @@ angular.module('crptFit.services', [])
       url: '/auth/nearbyusers'
     })
     .then(function(response) {
-      nearbyUsers.push(response.data)
-    })
+      nearbyUsers.push(response.data);
+    });
   },
     getUsers: function(){
-      console.log(nearbyUsers)
       return nearbyUsers;
     }
-}
-}])
+};
+}]);
