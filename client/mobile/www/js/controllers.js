@@ -816,7 +816,6 @@ angular.module('crptFit.controllers', ['ionic'])
     });
 
     myPopup.then(function(res) {
-      console.log('Tapped!', res);
       return self.showSearchResults(res);
     });
   };
@@ -872,14 +871,11 @@ angular.module('crptFit.controllers', ['ionic'])
         });
       }
       else {
-        console.log('THIS IS SWOLE PATROL', users)
       angular.forEach(users.data, function(card) {
-        console.log('THIS IS CARD', card)
         if(card[0] === null) {
           return
         } else {
         self.addCard(card[0].profile_pic, card[0].username, card[0].id);
-        console.log('THESE ARE CARDS', self.cards)
       }
       });
     }
@@ -889,19 +885,15 @@ angular.module('crptFit.controllers', ['ionic'])
  self.addCards = function() {
      $http.get('/auth/nearbyusers').then(function(users) {
        self.cardsLoaded = true;
-       console.log(users.data)
        if(users.data.nearbyUsers === 'None') {
          alert('Cannot find new users in your area')
        }
        else {
-         console.log('THIS IS SWOLE PATROL', users)
        angular.forEach(users.data, function(card) {
-         console.log('THIS IS CARD', card)
          if(card[0] === null) {
            return
          } else {
          self.addCard(card[0].profile_pic, card[0].username, card[0].id);
-         console.log('THESE ARE CARDS', self.cards)
        }
        });
      }
@@ -911,7 +903,6 @@ angular.module('crptFit.controllers', ['ionic'])
   self.cardLike = function(card) {
     Finder.onRightSwipe(self.cards[0].id)
       $http.get('/auth/matchcheck/' + self.cards[0].id).then(function(response) {
-        console.log('THIS IS RESPONSE FROM matchCheck', response)
         if(response.data.match === true) {
           $ionicPopup.alert({
             title: 'You\'ve Found a Match!',
@@ -920,7 +911,6 @@ angular.module('crptFit.controllers', ['ionic'])
             //template: '<div class="popupImage"><img src="https://developer.apple.com/watch/human-interface-guidelines/icons-and-images/images/icon-and-image-large-icon-fitness.png"></div>'
      });
         } else {
-          console.log('NO MATCH!')
           return
         }
       })
