@@ -178,22 +178,19 @@ app.get('/auth/nearbyusers', function (req, res) {
               }));
               }
         //if no users are found nearby then user[0] will be undefined
-              }))
+      }));
             })).then(function(result) {
-              console.log(' 6 THIS IS USER IN LAST BLOCK', result)
               if(result === undefined) {
-                console.log('{nearbyUsers: None}')
-                res.json({nearbyUsers: 'None'})
-                return
+                res.json({nearbyUsers: 'None'});
+                return;
               } else {
-                console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', result)
                 res.json(result);
               }
-            })
-            })
-          })
-        })
-      })
+            });
+          });
+        });
+      });
+    });
 
 //On Right Swipe Check if Swiped User has Also Swiped Right on the User
 app.get('/auth/matchcheck/:id', function (req, res) {
@@ -812,60 +809,14 @@ server.listen(port, function(){
 
 
 io.on('connection', function (socket){
-  console.log('youser connected breh')
-  // var userObj = socket.client.request.user;
-  // var chatroomId;
-  // var newMessage;
-  // console.log(userObj, '<------ userobj, expect undef', 'will be null ------->', chatroomId)
-  // if (userObj !== undefined){
-  //   // emit user's facebook name
-  //   socket.emit('user name', {username: userObj.get('username')});
-  // }
-
   socket.on('connecting', function(room){
-    console.log(room)
     socket.join(room);
-  })
+  });
   // new chat room
   socket.on('chatroom id', function(room, message){
-    console.log(room, message)
     io.sockets.to(room).emit('message-append', room, message);
-  })
+  });
   socket.on('disconnect', function(room){
-    socket.leave(room)
-  })
-})
-//     db.model('Chat').fetchById(id)
-//   .then(function (id){
-//     return Promise.all(id.relations.message.models.map(function(message){
-//       return message;
-//     }))
-//   })
-//   .then(function (messages){
-//     messages.forEach(function (message){
-//       var messageObj = message.toJSON();
-//       db.model('User').fetchById(message.get('user_id'))
-//       .then(function (user){
-//         // console.log("LET ME SEE WHAT THIS IS", user);
-//         messageObj.name = user.get('username');
-//         socket.emit('new chat', messageObj);
-//         });
-//       });
-//     });
-//   });
-
-//   socket.on('new chat', function(chat){
-//     if(userObj){
-//       var messageObj;
-//       db.model('Message').newMessage(text, chatroomId, userObj)
-//       .then( function(message){
-//         messageObj = message.toJSON();
-//         return db.model('User').fetchById(messageObj.user_id);
-//       })
-//       .then(function(user){
-//         messageObj.name = user.get('username');
-//         io.to(chatroomId).emit('new chat', messageObj);
-//       })
-//     }
-//   });
-// });
+    socket.leave(room);
+  });
+});
