@@ -2,7 +2,8 @@
   <ion-content id="chat-background">
     <ion-list class="list">
       <li ng-repeat="message in ctrl.returnMessage track by $index" class="item item-avatar-left item-text-wrap overAll">
-         <img src="{{ctrl.userImg}}"/> <span class="text"> {{message}} </span>
+        <img ng-src="{{message[3]}}"/></span>
+        <span class="text"> {{message[0]}} </span>
      </li>
    </ion-list>
   </ion-content>
