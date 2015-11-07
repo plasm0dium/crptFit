@@ -1,7 +1,9 @@
 /* Empty. Add your own CSS if you like */
 img{
-  height: 200px;
-  width: 200px;
+  height: 50px;
+  width: 50px;
+  border-radius: 100%;
+  position: relative;
 }
 body, html{
   height: 100%;
@@ -10,19 +12,39 @@ body, html{
   background-color: black;
 }
 .loginImg{
-  background-image: url("../img/login.jpg");
+  background-image: url("../img/login.png");
   width: 100%;
   height: 100%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
-.mainlogo{
+#mainlogo{
+  height: 200px;
+  width: 200px;
+  border-radius: 100%;
+  position: relative;
   margin: 0 auto;
   margin-top: 20px;
 }
 .profile-pic{
   margin-top: 20px;
+  height: 100px;
+  width: 100px;
+}
+.profilePic {
+  height: 150px;
+  width: 150px;
+  border-radius: 100%;
+}
+.sideBar-pic{
+  height: 200px;
+  width: 200px;
+  border-radius: 100%;
+  border: 2px solid #25B3F4;
+}
+.sideBar-img-box{
+  margin-top: 2em;
 }
 .stats{
   margin: 10px auto 0;
@@ -71,7 +93,7 @@ body, html{
   color: white;
 }
 .genButton{
-  background-color: #E54C42; 
+  background-color: #E54C42;
 }
 .centerOut{
   margin-top: 12em;
@@ -98,7 +120,7 @@ body, html{
   text-align: center;
   padding: 10px;
   word-wrap: break-word;
-  line-height: 1em; 
+  line-height: 1em;
 }
 .taskInput{
   color: white;
@@ -109,8 +131,8 @@ body, html{
   display: inline-block;
   margin: -1px;
   width: 45px; /* 60*/
-  height: 45px; 
-  font-size:40px; 
+  height: 45px;
+  font-size:40px;
   -moz-border-radius:50%;
   -webkit-border-radius:50%;
   border-radius: 50%;
@@ -183,25 +205,71 @@ h1, h4, h5, h6{
   margin-bottom: 3em;
 }
 
-.bubble {
+.bubbleLeft {
   position: relative;
   width: 100%;
   min-height: 50px;
-  padding: 1px;
-  background: #2F2432;
+  padding: 5px;
+  background: #25B3F4;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
+  margin-bottom: 5px;
+  margin-left: 0px;
+}
+.bubbleLeftText {
+  position: relative;
+  border-style: solid;
+  border-width: 7px 20px 7px 0;
+  border-color: transparent #1A161D;
+  width: 0;
+  z-index: 1;
+  margin-top: -7px;
+  left: -20px;
+  top: 40px;
+}
+.bubbleRight {
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+  padding: 5px;
+  background: #C5CAE9;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
   box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
   margin-bottom: 5px;
 }
+.bubbleRight:after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-width: 7px 0 7px 20px;
+  border-color: transparent #C5CAE9;
+  display: block;
+  width: 0;
+  z-index: 1;
+  margin-top: -7px;
+  right: -20px;
+  top: 40px;
+}
+.noPadding {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  border: none !important;
+}
+.noBg {
+  background-color: transparent !important;
+}
 .text{
   color: #FFFFFF;
   text-align: justify;
+  font-size: 16px;
   font-weight: bold;
 }
 #chat-background {
-  background: #131010;
+  background: #1A161D;
 }
 .completedTask{
   font-weight: bold;
