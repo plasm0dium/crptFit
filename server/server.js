@@ -8,7 +8,7 @@ var app = express();
 var port = process.env.PORT || 8100;
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
-var geodist = require('geodist');
+
 
 require('./mysql/models/client');
 require('./mysql/models/friend');
@@ -25,9 +25,6 @@ require('./mysql/models/squat');
 require('./mysql/models/deadlift');
 require('./mysql/models/speed');
 require('./mysql/models/chatstore');
-require('./mysql/models/geolocation');
-require('./mysql/models/swipe');
-require('./mysql/models/match');
 
 require('./mysql/collections/clients');
 require('./mysql/collections/friends');
@@ -44,9 +41,7 @@ require('./mysql/collections/squats');
 require('./mysql/collections/deadlifts');
 require('./mysql/collections/speeds');
 require('./mysql/collections/chatstores');
-require('./mysql/collections/geolocations');
-require('./mysql/collections/swipes');
-require('./mysql/collections/matches');
+
 
 var session = require("express-session");
 app.use(session({
@@ -68,173 +63,26 @@ require('./passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-var Facebook = require('./routes/facebook');
-app.use('/auth', Facebook);
+// Authenticate with Facebook
+app.use('/auth', require('./routes/facebook'));
 
-// Fetch a Specific User by Id
-app.get('/auth/user/:id', function (req, res) {
-  var userId = req.params.id;
-  db.model('User').fetchById({
-    id: userId
-  })
-  .then(function(result) {
-    res.json(result.toJSON());
-  });
-});
+// Get user profile
+app.use('/auth', require('./routes/users'));
 
-//Fetches a User's Matches
-app.get('/auth/getmatches', function (req, res) {
-  var userId = req.user.attributes.id;
-  db.collection('Matches').fetchByUser(userId)
-  .then(function(results) {
-    console.log('THESE ARE RESULTS', results);
-    if(results.length === 0) {
-      res.json({matches: 'None'});
-    } else {
-      return Promise.all(results.models.map(function(match) {
-        return db.model('User').fetchById({
-          id: match.attributes.match_id
-        });
-      }))
-      .then(function(userObjects) {
-        console.log('THESE ARE YOUR MATCHES', userObjects);
-        res.json(userObjects);
-      });
-    }
-  });
-});
+// Get user's matches
+app.use('/auth', require('./routes/match'));
 
-//Fetch Nearest Users to Logged in User
-app.get('/auth/nearbyusers', function (req, res) {
-  var inputLat = req.user.relations.geolocations.models[0].attributes.lat;
-  var inputLng = req.user.relations.geolocations.models[0].attributes.lng;
-  var userId = req.user.attributes.id;
-  db.collection('Geolocations').fetchAll()
-  .then(function(results) {
-    //Find all user's with a 25 mile radius
-    return Promise.all(results.models.filter(function(model){
-      var users_lat = model.attributes.lat;
-      var users_lng = model.attributes.lng;
-      if(geodist({lat: inputLat, lon: inputLng },{lat: users_lat, lon: users_lng}) < 25 && model.attributes.user_id !== userId) {
-        return model;
-      }
-    }))
-    //Map the nearby users objects
-    .then(function(nearestUsers){
-      return Promise.all(nearestUsers.map(function(user) {
-        return db.model('User').fetchById({
-          id: user.attributes.user_id
-        });
-      }))
-        //Check if the nearby users are already in the Swipes table
-        //only return those who havent previously been swiped
-      .then(function(users) {
-        return Promise.all(users.map(function(user) {
-          var userId = req.user.attributes.id;
-          var swipedId = user.attributes.id;
-          return Promise.all(db.collection('Swipes').fetchBySwiped(userId, swipedId)
-          .then(function(result) {
-            if(result.length === 0) {
-              //if they don't exist in user's swipes save them first & return them
-              db.model('Swipe').newSwipe({
-                user_id: req.user.attributes.id,
-                swiped_id: user.attributes.id,
-                swiped: false,
-                swiped_left: false,
-                swiped_right: false
-              })
-              .save();
-              return [user];
-            } else {
-              return Promise.all(result.models.map(function(existingUser) {
-                if(existingUser.attributes.swiped === 0) {
-                  return user;
-                }
-              }));
-              }
-        //if no users are found nearby then user[0] will be undefined
-      }));
-            })).then(function(result) {
-              if(result === undefined) {
-                res.json({nearbyUsers: 'None'});
-                return;
-              } else {
-                res.json(result);
-              }
-            });
-          });
-        });
-      });
-    });
+// Get nearby users
+app.use('/auth', require('./routes/nearbyuser'));
 
-//On Right Swipe Check if Swiped User has Also Swiped Right on the User
-app.get('/auth/matchcheck/:id', function (req, res) {
-  var swipedId = req.user.attributes.id;
-  var userId = req.params.id;
-  db.collection('Swipes').fetchBySwiped(userId, swipedId)
-  .then(function(exists) {
-    if(exists.length === 0) {
-      res.json({match: false});
-    } else {
-      if(exists.models[0].attributes.swiped_right === 1) {
-          res.json({match: true});
-          db.model('Match').newMatch({
-            user_id: swipedId,
-            match_id: userId
-          })
-          .save()
-          .then(function () {
-          db.model('Match').newMatch({
-            user_id: userId,
-            match_id: swipedId
-            })
-            .save();
-          });
-      } else {
-        res.json({match: false});
-      }
-    }
-  });
-});
+// Swipe check if swiped user has also swiped right on the user
+app.use('/auth', require('./routes/matchcheck'));
 
-//News Feed Pulls Latest Completed Tasks of Friends
-var taskStore = [];
-app.get('/auth/newsfeed', function (req, res) {
-  db.collection('Friends').fetchByUser(req.user.attributes.id)
-  .then(function(users) {
-      return Promise.all(users.models.map(function(friend) {
-         return db.model('User').fetchById({
-          id: friend.attributes.friends_id
-        });
-      }));
-    })
-      .then(function(friendProfiles){
-        res.json(friendProfiles);
-      })
-      .then(function(friendTasks){
-        return Promise.all(friendTasks.map(function(model) {
-            model.relations.tasks.models.forEach(function(task){
-              if (task.attributes.complete === 1){
-                taskStore.push(task);
-              }
-            });
-         }));
-      })
-      .then(function(){
-        res.json(taskStore);
-      })
-      .then(function(){
-        taskStore = [];
-      });
-});
+// Pull newsfeed from completed tasks of friends
+app.use('/auth', require('./routes/newsfeed'));
 
-// Grab the logged in user's user object
-app.get('/auth/user', function(req, res){
- db.model('User').fetchById({id: req.user.attributes.id})
- .then(function(user){
-   res.json(user);
- });
-});
+// Get current user information
+app.use('/auth', require('./routes/user'));
 
 // Logout User
 app.get('/logout', function(req, res){
