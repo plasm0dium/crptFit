@@ -32,6 +32,11 @@ body, html{
   height: 100px;
   width: 100px;
 }
+.profilePic {
+  height: 150px;
+  width: 150px;
+  border-radius: 100%;
+}
 .stats{
   margin: 10px auto 0;
   display: block;

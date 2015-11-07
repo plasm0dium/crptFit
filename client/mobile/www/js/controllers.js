@@ -49,7 +49,7 @@ angular.module('crptFit.controllers', ['ionic'])
       }
     }
     return filtered;
-  }
+  };
 
   // Request the viewed user's object from the server and capture needed properties
   $http({
@@ -830,7 +830,7 @@ angular.module('crptFit.controllers', ['ionic'])
     myPopup.then(function(res) {
       console.log('Tapped!', res);
       return self.showSearchResults(res);
-    })
+    });
   };
 
 }])

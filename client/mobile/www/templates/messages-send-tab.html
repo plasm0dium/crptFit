@@ -1,4 +1,3 @@
-
 <ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getMessagesById(); ctrl.connect(ctrl.sendHelp)">
   <ion-content id="chat-background">
     <ion-list class="list">
@@ -15,7 +14,7 @@
             <input id="messageIn" class="messageInput" type="text" placeholder="Type here..." ng-model="ctrl.sendTo.val">
           </form>
           </div>
-          <button type="submit" class="messageHandle button button-small" ng-click="ctrl.liveUpdate(ctrl.sendHelp, ctrl.sendTo.val)">
+          <button type="submit" class="messageHandle button button-small button-assertive" ng-click="ctrl.liveUpdate(ctrl.sendHelp, ctrl.sendTo.val)">
             Send
           </button>
         </div>
