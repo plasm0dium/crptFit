@@ -15,8 +15,6 @@ require('./mysql/models/friend');
 require('./mysql/models/trainer');
 require('./mysql/models/task');
 require('./mysql/models/user');
-require('./mysql/models/friend_request');
-require('./mysql/models/client_request');
 require('./mysql/models/chat');
 require('./mysql/models/message');
 require('./mysql/models/weight');
@@ -31,8 +29,6 @@ require('./mysql/collections/friends');
 require('./mysql/collections/trainers');
 require('./mysql/collections/tasks');
 require('./mysql/collections/users');
-require('./mysql/collections/friend_requests');
-require('./mysql/collections/client_requests');
 require('./mysql/collections/chats');
 require('./mysql/collections/messages');
 require('./mysql/collections/weights');
@@ -103,43 +99,9 @@ app.use('/auth', require('./routes/search'));
 // Get all the friend request
 app.use('/auth', require('./routes/friendrequest'));
 
+// Get User chat room ID
+app.use('/auth', require('./routes/chatsession'));
 
-
-
-
-//Notifications for Pending Friend Requests
-app.get('/auth/clientrequests', function (req, res) {
-  var userId = req.user.attributes.id;
-  db.collection('clientRequests').fetchByUser(userId)
-  .then(function(clientRequests) {
-    return Promise.all(clientRequests.models.map(function(filtered) {
-      if(filtered.attributes.status === 0) {
-        return db.model('User').fetchById({
-          id: filtered.attributes.client_id
-        });
-      }
-    })).then(function(result) {
-      res.json(result);
-    });
-    });
-});
-
-// Fetch a User's Chat Sessions
-app.get('/auth/chatsessions', function(req, res) {
-var userId = req.user.attributes.id;
-db.model('User').fetchById({
-  id: userId
-  })
-  .then(function(result) {
-    return Promise.all(result.relations.chatstores.models.map(function(msg){
-      console.log("WHAT ARE THESE MESSAGES", msg);
-      return db.model('Chat').fetchById(msg.attributes.chat_id);
-    }))
-    .then(function (results){
-      res.json(results);
-    });
-  });
-});
 
 // Fetch User's Weights
 app.get('/auth/weight/:id', function (req, res){
