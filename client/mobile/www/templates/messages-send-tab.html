@@ -1,8 +1,4 @@
 <ion-view title="Message" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getMessagesById(); ctrl.connect(ctrl.sendHelp)">
-<ion-header-bar class='overAll bar-custom'>
-  <a href="#/messages" class="ion-arrow-left-a"></a>
-  Chat
-</ion-header-bar>
   <ion-content id="chat-background" has-header="true" padding="true">
     <div class="item item-text-wrap bubble" ng-repeat="message in ctrl.returnMessage track by $index">
       <span class="item item-avatar"><img ng-src="{{message[3]}}" /></span>
@@ -14,8 +10,8 @@
         <div class="item item-input-inset">
           <div class="item-input-wrapper">
             <form>
-            <input id="messageIn" class="messageInput" type="text" placeholder="Type here..." ng-model="ctrl.sendTo.val">
-          </form>
+              <input id="messageIn" class="messageInput" type="text" placeholder="Type here..." ng-model="ctrl.sendTo.val">
+            </form>
           </div>
           <button type="submit" class="messageHandle button button-small" ng-click="ctrl.liveUpdate(ctrl.sendHelp, ctrl.sendTo.val)">
             Send

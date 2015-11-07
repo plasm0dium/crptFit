@@ -25,24 +25,21 @@ angular.module('crptFit.services', [])
         method: 'POST',
         url: '/auth/task/complete/' + taskId,
       });
-      console.log(task, 'clicked');
       tasks.splice(tasks.indexOf(task), 1);
     },
     getTasksList: function(){
-      console.log(tasks, 'this is tasks as soon as its clicked')
-        tasks = [];
-        $http({
-          method: 'GET',
-          url: '/auth/tasks'
-        }).then(function(response){
-          response.data.forEach(function(x){
-            if(!x.complete){
-              tasks.push(x)
-            }
-          });
-            console.log("Tasks returned from server:", response.data);
-          });
-          return tasks;
+      tasks = [];
+      $http({
+        method: 'GET',
+        url: '/auth/tasks'
+      }).then(function(response){
+        response.data.forEach(function(x){
+          if(!x.complete){
+            tasks.push(x)
+          }
+        });
+      });
+      return tasks;
     },
     addTaskToClient : function(uId, val){
       $http({
@@ -192,14 +189,12 @@ angular.module('crptFit.services', [])
 .factory('Message', ['$http', function($http){
   var messages = {};
   var messageReturn = [];
-  //get user message table from db
   var room_ids = {};
   var capChat;
   var friends = [];
   return {
     messageToPage : function(){
       newRet = messageReturn;
-      console.log('LOOKING FOR THE DOUBLER', newRet)
       return newRet;
     },
     messageList : function(){
@@ -211,7 +206,7 @@ angular.module('crptFit.services', [])
       }
     },
     messageUpdate: function(mess){
-      messageReturn.push(mess);
+      messageReturn.push([mess, null, null, null]);
     },
     clearCap: function(){
       return capChat;
@@ -248,23 +243,20 @@ angular.module('crptFit.services', [])
         method: 'GET',
         url: '/auth/chatsessions'
       }).then(function(response){
-        console.log(response, 'response data');
           response.data.forEach(function(messageParts){
             messageParts.chatstore.forEach(function(session){
-              // if(m.user_id !== 1){
-                friends.forEach(function(friend){
-                  if(friend.id === session.user_id){
-                    messageParts.message.forEach(function(innerMessage){
-                      if(innerMessage.user_id === session.user_id){
-                        messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, friend.username, friend.profile_pic];
-                      }else{
-                        messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, "Me", null]
-                      }
+              friends.forEach(function(friend){
+                if(friend.id === session.user_id){
+                  messageParts.message.forEach(function(innerMessage){
+                    if(innerMessage.user_id === session.user_id){
+                      messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, friend.username, friend.profile_pic];
+                    }else{
+                      messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, "Me", null]
+                    }
                     room_ids[messageParts.id] = [friend.username, messageParts.created_at, friend.profile_pic];
                   });
-                  }
-                });
-              // }
+                }
+              });
             });
           });
       }, function(error){
@@ -276,9 +268,7 @@ angular.module('crptFit.services', [])
       $http({
         method: 'GET',
         url: '/auth/chat/get' + chatId
-      }).then(function(response){
-
-      });
+      })
     },
     sendMessage: function(id, val){
       console.log(id);
@@ -301,7 +291,6 @@ angular.module('crptFit.services', [])
   var bench = [];
   var dead = [];
   var squatHold = [];
-  //all functions need integration with db
   //NOTE Commented out functions in this section are experimental weekly views and are not ready for deploy
   return {
     getStr : function(){
@@ -355,7 +344,6 @@ angular.module('crptFit.services', [])
       weight.push(val);
       // }
     },
-    //all functions below here need to be tested and found working
     postBnch: function(stat){
       $http({
         method: 'POST',

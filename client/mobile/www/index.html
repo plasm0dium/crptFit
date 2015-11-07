@@ -18,7 +18,6 @@
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
 
-    <!-- your app's js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular-cookies.min.js"> </script>
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
@@ -33,78 +32,75 @@
   </head>
   <body ng-app="crptFit">
     <ion-nav-view>
-    <ion-side-menus>
-      <ion-side-menu side="left">
-        <ion-content ng-controller="ProfileCtrl as ctrl" class="sideProfile">
-          <div class="profile-pic">
-            <img ng-src="{{ctrl.pic}}">
-          </div>
-          <div class="profile-name">
-            <h2 style="color:white;">{{ctrl.username}}</h2>
-          </div>
-          <div>
-            <a menu-close class="ion-ios-home neon" href="#/dash"></a>
-          </div>
-          <div>
-            <p style="color:white;"><strong>Dashboard</strong></p>
-          </div>
-          <div>
-            <i class="eyeOf ion-eye hidey-eye"></i>
-            <p id="eye"></p> 
-          </div>
-        </ion-content>
-      </ion-side-menu>
-      <ion-side-menu side="right">
-        <ion-content class="overAll">
-          <div class="row">
-            <div class="col col-33 col-offset-33">
-              <a menu-close class="icon ion-log-out neon" href="#/logout"></a>
+      <ion-side-menus>
+        <ion-side-menu side="left">
+          <ion-content ng-controller="ProfileCtrl as ctrl" class="sideProfile">
+            <div class="profile-pic">
+              <img ng-src="{{ctrl.pic}}">
             </div>
-          </div>
-          <div class="row">
-            <div class="col col-33 col-offset-33 progText">
-              Log Out
+            <div class="profile-name">
+              <h2 style="color:white;">{{ctrl.username}}</h2>
             </div>
-          </div>
-          <div class="row">
-            <div class="col col-33 col-offset-33">
-              <a menu-close class="icon ion-help neon" href="#/how-to"></a>
+            <div>
+              <a menu-close class="item item-icon-right secondaryAll" href="#/dash"><span style="color:white"><strong>Dashboard</span></strong><i class="icon ion-chevron-right icon-accessory"></i></a>
             </div>
-          </div>
-          <div class="row">
-            <div class="col col-33 col-offset-33 progText">
-              How-To
+            <div>
+              <i class="eyeOf ion-eye hidey-eye"></i>
+              <p id="eye"></p> 
             </div>
-          </div>
-          <div class="row">
-            <div class="col col-33 col-offset-33">
-              <a menu-close class="icon ion-information-circled neon" href="#/about"></a>
+          </ion-content>
+        </ion-side-menu>
+        <ion-side-menu side="right">
+          <ion-content class="overAll">
+            <div class="row">
+              <div class="col col-33 col-offset-33">
+                <a menu-close class="icon ion-log-out neon" href="#/logout"></a>
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col col-33 col-offset-33 progText">
-              About Us
+            <div class="row">
+              <div class="col col-33 col-offset-33 progText">
+                Log Out
+              </div>
             </div>
-          </div>     
-        </ion-content>
-      </ion-side-menu>
-      <ion-side-menu-content class="sideNav" drag-content="false">
-        <ion-nav-bar class="nav-title-slide-ios7 bar-custom">
-          <ion-nav-buttons side="left">
-            <button class="button button-icon button-clear ion-navicon-round" menu-toggle="left"></button>
-          </ion-nav-buttons>
-          <ion-nav-buttons side="right">
-            <button class="button button-icon button-clear ion-ios-gear" menu-toggle="right"></button>
-          </ion-nav-buttons>
-          <!-- controlls back function from nested views -->
-          <ion-nav-back-button>
-          </ion-nav-back-button>
-        </ion-nav-bar>
-        <!-- main view controller -->
-        <ion-nav-view name="app-nav"></ion-nav-view>
-      </ion-side-menu-content>
-    </ion-side-menus>
-    <ion-nav-view name="mess-nav"></ion-nav-view>
+            <div class="row">
+              <div class="col col-33 col-offset-33">
+                <a menu-close class="icon ion-help neon" href="#/how-to"></a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col col-33 col-offset-33 progText">
+                How-To
+              </div>
+            </div>
+            <div class="row">
+              <div class="col col-33 col-offset-33">
+                <a menu-close class="icon ion-information-circled neon" href="#/about"></a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col col-33 col-offset-33 progText">
+                About Us
+              </div>
+            </div>     
+          </ion-content>
+        </ion-side-menu>
+        <ion-side-menu-content class="sideNav" drag-content="false">
+          <ion-nav-bar class="nav-title-slide-ios7 bar-custom">
+            <ion-nav-buttons side="left">
+              <button class="button button-icon button-clear ion-navicon-round" menu-toggle="left"></button>
+            </ion-nav-buttons>
+            <ion-nav-buttons side="right">
+              <button class="button button-icon button-clear ion-ios-gear" menu-toggle="right"></button>
+            </ion-nav-buttons>
+            <ion-nav-back-button>
+            </ion-nav-back-button>
+          </ion-nav-bar>
+          <!-- main view controller -->
+          <ion-nav-view name="app-nav"></ion-nav-view>
+        </ion-side-menu-content>
+      </ion-side-menus>
+      <!-- secondary view controller -->
+      <ion-nav-view name="mess-nav"></ion-nav-view>
     </ion-nav-view>
   </body>
 </html>

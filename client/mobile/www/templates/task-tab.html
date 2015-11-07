@@ -1,6 +1,6 @@
 <ion-view title="Tasks" ng-controller="ProgressCtrlTask as ctrl" ng-init="ctrl.startTasks()" class="overAll">
   <ion-content>
-  <p style="color:white;">tap to complete</p>
+    <p style="color:white;">tap to complete</p>
     <div ng-repeat="task in ctrl.tasks track by $index" ng-click="ctrl.toggle(task)" ng-class="{taskCom : task.toggled}">
       <div class="taskBox" ng-click="ctrl.finishTask(task.id, task)">
         {{task.description}}
@@ -13,8 +13,7 @@
           <div class="item-input-wrapper overAll">
             <input class="messageInput overAll taskInput" style="color:white;" type="text" placeholder="Enter Task Here..." ng-model="ctrl.sendTo.val">
           </div>
-          <button type="submit" class="button button-assertive" ng-click="ctrl.createTask(ctrl.sendTo.val)">
-            Add Task
+          <button type="submit" class="button button-assertive" ng-click="ctrl.createTask(ctrl.sendTo.val)">Add Task
           </button>
         </div>
       </div>

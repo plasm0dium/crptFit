@@ -177,57 +177,56 @@ angular.module('crptFit.controllers', ['ionic'])
   benchProgress.uId = null;
   benchProgress.getUid();
 
- $scope.chartConfig = {
-         options: {
-           chart: {
-             backgroundColor: '#000',
-             // plotBackgroundColor: '#25B3F4',
-             type: 'spline',
-             style: {
-                 fontFamily: 'serif',
-                 backgroundColor: '#FFFEFF'
-             }
-           }
-         },
-         xAxis: {
-           gridLineColor: '#FFFEFF',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           },
-           title: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           }
-         },
-         yAxis: {
-           gridLineColor: '#FFFEFF',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           },
-           title: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           }
-         },
-         series: [{
-           data: benchProgress.Bench
-         }],
-         title: {
-           text: 'Benchpress',
-           style: {
-             "color": "#FFFEFF"
-           }
-         },
-         loading: false
-        };
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        backgroundColor: '#000',
+          type: 'spline',
+          style: {
+            fontFamily: 'serif',
+            backgroundColor: '#FFFEFF'
+          }
+      }
+    },
+    xAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    yAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    series: [{
+      data: benchProgress.Bench
+    }],
+    title: {
+      text: 'Benchpress',
+      style: {
+        "color": "#FFFEFF"
+      }
+    },
+    loading: false
+  };
 }])
 
 // Start of DEADLIFT PROGRESS CTRL ============================================
@@ -267,57 +266,56 @@ angular.module('crptFit.controllers', ['ionic'])
 
   deadliftProgress.getUid();
 
- $scope.chartConfig = {
-         options: {
-           chart: {
-             backgroundColor: '#000',
-             // plotBackgroundColor: '#25B3F4',
-             type: 'spline',
-             style: {
-                 fontFamily: 'serif',
-                 backgroundColor: '#FFFEFF'
-             }
-           }
-         },
-         xAxis: {
-           gridLineColor: '#FFFEFF',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           },
-           title: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           }
-         },
-         yAxis: {
-           gridLineColor: '#FFFEFF',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           },
-           title: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           }
-         },
-         series: [{
-           data: deadliftProgress.Dead
-         }],
-         title: {
-           text: 'Deadlift',
-           style: {
-             "color": "#FFFEFF"
-           }
-         },
-         loading: false
-        };
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        backgroundColor: '#000',
+        type: 'spline',
+        style: {
+          fontFamily: 'serif',
+          backgroundColor: '#FFFEFF'
+        }
+      }
+    },
+    xAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    yAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    series: [{
+      data: deadliftProgress.Dead
+    }],
+    title: {
+      text: 'Deadlift',
+      style: {
+        "color": "#FFFEFF"
+      }
+    },
+    loading: false
+  };
 }])
 
 // Start of SQUAT PROGRESS CTRL ===============================================
@@ -358,56 +356,55 @@ angular.module('crptFit.controllers', ['ionic'])
   squatProgress.getUid();
 
   $scope.chartConfig = {
-         options: {
-           chart: {
-             backgroundColor: '#000',
-             // plotBackgroundColor: '#25B3F4',
-             type: 'spline',
-             style: {
-                 fontFamily: 'serif',
-                 backgroundColor: '#FFFEFF'
-             }
-           }
-         },
-         xAxis: {
-           gridLineColor: '#FFFEFF',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           },
-           title: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           }
-         },
-         yAxis: {
-           gridLineColor: '#FFFEFF',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           },
-           title: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           }
-         },
-         series: [{
-           data: squatProgress.Squat
-         }],
-         title: {
-           text: 'Squats',
-           style: {
-             "color": "#FFFEFF"
-           }
-         },
-         loading: false
-        };
+    options: {
+      chart: {
+        backgroundColor: '#000',
+        type: 'spline',
+        style: {
+          fontFamily: 'serif',
+          backgroundColor: '#FFFEFF'
+        }
+      }
+    },
+    xAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    yAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    series: [{
+      data: squatProgress.Squat
+    }],
+    title: {
+      text: 'Squats',
+      style: {
+        "color": "#FFFEFF"
+      }
+    },
+    loading: false
+  };
 }])
 
 // Start of SPEED PROGRESS CTRL ===============================================
@@ -454,56 +451,55 @@ angular.module('crptFit.controllers', ['ionic'])
   speedProgress.getUid();
 
   $scope.chartConfig = {
-         options: {
-           chart: {
-             backgroundColor: '#000',
-             // plotBackgroundColor: '#25B3F4',
-             type: 'spline',
-             style: {
-                 fontFamily: 'serif',
-                 backgroundColor: '#FFFEFF'
-             }
-           }
-         },
-         xAxis: {
-           gridLineColor: '#FFFEFF',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           },
-           title: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           }
-         },
-         yAxis: {
-           gridLineColor: '#FFFEFF',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           },
-           title: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           }
-         },
-         series: [{
-           data: speedProgress.Speed
-         }],
-         title: {
-           text: 'Speed',
-           style: {
-             "color": "#FFFEFF"
-           }
-         },
-         loading: false
-        };
+    options: {
+      chart: {
+        backgroundColor: '#000',
+        type: 'spline',
+        style: {
+          fontFamily: 'serif',
+          backgroundColor: '#FFFEFF'
+        }
+      }
+    },
+    xAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    yAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+     },
+     series: [{
+      data: speedProgress.Speed
+    }],
+    title: {
+      text: 'Speed',
+      style: {
+        "color": "#FFFEFF"
+      }
+    },
+    loading: false
+  };
 }])
 
 // Start of WEIGHT PROGRESS CTRL ==============================================
@@ -541,59 +537,58 @@ angular.module('crptFit.controllers', ['ionic'])
     weightProgress.Weight = Progress.getWgt();
   };
 
-    weightProgress.getUid();
+  weightProgress.getUid();
 
-    $scope.chartConfig = {
-         options: {
-           chart: {
-             backgroundColor: '#000',
-             // plotBackgroundColor: '#25B3F4',
-             type: 'spline',
-             style: {
-                 fontFamily: 'serif',
-                 backgroundColor: '#FFFEFF'
-             }
-           }
-         },
-         xAxis: {
-           gridLineColor: '#FFFEFF',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           },
-           title: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           }
-         },
-         yAxis: {
-           gridLineColor: '#FFFEFF',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           },
-           title: {
-             style: {
-               "color": "#FFFEFF"
-             }
-           }
-         },
-         series: [{
-           data:  weightProgress.Weight
-         }],
-         title: {
-           text: 'Weight',
-           style: {
-             "color": "#FFFEFF"
-           }
-         },
-         loading: false
-        };
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        backgroundColor: '#000',
+        type: 'spline',
+        style: {
+          fontFamily: 'serif',
+          backgroundColor: '#FFFEFF'
+        }
+      }
+    },
+    xAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    yAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    series: [{
+      data:  weightProgress.Weight
+    }],
+    title: {
+      text: 'Weight',
+        style: {
+          "color": "#FFFEFF"
+        }
+    },
+    loading: false
+  };
 }])
 
 // Start of TASKS CTRL ========================================================
@@ -630,7 +625,6 @@ angular.module('crptFit.controllers', ['ionic'])
 //=============================================================================
 
 .controller('MessagesCtrl', ['$scope','$state', '$location', '$ionicPopup', 'Message', 'Social', 'User', function($scope, $state, $location, $ionicPopup, Message, Social, User) {
-//NOTE Refactor me
   var self = this;
   var userObj = User.getUserObject();
   
@@ -639,6 +633,7 @@ angular.module('crptFit.controllers', ['ionic'])
   self.sendTo = {
     val: null
   };
+
   self.search = Social.friendsList();
   self.userImg;
   self.friendImg = Message.getFriends();
@@ -650,19 +645,6 @@ angular.module('crptFit.controllers', ['ionic'])
   userObj.then(function(response){
     self.userImg = response.data.profile_pic;
   })
-  // self.sortedImage = function(){
-  //   self.forSort = Message.messageToPage();
-  //   self.sortName = Message.captureMessages();
-  //   console.log(self.forSort, self.sortName,'making our way there')
-  //   for(var i = 0; i < self.forSort.length; i++){
-  //     for(var key in self.sortName){
-  //       console.log(self.forSort[i][2], key)
-  //       if(parseInt(key) === self.forSort[i][2]){
-          
-  //       }
-  //     }
-  //   }
-  // }
   self.getFriends = function(){
     Message.getFriends();
   };
@@ -690,7 +672,6 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   self.sendMessage = function(chatId, val){
-    console.log(chatId, val)
     self.send = Message.sendMessage(chatId, val);
     Message.messageUpdate(val)
     self.sendTo.val = null;
@@ -703,22 +684,18 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.connect = function(id){
     var socket = io();
-    console.log(id, 'this is what im passing')
-    console.log('LOOKING TO CONNECTION')
     socket.emit('connecting', id)
     socket.on('message-append', function(id, message){
-      console.log(id, message)
       self.sendMessage(id, message)
     })
     $scope.$on('$ionicView.leave', function(event){
-      console.log('the dc event actually fired', id)
       socket.emit('disconnect', id)
     })
   };
 
   self.liveUpdate = function(chatId, message){
     var socket = io();
-      socket.emit('chatroom id', chatId, message);
+    socket.emit('chatroom id', chatId, message);
   };
 
   $scope.showPopup = function() {
