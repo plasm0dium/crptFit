@@ -1,6 +1,11 @@
 angular.module('crptFit.services', [])
-// Start of Logged in User Factory ====================================================
-.factory('User', ['$http', '$q', function($http, $q){
+
+// Start of USER FACTORY ======================================================
+//=============================================================================
+
+.factory('User', ['$http', function($http){
+
+  // Return a promise, holding a user object, for controllers
   var getUserObject = function(){
     return $http({
       method: 'get',
@@ -12,9 +17,14 @@ angular.module('crptFit.services', [])
     getUserObject: getUserObject
   };
 }])
-// Start of Tasks Factory ====================================================
+
+// Start of TASKS FACTORY =====================================================
+//=============================================================================
+
 .factory('Tasks', ['$http', function($http){
+
   var tasks = [];
+
   return {
     getTaskHolder: function(val){
       tasks.push({description:val});
@@ -25,7 +35,6 @@ angular.module('crptFit.services', [])
         method: 'POST',
         url: '/auth/task/complete/' + taskId,
       });
-      console.log(task, 'clicked');
       tasks.splice(tasks.indexOf(task), 1);
     },
     getTasksList: function(){
@@ -59,13 +68,14 @@ angular.module('crptFit.services', [])
     }
   };
 }])
-// Start of Social Factory ====================================================
+
+// Start of SOCIAL FACTORY ====================================================
+//=============================================================================
+
 .factory('Social', ['$http', function($http){
-  // Set up functions for ajax
+
   var friends = [];
   var matches = [];
-  var clients = [];
-  var trainers = [];
   var searchResults = [];
   var savedUserID;
   var friendsPendingRequest = [];
@@ -78,7 +88,6 @@ angular.module('crptFit.services', [])
       return savedUserID;
     },
     friendsList: function(){
-      // Grab friends and store it in the friends array above (refactor - DRY)
       $http({
         method: 'GET',
         url: '/auth/friends'
@@ -119,65 +128,14 @@ angular.module('crptFit.services', [])
       });
       return matches
     },
-    clientsList: function(){
-      // This function needs the proper AJAX request
-      // Grab clients and store them in the clients array above (refactor - DRY)
-      $http({
-        method: 'GET',
-        url: '/auth/clients'
-      })
-      .then(function(response){
-        clients = response.data;
-      },function(error){
-        console.log(error);
-      });
-      return clients;
-    },
-    getClientsLength: function(){
-      return clients.length;
-    },
-    addClient: function(clientId){
-      // This function needs the proper AJAX request
-      $http({
-        method: 'POST',
-        url: '/auth/clients/add:' + clientId
-      });
-      this.clientsList();
-    },
-    trainersList: function(){
-      // This function needs the proper AJAX request
-      $http({
-        method: 'GET',
-        url: '/auth/trainers'
-      })
-      .then(function(response){
-        trainers = response.data;
-        console.log("Trainers :", response.data);
-      }, function(error){
-        console.log(error);
-      });
-      return trainers;
-    },
-    getTrainersLength: function(){
-      return trainers.length;
-    },
-    sendTrainerRequest: function(){
-      // This function needs the proper AJAX request
-    },
-    addTrainer: function(trainer){
-      // This function needs the proper AJAX request
-      trainers.push(trainer);
-    },
     searchResultsList: function(username){
       $http({
         method: 'GET',
         url: '/auth/search/' + username
       })
       .then(function(response){
-        console.log("inside of the service calling SRL:", response.data)
         return response.data;
       }).then(function(response){
-        console.log("final part of SRL from service:", response);
         searchResults = response;
         return searchResults;
       });
@@ -185,7 +143,9 @@ angular.module('crptFit.services', [])
   };
 }])
 
-// Start of Messages Factory ====================================================
+// Start of MESSAGES FACTORY ====================================================
+//=============================================================================
+
 .factory('Message', ['$http', function($http){
   var messages = {};
   var messageReturn = [];
@@ -196,7 +156,6 @@ angular.module('crptFit.services', [])
   return {
     messageToPage : function(){
       newRet = messageReturn;
-      console.log('LOOKING FOR THE DOUBLER', newRet)
       return newRet;
     },
     messageList : function(){
@@ -231,10 +190,8 @@ angular.module('crptFit.services', [])
         url: '/auth/friends'
       })
       .then(function(response){
-        console.log(response.data);
         friends = response.data;
       }, function(error){
-        console.log(error);
       });
       return friends;
     },
@@ -248,20 +205,20 @@ angular.module('crptFit.services', [])
         console.log(response, 'response data');
           response.data.forEach(function(messageParts){
             messageParts.chatstore.forEach(function(session){
-              // if(m.user_id !== 1){
-                friends.forEach(function(friend){
-                  if(friend.id === session.user_id){
-                    messageParts.message.forEach(function(innerMessage){
-                      if(innerMessage.user_id === session.user_id){
-                        messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, friend.username, friend.profile_pic];
-                      }else{
-                        messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, "Me", null]
-                      }
-                    room_ids[messageParts.id] = [friend.username, messageParts.created_at, friend.profile_pic];
-                  });
-                  }
+            // if(m.user_id !== 1){
+              friends.forEach(function(friend){
+                if(friend.id === session.user_id){
+                  messageParts.message.forEach(function(innerMessage){
+                    if(innerMessage.user_id === session.user_id){
+                      messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, friend.username, friend.profile_pic];
+                    }else{
+                      messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, "Me", null]
+                    }
+                  room_ids[messageParts.id] = [friend.username, messageParts.created_at, friend.profile_pic];
                 });
-              // }
+                }
+              });
+            // }
             });
           });
       }, function(error){
@@ -278,19 +235,21 @@ angular.module('crptFit.services', [])
       });
     },
     sendMessage: function(id, val){
-      console.log(id);
       $http({
         method: 'POST',
         url: '/auth/messages/add' + id,
         data: {message: val}
       }).then(function(data){
-        console.log(data);
       }, function(error){
         console.log(error);
       });
     }
   };
 }])
+
+// Start of PROGRESS FACTORY ====================================================
+//=============================================================================
+
 .factory('Progress', ['$http', function($http){
   var strength = [];
   var weight = [];
@@ -477,6 +436,9 @@ angular.module('crptFit.services', [])
     }
   };
 }])
+
+// Start of MATCHES FACTORY ===================================================
+//=============================================================================
 
 .factory('Finder', ['$http', '$q', '$window', function($http, $q, $window) {
   var nearbyUsers = [];

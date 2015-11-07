@@ -1,5 +1,5 @@
-# crptFit
-> Pending cool quote...
+# FFit
+> Finding fitness partners, with similar fitness goals, has never been this easy...
 
 ## Team
 
