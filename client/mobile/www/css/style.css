@@ -147,12 +147,13 @@ body, html{
   width: 100%;
   min-height: 50px;
   padding: 5px;
-  background: #1A161D;
+  background: #25B3F4;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
   box-shadow: -2px 2px 2px 0 rgba( 178, 178, 178, .4 );
   margin-bottom: 5px;
+  margin-left: 0px;
 }
 .bubbleLeftText {
   position: relative;
