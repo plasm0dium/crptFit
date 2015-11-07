@@ -57,17 +57,23 @@ Nearbyuser.get('/nearbyusers', function (req, res) {
               }
         //if no users are found nearby then user[0] will be undefined
       }));
-            })).then(function(result) {
-              if(result === undefined) {
-                res.json({nearbyUsers: 'None'});
-                return;
-              } else {
-                res.json(result);
-              }
-            });
+          }))
+          .then(function(result) {
+            return Promise.all(result.filter(function (user) {
+              return user[0] !== undefined;
+            }))
+            .then(function (finalResult) {
+              if(finalResult.length === 0) {
+              res.json({nearbyUsers: 'None'});
+              return;
+            } else {
+              res.json(finalResult);
+            }
           });
         });
       });
     });
+  });
+});
 
 module.exports = Nearbyuser;
