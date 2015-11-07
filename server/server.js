@@ -10,10 +10,7 @@ var server = app.listen(port);
 var io = require('socket.io').listen(server);
 
 
-require('./mysql/models/client');
 require('./mysql/models/friend');
-require('./mysql/models/trainer');
-require('./mysql/models/task');
 require('./mysql/models/user');
 require('./mysql/models/chat');
 require('./mysql/models/message');
@@ -24,10 +21,7 @@ require('./mysql/models/deadlift');
 require('./mysql/models/speed');
 require('./mysql/models/chatstore');
 
-require('./mysql/collections/clients');
 require('./mysql/collections/friends');
-require('./mysql/collections/trainers');
-require('./mysql/collections/tasks');
 require('./mysql/collections/users');
 require('./mysql/collections/chats');
 require('./mysql/collections/messages');
@@ -102,211 +96,21 @@ app.use('/auth', require('./routes/friendrequest'));
 // Get User chat room ID
 app.use('/auth', require('./routes/chatsession'));
 
+// Get user progress
+app.use('/auth', require('./routes/progress'));
 
-// Fetch User's Weights
-app.get('/auth/weight/:id', function (req, res){
-  var userId = req.params.id;
-  db.collection('Weights').fetchByUser(userId)
-  .then(function(user){
-    res.json(user.toJSON());
-  });
-});
+// Post task from user
+app.use('/auth', require('./routes/posttask'));
 
-// Fetch User's Benchpress
-app.get('/auth/benchpress/:id', function (req, res){
-  var userId = req.params.id;
-  db.collection('BenchPress').fetchByUser(userId)
-  .then(function(user){
-    res.json(user.toJSON());
-  });
-});
+// Confirm friend request from user
+app.use('/auth', require('./routes/friendconfirm'));
 
-// Fetch User's Deadlifts
-app.get('/auth/deadlift/:id', function (req, res){
-  var userId = req.params.id;
-  db.collection('DeadLifts').fetchByUser(userId)
-  .then(function(user){
-    res.json(user.toJSON());
-  });
-});
+// Send a friend request to user
+app.use('/auth', require('./routes/friendreq'));
 
-// Fetch User's Squats
-app.get('/auth/squats/:id', function (req, res){
-  var userId = req.params.id;
-  db.collection('Squats').fetchByUser(userId)
-  .then(function(user){
-    res.json(user.toJSON());
-  });
-});
 
-// Fetch User's Speeds
-app.get('/auth/speeds/:id', function (req, res){
-  var userId = req.params.id;
-  db.collection('Speeds').fetchByUser(userId)
-  .then(function(user){
-    res.json(user.toJSON());
-  });
-});
 
-// Add a New Task to User
-app.post('/auth/tasks/:taskname', function (req, res) {
-  var task = req.params.taskname;
-  db.model('Task').newTask({
-    description: task,
-    complete: false,
-    user_id: req.user.attributes.id
-  })
-  .save()
-  .then(function(task) {
-    return task;
-  })
-  .catch(function (err) {
-  });
-});
 
-// Add a New Task to Another User
-app.post('/auth/tasks/add:userid', function (req, res) {
-  var userId = req.params.userid;
-  var taskname = req.body.taskname;
-  db.model('Task').newTask({
-    description: taskname,
-    complete: false,
-    user_id: userId
-  })
-  .save()
-  .catch(function (err) {
-  });
-});
-
-// Update User's Task to Complete
-app.post('/auth/task/complete/:id', function(req, res) {
-  var taskId = req.params.id;
-  db.model('Task').completeTask(taskId)
-  .then(function () {
-  })
-  .catch(function (err) {
-    return err;
-  });
-});
-
-// Confirm Client Request and adds Client to User
-app.post('/auth/confirmclient', function (req, res) {
-  var userId = req.user.attributes.id;
-  var clientId = req.params.id;
-   db.model('clientRequest').acceptClientRequest({
-    user_id: userId,
-    client_id: clientId
-  })
-  .then(function (){
-    db.model('clientRequest').acceptClientRequest({
-      user_id: clientId,
-      client_id: userId
-    });
-  })
-  .then(function (){
-  db.model('Client').newClient({
-    client_id: userId,
-    user_id: clientId
-  })
-  .save();
-  })
-  .then(function (){
-  db.model('Trainer').newTrainer({
-    trainer_id: clientId,
-    user_id: user_id
-  })
-  .save();
-  })
-  .then(function(newClient) {
-    return newClient;
-  })
-  .catch(function(err) {
-    return err;
-  });
-});
-
-// Send Client Request
-app.post('/auth/clientreq/add:id', function (req, res){
-  var userId = req.user.attributes.id;
-  var clientId = req.params.id;
-  db.model('clientRequest').newClientRequest({
-    client_id: clientId,
-    user_id: userId,
-    status: 0,
-    created_at: new Date()
-  })
-  .save()
-  .then(function () {
-    db.model('clientRequest').newClientRequest({
-      client_id: userId,
-      user_id: clientId,
-      status: 0,
-      created_at: new Date()
-    })
-    .save();
-  })
-  .catch(function (err){
-    return err;
-  });
-});
-
-// Send a friend request
-app.post('/auth/friendreq/:id', function (req, res){
-  var userId = req.user.attributes.id;
-  var friendId = req.params.id;
-  db.model('friendRequest').newFriendRequest({
-    friend_id: friendId,
-    user_id: userId,
-    status: 0,
-    friend_req: false
-  })
-  .save()
-  .then(function (){
-    db.model('friendRequest').newFriendRequest({
-      friend_id: userId,
-      user_id: friendId,
-      status: 0,
-      friend_req: true
-    })
-    .save();
-  })
-  .catch(function(err){
-    return err;
-  });
-});
-
-// Confirm friend request and add each other as friend
-app.post('/auth/confirmfriend/:id', function (req, res){
-  var userId = req.user.attributes.id;
-  var friendId = req.params.id;
-  db.model('friendRequest').acceptFriendRequest({
-    friend_id: friendId,
-    user_id: userId
-  })
-  .then(function () {
-    db.model('friendRequest').acceptFriendRequest({
-      friend_id: userId,
-      user_id: friendId
-    });
-  })
-  .then(function(){
-     db.model('Friend').newFriend({
-      friends_id: friendId,
-      user_id: userId
-    })
-    .save();
-  })
-  .then(function() {
-    db.model('Friend').newFriend({
-      friends_id: userId,
-      user_id: friendId
-    })
-    .save();
-  })
-  .catch(function(err){
-    return err;
-  });
-});
 
 // Creates a Chat Session
 app.post('/auth/chat/add:id', function (req, res){
