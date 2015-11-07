@@ -16,10 +16,8 @@ Newsfeed.get('/newsfeed', function (req, res) {
         });
       }));
     })
-      .then(function(friendProfiles){
-        res.json(friendProfiles);
-      })
       .then(function(friendTasks){
+        res.json(friendTasks);
         return Promise.all(friendTasks.map(function(model) {
             model.relations.tasks.models.forEach(function(task){
               if (task.attributes.complete === 1){
