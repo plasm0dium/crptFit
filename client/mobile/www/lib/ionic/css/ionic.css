@@ -40,7 +40,7 @@
   text-rendering: auto;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; 
+  -moz-osx-font-smoothing: grayscale;
   color: #25B3F4;
 }
 
@@ -4654,16 +4654,14 @@ ion-tabs.tabs-color-active-dark .tab-item {
  * --------------------------------------------------
  */
 .item {
-  border-color: #ddd;
-  background-color: #fff;
+
   color: #444;
   position: relative;
   z-index: 2;
   display: block;
   margin: -1px;
-  padding: 16px;
-  border-width: 1px;
-  border-style: solid;
+  font-family: "Helvetica Neue", "Roboto", "Segoe UI", sans-serif;
+
   font-size: 16px; }
   .item h2 {
     margin: 0 0 2px 0;

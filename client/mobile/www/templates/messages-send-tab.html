@@ -1,6 +1,6 @@
 <ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getMessagesById(); ctrl.connect(ctrl.sendHelp)">
   <ion-content id="chat-background" has-header="true" padding="true">
-    <div class="item item-text-wrap bubble" ng-repeat="message in ctrl.returnMessage track by $index">
+    <div class="item chat-bubble" ng-repeat="message in ctrl.returnMessage track by $index">
       <span class="item item-avatar"><img ng-src="{{ctrl.userImg}}" /></span>
       <span class="text"> :{{message}} </span>
     </div>

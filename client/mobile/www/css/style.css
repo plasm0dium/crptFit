@@ -5,6 +5,7 @@ img{
 }
 body, html{
   height: 100%;
+  font-family: "Helvetica Neue", "Roboto", "Segoe UI", sans-serif;
 }
 .highcharts-background{
   background-color: black;
@@ -52,6 +53,7 @@ body, html{
 .social-icon{
   /*position: absolute;*/
   top: 5px;
+  font-size: 18px;
 }
 .bar-custom{
   color:  #FFFEFF;
@@ -113,10 +115,10 @@ body, html{
   border-radius: 50%;
   border: 1px solid #25B3F4;
   text-align:center;
-  width: 100px;
-  height: 100px;
-  font-size: 64px; /* 64, originally 60 */
-  padding: 16px;
+  width: 60px;
+  height: 60px;
+  /*font-size: 60px; /* 64, originally 60 */
+  padding: 9px;
 }
 .dashBox{
 }
@@ -149,12 +151,12 @@ body, html{
   margin-bottom: 5px;
 }
 .text{
-  color: #FFFFFF;
+  color: black;
   text-align: justify;
   font-weight: bold;
 }
 #chat-background {
-  background: #131010;
+  background:  #1A161D;
 }
 .completedTask{
   font-weight: bold;
@@ -342,8 +344,8 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
    flex-direction: row;
    -webkit-align-items: center;
    align-items: center;
-   -webkit-justify-content: left;
-   justify-content: left;
+   -webkit-justify-content: center;
+   justify-content: center;
 }
 .custom-icon-left {
   font-size: 64px;
@@ -363,4 +365,57 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
 }
 h3, .name-wrap {
 padding-left: 10px
+}
+.chat-bubble {
+  border-radius: 5px;
+  display: inline-block;
+  padding: 10px 18px;
+  position: relative;
+  margin: 10px;
+  max-width: 80%;
+}
+
+.chat-bubble:before {
+  content: "\00a0";
+  display: block;
+  height: 16px;
+  width: 9px;
+  position: absolute;
+  bottom: -7.5px;
+}
+
+.chat-bubble.left {
+  background-color: #e6e5eb;
+  float: left;
+  margin-left: 55px;
+}
+
+.chat-bubble.left:before {
+  background-color: #e6e5eb;
+  left: 10px;
+  -webkit-transform: rotate(70deg) skew(5deg);
+}
+
+.message-wrapper {
+  position: relative;
+}
+
+.message-wrapper:last-child {
+  margin-bottom: 10px;
+}
+.wrap-newsfeed {
+  padding-top: 3px;
+  padding-bottom: 10px;
+  display: -webkit-flex;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;
+   -webkit-align-items: left;
+   align-items: left;
+   -webkit-justify-content: left;
+   justify-content: left;
+}
+
+.icon-text {
+  font-size: 70%;
 }
