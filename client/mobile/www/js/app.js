@@ -25,7 +25,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
   .state('messages-send-tab', {
       url: '/message',
         views: {
-        'mess-nav': {
+        'app-nav': {
           templateUrl: 'templates/messages-send-tab.html',
         }
       }

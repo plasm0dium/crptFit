@@ -641,15 +641,28 @@ angular.module('crptFit.controllers', ['ionic'])
   };
   self.search = Social.friendsList();
   self.userImg;
-  self.friendImg;
+  self.friendImg = Message.getFriends();
   self.messageToPage = Message.captureMessages();
   self.returnMessage = Message.messageToPage();
   self.captureMessages = Message.messageList();
 
+
   userObj.then(function(response){
     self.userImg = response.data.profile_pic;
-  });
-
+  })
+  // self.sortedImage = function(){
+  //   self.forSort = Message.messageToPage();
+  //   self.sortName = Message.captureMessages();
+  //   console.log(self.forSort, self.sortName,'making our way there')
+  //   for(var i = 0; i < self.forSort.length; i++){
+  //     for(var key in self.sortName){
+  //       console.log(self.forSort[i][2], key)
+  //       if(parseInt(key) === self.forSort[i][2]){
+          
+  //       }
+  //     }
+  //   }
+  // }
   self.getFriends = function(){
     Message.getFriends();
   };
