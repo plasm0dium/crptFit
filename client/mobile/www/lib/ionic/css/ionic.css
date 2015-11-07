@@ -4777,6 +4777,7 @@ ion-tabs.tabs-color-active-dark .tab-item {
   text-overflow: ellipsis;
   white-space: normal; }
 
+
 a.item {
   color: inherit;
   text-decoration: none; }
@@ -5079,10 +5080,13 @@ a.item-content {
 
 .item-image {
   padding: 0;
-  text-align: center; }
+  text-align: center;
+
+}
   .item-image img:first-child, .item-image .list-img {
     width: 100%;
-    vertical-align: middle; }
+    vertical-align: middle;
+  }
 
 .item-body {
   overflow: auto;
@@ -6460,7 +6464,7 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
     color: #333;
     text-indent: 0.01px;
     text-overflow: '';
-    white-space: nowrap;
+    /*white-space: nowrap;*/
     font-size: 14px;
     cursor: pointer;
     direction: rtl; }

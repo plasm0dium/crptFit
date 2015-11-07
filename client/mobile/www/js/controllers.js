@@ -241,7 +241,7 @@ angular.module('crptFit.controllers', ['ionic'])
          },
          loading: false
         };
-
+}])
 // Start of DEADLIFT PROGRESS CTRL ============================================
 //=============================================================================
 
@@ -331,6 +331,8 @@ angular.module('crptFit.controllers', ['ionic'])
          loading: false
         };
 
+    }])
+
 // Start of SQUAT PROGRESS CTRL ===============================================
 //=============================================================================
 
@@ -419,6 +421,7 @@ angular.module('crptFit.controllers', ['ionic'])
          },
          loading: false
         };
+      }])
 // Start of SPEED PROGRESS CTRL ===============================================
 //=============================================================================
 
@@ -513,6 +516,7 @@ angular.module('crptFit.controllers', ['ionic'])
          },
          loading: false
         };
+      }])
 // Start of WEIGHT PROGRESS CTRL ==============================================
 //=============================================================================
 
@@ -590,12 +594,6 @@ angular.module('crptFit.controllers', ['ionic'])
              }
            }
          },
-         title: {
-           style: {
-             "color": "#2E2432"
-           }
-         }
-       },
        series: [{
          data:  weightProgress.Weight
        }],

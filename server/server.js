@@ -179,7 +179,8 @@ app.get('/auth/nearbyusers', function (req, res) {
               }
         //if no users are found nearby then user[0] will be undefined
               }))
-            })).then(function(result) {
+          }))
+          .then(function(result) {
             return Promise.all(result.filter(function (user) {
               return user[0] !== undefined
             }))
