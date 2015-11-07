@@ -793,9 +793,10 @@ app.post('/auth/rightswipe/:id', function (req,res) {
   });
 });
 
-app.post('auth/updateprofile', function(req, res) {
+app.post('/auth/updateprofile', function(req, res) {
   var userId = req.user.attributes.id;
   var newProfile = req.body.profile;
+  console.log('THIS IS PROFILE TO BE Updated', newProfile)
   db.model('User').updateProfile(userId, newProfile);
 });
 

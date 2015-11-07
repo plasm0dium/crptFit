@@ -474,3 +474,26 @@ padding-left: 10px
 .pending {
   background-color: tomato;
 }
+
+.social {
+  margin:auto;
+  align-content: center;
+  justify-content: center;
+}
+.bio {
+  color: black
+}
+.left {
+  text-align: left;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  align-content: center;
+}
+.bio-text {
+    color: black;
+}
+.edit {
+  background-color: #25B3F4;
+  color: white;
+}

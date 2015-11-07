@@ -78,12 +78,24 @@ angular.module('crptFit.controllers', ['ionic'])
   userProfile.feed;
   userProfile.pic;
   userProfile.Id;
+  userProfile.bio;
+  userProfile.update = {
+    val: null
+  };
+
+  //Edits the user's Bio which is viewable by other users
+  userProfile.updateProfile = function(bio) {
+    console.log('HIT update')
+    Social.updateBio(bio)
+    userProfile.update.val = null
+  };
 
   // Helper function for setting profile info
-  var setUserInfo = function(picUrl, username, id){
+  var setUserInfo = function(picUrl, username, id, bio){
      userProfile.pic = picUrl;
      userProfile.username = username;
      userProfile.Id = id;
+     userProfile.bio = bio
   };
 
   // Return a user's completed tasks
@@ -116,7 +128,8 @@ angular.module('crptFit.controllers', ['ionic'])
     var picUrl = response.data.profile_pic;
     var userName = response.data.username;
     var currentUserId = response.data.id;
-    setUserInfo(picUrl, userName, currentUserId);
+    var userProfile = response.data.profile;
+    setUserInfo(picUrl, userName, currentUserId, userProfile);
   });
 }])
 
@@ -180,40 +193,40 @@ angular.module('crptFit.controllers', ['ionic'])
  $scope.chartConfig = {
          options: {
            chart: {
-             backgroundColor: '#000',
+             backgroundColor: '#e5e5e5',
              // plotBackgroundColor: '#25B3F4',
              type: 'spline',
              style: {
                  fontFamily: 'serif',
-                 backgroundColor: '#FFFEFF'
+                 backgroundColor: '#2E2432'
              }
            }
          },
          xAxis: {
-           gridLineColor: '#FFFEFF',
+           gridLineColor: '#2E2432',
            gridLineDashStyle: 'solid',
            labels: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            },
            title: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            }
          },
          yAxis: {
-           gridLineColor: '#FFFEFF',
+           gridLineColor: '#2E2432',
            gridLineDashStyle: 'solid',
            labels: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            },
            title: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            }
          },
@@ -223,7 +236,7 @@ angular.module('crptFit.controllers', ['ionic'])
          title: {
            text: 'Benchpress',
            style: {
-             "color": "#FFFEFF"
+             "color": "#2E2432"
            }
          },
          loading: false
@@ -270,40 +283,40 @@ angular.module('crptFit.controllers', ['ionic'])
  $scope.chartConfig = {
          options: {
            chart: {
-             backgroundColor: '#000',
+             backgroundColor: '#e5e5e5',
              // plotBackgroundColor: '#25B3F4',
              type: 'spline',
              style: {
                  fontFamily: 'serif',
-                 backgroundColor: '#FFFEFF'
+                 backgroundColor: '#2E2432'
              }
            }
          },
          xAxis: {
-           gridLineColor: '#FFFEFF',
+           gridLineColor: '#2E2432',
            gridLineDashStyle: 'solid',
            labels: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            },
            title: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            }
          },
          yAxis: {
-           gridLineColor: '#FFFEFF',
+           gridLineColor: '#2E2432',
            gridLineDashStyle: 'solid',
            labels: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            },
            title: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            }
          },
@@ -313,7 +326,7 @@ angular.module('crptFit.controllers', ['ionic'])
          title: {
            text: 'Deadlift',
            style: {
-             "color": "#FFFEFF"
+             "color": "#2E2432"
            }
          },
          loading: false
@@ -360,40 +373,40 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.chartConfig = {
          options: {
            chart: {
-             backgroundColor: '#000',
+             backgroundColor: '#e5e5e5',
              // plotBackgroundColor: '#25B3F4',
              type: 'spline',
              style: {
                  fontFamily: 'serif',
-                 backgroundColor: '#FFFEFF'
+                 backgroundColor: '#2E2432'
              }
            }
          },
          xAxis: {
-           gridLineColor: '#FFFEFF',
+           gridLineColor: '#2E2432',
            gridLineDashStyle: 'solid',
            labels: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            },
            title: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            }
          },
          yAxis: {
-           gridLineColor: '#FFFEFF',
+           gridLineColor: '#2E2432',
            gridLineDashStyle: 'solid',
            labels: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            },
            title: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            }
          },
@@ -403,7 +416,7 @@ angular.module('crptFit.controllers', ['ionic'])
          title: {
            text: 'Squats',
            style: {
-             "color": "#FFFEFF"
+             "color": "#2E2432"
            }
          },
          loading: false
@@ -456,40 +469,40 @@ angular.module('crptFit.controllers', ['ionic'])
   $scope.chartConfig = {
          options: {
            chart: {
-             backgroundColor: '#000',
+             backgroundColor: '#e5e5e5',
              // plotBackgroundColor: '#25B3F4',
              type: 'spline',
              style: {
                  fontFamily: 'serif',
-                 backgroundColor: '#FFFEFF'
+                 backgroundColor: '#2E2432'
              }
            }
          },
          xAxis: {
-           gridLineColor: '#FFFEFF',
+           gridLineColor: '#2E2432',
            gridLineDashStyle: 'solid',
            labels: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            },
            title: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            }
          },
          yAxis: {
-           gridLineColor: '#FFFEFF',
+           gridLineColor: '#2E2432',
            gridLineDashStyle: 'solid',
            labels: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            },
            title: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            }
          },
@@ -499,7 +512,7 @@ angular.module('crptFit.controllers', ['ionic'])
          title: {
            text: 'Speed',
            style: {
-             "color": "#FFFEFF"
+             "color": "#2E2432"
            }
          },
          loading: false
@@ -546,40 +559,40 @@ angular.module('crptFit.controllers', ['ionic'])
     $scope.chartConfig = {
          options: {
            chart: {
-             backgroundColor: '#000',
+             backgroundColor: '#e5e5e5',
              // plotBackgroundColor: '#25B3F4',
              type: 'spline',
              style: {
                  fontFamily: 'serif',
-                 backgroundColor: '#FFFEFF'
+                 backgroundColor: '#2E2432'
              }
            }
          },
          xAxis: {
-           gridLineColor: '#FFFEFF',
+           gridLineColor: '#2E2432',
            gridLineDashStyle: 'solid',
            labels: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            },
            title: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            }
          },
          yAxis: {
-           gridLineColor: '#FFFEFF',
+           gridLineColor: '#2E2432',
            gridLineDashStyle: 'solid',
            labels: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            },
            title: {
              style: {
-               "color": "#FFFEFF"
+               "color": "#2E2432"
              }
            }
          },
@@ -589,7 +602,7 @@ angular.module('crptFit.controllers', ['ionic'])
          title: {
            text: 'Weight',
            style: {
-             "color": "#FFFEFF"
+             "color": "#2E2432"
            }
          },
          loading: false
@@ -859,39 +872,15 @@ angular.module('crptFit.controllers', ['ionic'])
       });
   };
 
-  self.addCard = function(image, username, id) {
+  self.addCard = function(image, username, id, profile) {
     var newCard;
     newCard = {
       'image': image,
       'name' : username,
-      'id' : id
+      'id' : id,
+      'profile': profile
     };
     self.cards.unshift(angular.extend({}, newCard));
-  };
-
-  self.addCards = function() {
-    $http.get('/auth/nearbyusers').then(function(users) {
-      self.cardsLoaded = true;
-      if(users.data.nearbyUsers === 'None') {
-        $ionicPopup.alert({
-          title: 'We Couldnt Find New Users in Your Area',
-          template: 'Please Check Back Later',
-          cssClass: 'matchPopup'
-        });
-      }
-      else {
-        console.log('THIS IS SWOLE PATROL', users)
-      angular.forEach(users.data, function(card) {
-        console.log('THIS IS CARD', card)
-        if(card[0] === null) {
-          return
-        } else {
-        self.addCard(card[0].profile_pic, card[0].username, card[0].id);
-        console.log('THESE ARE CARDS', self.cards)
-      }
-      });
-    }
-    });
   };
 
  self.addCards = function() {
@@ -912,7 +901,7 @@ angular.module('crptFit.controllers', ['ionic'])
          if(card[0] === null) {
            return
          } else {
-         self.addCard(card[0].profile_pic, card[0].username, card[0].id);
+         self.addCard(card[0].profile_pic, card[0].username, card[0].id, card[0].profile);
          console.log('THESE ARE CARDS', self.cards)
        }
        });
