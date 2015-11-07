@@ -173,8 +173,16 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         'app-nav': {
           templateUrl: '/templates/how-to.html'
         }
+
+  })
+  .state('profile-edit', {
+    url: '/profile-edit',
+      views: {
+        'app-nav': {
+          templateUrl: '/templates/profile-edit.html'
+        }
       }
-  });
- 
+  })
+
   $urlRouterProvider.otherwise('/login');
 });

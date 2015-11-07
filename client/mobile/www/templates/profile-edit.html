@@ -1,0 +1,23 @@
+<ion-view view-title="Edit Your Bio" ng-controller="ProfileCtrl as ctrl" class="overAll">
+  <ion-content has-header="true">
+    <div class="list card bio">
+      <div class="item item-divider">Bio</div>
+  <div class="item item-body">
+<h4 class="bio-text">About: Your Bio is viewable by other Fitify users on your profile page as well as on. Share what you love to stay active active!</h4>
+<h3>Your Current Bio:</h3>
+<h4 class="bio-text">{{ctrl.bio}}</h4>
+</div>
+    <!-- </a> -->
+</div>
+  <div class="list messageFoot2">
+    <div class="item item-input-inset">
+      <div class="item-input-wrapper">
+        <input class="messageInput taskInput"  type="text" placeholder="Edit Bio Here..." ng-model="ctrl.update.val">
+      </div>
+      <button type="submit" class="button button edit" ng-click="ctrl.updateProfile(ctrl.update.val)">
+        Edit
+      </button>
+    </div>
+  </div>
+  </ion-content>
+</ion-view>

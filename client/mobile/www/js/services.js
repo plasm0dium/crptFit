@@ -141,6 +141,15 @@ angular.module('crptFit.services', [])
         searchResults = response;
         return searchResults;
       });
+    },
+    updateBio: function(bio) {
+      $http({
+        method: 'POST',
+        url: '/auth/updateprofile',
+        data: {
+          profile: bio
+        }
+      })
     }
   };
 }])

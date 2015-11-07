@@ -179,21 +179,24 @@ app.get('/auth/nearbyusers', function (req, res) {
               }
         //if no users are found nearby then user[0] will be undefined
               }))
-            })).then(function(result) {
-              console.log(' 6 THIS IS USER IN LAST BLOCK', result)
-              if(result === undefined) {
-                console.log('{nearbyUsers: None}')
-                res.json({nearbyUsers: 'None'})
-                return
-              } else {
-                console.log(' 7 THESE ARE USERS WHO HAVENT BEEN SWIPED YET AND ARE RES>JSON', result)
-                res.json(result);
-              }
-            })
-            })
+          }))
+          .then(function(result) {
+            return Promise.all(result.filter(function (user) {
+              return user[0] !== undefined
+            }))
+            .then(function (finalResult) {
+              if(finalResult.length === 0) {
+              res.json({nearbyUsers: 'None'})
+              return
+            } else {
+              res.json(finalResult);
+            }
           })
         })
       })
+    })
+  })
+})
 
 //On Right Swipe Check if Swiped User has Also Swiped Right on the User
 app.get('/auth/matchcheck/:id', function (req, res) {
@@ -802,9 +805,10 @@ app.post('/auth/rightswipe/:id', function (req,res) {
   });
 });
 
-app.post('auth/updateprofile', function(req, res) {
+app.post('/auth/updateprofile', function(req, res) {
   var userId = req.user.attributes.id;
   var newProfile = req.body.profile;
+  console.log('THIS IS PROFILE TO BE Updated', newProfile)
   db.model('User').updateProfile(userId, newProfile);
 });
 

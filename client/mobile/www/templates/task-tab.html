@@ -1,19 +1,28 @@
-<ion-view title="Tasks" ng-controller="ProgressCtrlTask as ctrl" ng-init="ctrl.startTasks()" class="overAll">
+<ion-view title="Challenges" ng-controller="ProgressCtrlTask as ctrl" ng-init="ctrl.startTasks()" class="overAll">
   <ion-content>
     <p style="color:white;">tap to complete</p>
-    <div ng-repeat="task in ctrl.tasks track by $index" ng-click="ctrl.toggle(task)" ng-class="{taskCom : task.toggled}">
-      <div class="taskBox" ng-click="ctrl.finishTask(task.id, task)">
-        {{task.description}}
-      </div>
+    <div ng-repeat="task in ctrl.tasks track by $index" ng-click="ctrl.toggle(task)"  ng-class="{taskCom : task.toggled}" >
+      <div class="list card assertive" ng-click="ctrl.finishTask(task.id, task)">
+    <div class="item item-divider pending">Pending Challenge</div>
+    <div class="item item-body">
+      <!-- <a class="item item-avatar task"> -->
+    <div class="wrap">
+    <div class="item">{{task.description}} !</div>
+    </div>
+      <!-- </a> -->
+    </div>
+    </div>
     </div>
   </ion-content>
     <ion-footer-bar class="messageFoot overAll">
-      <div class="list messageFoot2 overAll">
-        <div class="item item-input-inset overAll">
-          <div class="item-input-wrapper overAll">
-            <input class="messageInput overAll taskInput" style="color:white;" type="text" placeholder="Enter Task Here..." ng-model="ctrl.sendTo.val">
+      <div class="list messageFoot2">
+        <div class="item item-input-inset">
+          <div class="item-input-wrapper">
+            <input class="messageInput taskInput"  type="text" placeholder="Enter a New Challenge Here..." ng-model="ctrl.sendTo.val">
           </div>
-          <button type="submit" class="button button-assertive" ng-click="ctrl.createTask(ctrl.sendTo.val)">Add Task
+
+          <button type="submit" class="button button-assertive" ng-click="ctrl.createTask(ctrl.sendTo.val)">
+            Add Challenge
           </button>
         </div>
       </div>
