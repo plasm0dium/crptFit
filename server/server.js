@@ -683,7 +683,6 @@ app.post('/auth/chat/add:id', function (req, res){
       .save();
     })
     .then(function(){
-      console.log('I MADE IT TO THE NEW MESSAGE PART, HOPEFULLY SOMETHING IS LOGGED HERE', userId1, chatId)
       db.model('Message').newMessage({
         user_id: userId1,
         chat_id: chatId,

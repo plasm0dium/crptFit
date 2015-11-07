@@ -189,59 +189,59 @@ angular.module('crptFit.controllers', ['ionic'])
 
   benchProgress.uId = null;
   benchProgress.getUid();
-
- $scope.chartConfig = {
-         options: {
-           chart: {
-             backgroundColor: '#e5e5e5',
-             // plotBackgroundColor: '#25B3F4',
-             type: 'spline',
-             style: {
-                 fontFamily: 'serif',
-                 backgroundColor: '#2E2432'
-             }
-           }
-         },
-         xAxis: {
-           gridLineColor: '#2E2432',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#2E2432"
-             }
-           },
-           title: {
-             style: {
-               "color": "#2E2432"
-             }
-           }
-         },
-         yAxis: {
-           gridLineColor: '#2E2432',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#2E2432"
-             }
-           },
-           title: {
-             style: {
-               "color": "#2E2432"
-             }
-           }
-         },
-         series: [{
-           data: benchProgress.Bench
-         }],
-         title: {
-           text: 'Benchpress',
-           style: {
-             "color": "#2E2432"
-           }
-         },
-         loading: false
-        };
+  //Controls Highchart options 
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        backgroundColor: '#000',
+          type: 'spline',
+          style: {
+            fontFamily: 'serif',
+            backgroundColor: '#FFFEFF'
+          }
+      }
+    },
+    xAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    yAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    series: [{
+      data: benchProgress.Bench
+    }],
+    title: {
+      text: 'Benchpress',
+      style: {
+        "color": "#FFFEFF"
+      }
+    },
+    loading: false
+  };
 }])
+
 // Start of DEADLIFT PROGRESS CTRL ============================================
 //=============================================================================
 
@@ -278,60 +278,58 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   deadliftProgress.getUid();
-
- $scope.chartConfig = {
-         options: {
-           chart: {
-             backgroundColor: '#e5e5e5',
-             // plotBackgroundColor: '#25B3F4',
-             type: 'spline',
-             style: {
-                 fontFamily: 'serif',
-                 backgroundColor: '#2E2432'
-             }
-           }
-         },
-         xAxis: {
-           gridLineColor: '#2E2432',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#2E2432"
-             }
-           },
-           title: {
-             style: {
-               "color": "#2E2432"
-             }
-           }
-         },
-         yAxis: {
-           gridLineColor: '#2E2432',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#2E2432"
-             }
-           },
-           title: {
-             style: {
-               "color": "#2E2432"
-             }
-           }
-         },
-         series: [{
-           data: deadliftProgress.Dead
-         }],
-         title: {
-           text: 'Deadlift',
-           style: {
-             "color": "#2E2432"
-           }
-         },
-         loading: false
-        };
-
-    }])
+  //Controls Highchart options
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        backgroundColor: '#000',
+        type: 'spline',
+        style: {
+          fontFamily: 'serif',
+          backgroundColor: '#FFFEFF'
+        }
+      }
+    },
+    xAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    yAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    series: [{
+      data: deadliftProgress.Dead
+    }],
+    title: {
+      text: 'Deadlift',
+      style: {
+        "color": "#FFFEFF"
+      }
+    },
+    loading: false
+  };
+}])
 
 // Start of SQUAT PROGRESS CTRL ===============================================
 //=============================================================================
@@ -371,57 +369,57 @@ angular.module('crptFit.controllers', ['ionic'])
   squatProgress.getUid();
   //Controls Highchart options
   $scope.chartConfig = {
-         options: {
-           chart: {
-             backgroundColor: '#e5e5e5',
-             // plotBackgroundColor: '#25B3F4',
-             type: 'spline',
-             style: {
-                 fontFamily: 'serif',
-                 backgroundColor: '#2E2432'
-             }
-           }
-         },
-         xAxis: {
-           gridLineColor: '#2E2432',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#2E2432"
-             }
-           },
-           title: {
-             style: {
-               "color": "#2E2432"
-             }
-           }
-         },
-         yAxis: {
-           gridLineColor: '#2E2432',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#2E2432"
-             }
-           },
-           title: {
-             style: {
-               "color": "#2E2432"
-             }
-           }
-         },
-         series: [{
-           data: squatProgress.Squat
-         }],
-         title: {
-           text: 'Squats',
-           style: {
-             "color": "#2E2432"
-           }
-         },
-         loading: false
-        };
-      }])
+    options: {
+      chart: {
+        backgroundColor: '#000',
+        type: 'spline',
+        style: {
+          fontFamily: 'serif',
+          backgroundColor: '#FFFEFF'
+        }
+      }
+    },
+    xAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    yAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    series: [{
+      data: squatProgress.Squat
+    }],
+    title: {
+      text: 'Squats',
+      style: {
+        "color": "#FFFEFF"
+      }
+    },
+    loading: false
+  };
+}])
+
 // Start of SPEED PROGRESS CTRL ===============================================
 //=============================================================================
 
@@ -466,57 +464,57 @@ angular.module('crptFit.controllers', ['ionic'])
   speedProgress.getUid();
   //Controls Highchart options
   $scope.chartConfig = {
-         options: {
-           chart: {
-             backgroundColor: '#e5e5e5',
-             // plotBackgroundColor: '#25B3F4',
-             type: 'spline',
-             style: {
-                 fontFamily: 'serif',
-                 backgroundColor: '#2E2432'
-             }
-           }
-         },
-         xAxis: {
-           gridLineColor: '#2E2432',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#2E2432"
-             }
-           },
-           title: {
-             style: {
-               "color": "#2E2432"
-             }
-           }
-         },
-         yAxis: {
-           gridLineColor: '#2E2432',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#2E2432"
-             }
-           },
-           title: {
-             style: {
-               "color": "#2E2432"
-             }
-           }
-         },
-         series: [{
-           data: speedProgress.Speed
-         }],
-         title: {
-           text: 'Speed',
-           style: {
-             "color": "#2E2432"
-           }
-         },
-         loading: false
-        };
-      }])
+    options: {
+      chart: {
+        backgroundColor: '#000',
+        type: 'spline',
+        style: {
+          fontFamily: 'serif',
+          backgroundColor: '#FFFEFF'
+        }
+      }
+    },
+    xAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    yAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+     },
+     series: [{
+      data: speedProgress.Speed
+    }],
+    title: {
+      text: 'Speed',
+      style: {
+        "color": "#FFFEFF"
+      }
+    },
+    loading: false
+  };
+}])
+
 // Start of WEIGHT PROGRESS CTRL ==============================================
 //=============================================================================
 
@@ -553,58 +551,57 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   weightProgress.getUid();
-
-    $scope.chartConfig = {
-         options: {
-           chart: {
-             backgroundColor: '#e5e5e5',
-             // plotBackgroundColor: '#25B3F4',
-             type: 'spline',
-             style: {
-                 fontFamily: 'serif',
-                 backgroundColor: '#2E2432'
-             }
-           }
-         },
-         xAxis: {
-           gridLineColor: '#2E2432',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#2E2432"
-             }
-           },
-           title: {
-             style: {
-               "color": "#2E2432"
-             }
-           }
-         },
-         yAxis: {
-           gridLineColor: '#2E2432',
-           gridLineDashStyle: 'solid',
-           labels: {
-             style: {
-               "color": "#2E2432"
-             }
-           },
-           title: {
-             style: {
-               "color": "#2E2432"
-             }
-           }
-         },
-       series: [{
-         data:  weightProgress.Weight
-       }],
-       title: {
-         text: 'Weight',
-         style: {
-           "color": "#FFFEFF"
-         }
-       },
-       loading: false
-      };
+  //Controls Highchart options
+  $scope.chartConfig = {
+    options: {
+      chart: {
+        backgroundColor: '#000',
+        type: 'spline',
+        style: {
+          fontFamily: 'serif',
+          backgroundColor: '#FFFEFF'
+        }
+      }
+    },
+    xAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    yAxis: {
+      gridLineColor: '#FFFEFF',
+      gridLineDashStyle: 'solid',
+      labels: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      },
+      title: {
+        style: {
+          "color": "#FFFEFF"
+        }
+      }
+    },
+    series: [{
+      data:  weightProgress.Weight
+    }],
+    title: {
+      text: 'Weight',
+        style: {
+          "color": "#FFFEFF"
+        }
+    },
+    loading: false
+  };
 }])
 
 // Start of TASKS CTRL ========================================================

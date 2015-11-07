@@ -493,7 +493,7 @@ angular.module('crptFit.services', [])
         url: 'auth/leftswipe/' + userId,
       });
     },
-   onRightSwipe: function(userId) {
+    onRightSwipe: function(userId) {
      $http({
        method: 'POST',
        url: 'auth/rightswipe/' + userId
