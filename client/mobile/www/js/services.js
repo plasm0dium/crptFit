@@ -26,6 +26,7 @@ angular.module('crptFit.services', [])
   var tasks = [];
 
   return {
+    //Forces immediate update of task list
     getTaskHolder: function(val){
       tasks.push({description:val});
       return tasks;
@@ -37,19 +38,20 @@ angular.module('crptFit.services', [])
       });
       tasks.splice(tasks.indexOf(task), 1);
     },
+    // Fills task array with only not yet completed tasks
     getTasksList: function(){
-        tasks = [];
-        $http({
-          method: 'GET',
-          url: '/auth/tasks'
-        }).then(function(response){
-          response.data.forEach(function(x){
-            if(!x.complete){
-              tasks.push(x);
-            }
-          });
+      tasks = [];
+      $http({
+        method: 'GET',
+        url: '/auth/tasks'
+      }).then(function(response){
+        response.data.forEach(function(x){
+          if(!x.complete){
+            tasks.push(x)
+          }
         });
-        return tasks;
+      });
+      return tasks;
     },
     addTaskToClient : function(uId, val){
       $http({
@@ -158,7 +160,6 @@ angular.module('crptFit.services', [])
 .factory('Message', ['$http', function($http){
   var messages = {};
   var messageReturn = [];
-  //get user message table from db
   var room_ids = {};
   var capChat;
   var friends = [];
@@ -167,6 +168,8 @@ angular.module('crptFit.services', [])
       newRet = messageReturn;
       return newRet;
     },
+    //Sorts through the messages object and pulls out only messages and their associated data for the current chat room
+    //The format of the array being pushed into the return array is [message, user_id, username, profile_pic]
     messageList : function(){
       messageReturn = [];
       for(var key in messages){
@@ -175,16 +178,20 @@ angular.module('crptFit.services', [])
         }
       }
     },
-    messageUpdate: function(mess){
-      messageReturn.push([mess, null, null, null]);
+    //Forces immediate visual update of chat, the null values could be replaced with user data 
+    messageUpdate: function(mess, img){
+      messageReturn.push([mess, null, null, img]);
     },
+    // Helper function for storing the value of the current chat room through a view change
     clearCap: function(){
       return capChat;
     },
     capturedChatID: function(val){
       capChat = val;
     },
+    // Returns an object for rendering a list of current chatrooms, the format is messageId: [username, creation_time, profile_pic]
     captureMessages: function(){
+      console.log(room_ids, 'lets get to the crux of this')
       return room_ids;
     },
     makeChat: function(userId){
@@ -204,30 +211,34 @@ angular.module('crptFit.services', [])
       });
       return friends;
     },
+    // This function queries the database for the chatstore object and then compares its message stores against the friends data array
+    // It sets up the direct addition of user data to message relations
     getMessage : function(){
-      //NOTE refactor for time complexity
+      //NOTE refactor for lower time complexity - NEEDED
       //NOTE refactored for more time complexity, but more use, needs backend fix
       $http({
         method: 'GET',
         url: '/auth/chatsessions'
       }).then(function(response){
-        console.log(response, 'response data');
+        console.log('response', response.data)
           response.data.forEach(function(messageParts){
             messageParts.chatstore.forEach(function(session){
-            // if(m.user_id !== 1){
               friends.forEach(function(friend){
                 if(friend.id === session.user_id){
                   messageParts.message.forEach(function(innerMessage){
+                    //Used on individual message pages
                     if(innerMessage.user_id === session.user_id){
+                      //IF Friend
                       messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, friend.username, friend.profile_pic];
                     }else{
+                      //IF Myself
                       messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, "Me", null]
                     }
-                  room_ids[messageParts.id] = [friend.username, messageParts.created_at, friend.profile_pic];
-                });
+                    //Used in the outer message list
+                    room_ids[messageParts.id] = [friend.username, messageParts.created_at, friend.profile_pic];
+                  });
                 }
               });
-            // }
             });
           });
       }, function(error){
@@ -239,9 +250,7 @@ angular.module('crptFit.services', [])
       $http({
         method: 'GET',
         url: '/auth/chat/get' + chatId
-      }).then(function(response){
-
-      });
+      })
     },
     sendMessage: function(id, val){
       $http({
@@ -266,7 +275,6 @@ angular.module('crptFit.services', [])
   var bench = [];
   var dead = [];
   var squatHold = [];
-  //all functions need integration with db
   //NOTE Commented out functions in this section are experimental weekly views and are not ready for deploy
   return {
     getStr : function(){
@@ -320,7 +328,6 @@ angular.module('crptFit.services', [])
       weight.push(val);
       // }
     },
-    //all functions below here need to be tested and found working
     postBnch: function(stat){
       $http({
         method: 'POST',
@@ -486,7 +493,7 @@ angular.module('crptFit.services', [])
         url: 'auth/leftswipe/' + userId,
       });
     },
-   onRightSwipe: function(userId) {
+    onRightSwipe: function(userId) {
      $http({
        method: 'POST',
        url: 'auth/rightswipe/' + userId

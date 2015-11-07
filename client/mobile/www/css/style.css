@@ -38,6 +38,15 @@ body, html{
   width: 150px;
   border-radius: 100%;
 }
+.sideBar-pic{
+  height: 200px;
+  width: 200px;
+  border-radius: 100%;
+  border: 2px solid #25B3F4;
+}
+.sideBar-img-box{
+  margin-top: 2em;
+}
 .stats{
   margin: 10px auto 0;
   display: block;

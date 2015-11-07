@@ -681,7 +681,16 @@ app.post('/auth/chat/add:id', function (req, res){
         created_at: new Date()
       })
       .save();
-    });
+    })
+    .then(function(){
+      db.model('Message').newMessage({
+        user_id: userId1,
+        chat_id: chatId,
+        text: "New Chatroom!",
+        created_at: new Date()
+      })
+      .save();
+    })
 });
 
 // Add Messages to chat session
