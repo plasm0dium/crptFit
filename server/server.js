@@ -87,8 +87,8 @@ app.get('/auth/facebook/callback', function (req, res, next) {
 });
 
 app.get('/dash', ensureAuthenticated, function (req,res) {
-  console.log('THIS USER IS LOGGED IN', req.user)
-  var user = req.user
+  console.log('THIS USER IS LOGGED IN', req.user);
+  var user = req.user;
   if(user) {
     res.json(user);
   } else {
@@ -441,6 +441,7 @@ db.model('User').fetchById({
   })
   .then(function(result) {
     return Promise.all(result.relations.chatstores.models.map(function(msg){
+      console.log("WHAT ARE THESE MESSAGES", msg);
       return db.model('Chat').fetchById(msg.attributes.chat_id);
     }))
     .then(function (results){
