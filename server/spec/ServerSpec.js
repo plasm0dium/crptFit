@@ -145,7 +145,6 @@ describe('GET route auth/user:id', function() {
   });
 });
 
-
     it('should insert a sent message into the database', function(done){
       request({
         method: 'POST',
@@ -155,16 +154,31 @@ describe('GET route auth/user:id', function() {
           chat_id: 10,
           text: 'this really should go in the db'
         }
-      })
+      });
       var qs = 'SELECT * FROM messages';
       var qa = [];
       db.query(qs, qa, function(err, results){
-        console.log('this is results ', results)
         // expect(results[0].text).to.equal('this really should go in the db')
-      })
+      });
       done();
     });
 });
+
+describe('GET route auth/user:id', function() {
+  it('should return an object with keys and values', function (done) {
+    api.get('/auth/user1')
+    .set('Accept', 'application/json')
+    .end(function(err, res) {
+    .expect(res.data).to.have.property('username');
+    .expect(res.data.username).to.not.equal(null);
+    .expect(res.data).to.have.property('profile_pic');
+    .expect(res.data.profile_pic).to.not.equal(null);
+    .expect(res.data).to.have.property('relations');
+    .expect(res.data.relations).to.not.equal(null)
+    done()
+    })
+  })
+}
 
 describe('benchpress', function(){
   var db;

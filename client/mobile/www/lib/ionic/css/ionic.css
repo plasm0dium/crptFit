@@ -40,7 +40,7 @@
   text-rendering: auto;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; 
+  -moz-osx-font-smoothing: grayscale;
   color: #25B3F4;
 }
 
@@ -4654,16 +4654,15 @@ ion-tabs.tabs-color-active-dark .tab-item {
  * --------------------------------------------------
  */
 .item {
-  border-color: #ddd;
-  background-color: #fff;
+
   color: #444;
   position: relative;
+  background-color: #e5e5e5;
   z-index: 2;
   display: block;
   margin: -1px;
-  padding: 16px;
-  border-width: 1px;
-  border-style: solid;
+  font-family: "Helvetica Neue", "Roboto", "Segoe UI", sans-serif;
+
   font-size: 16px; }
   .item h2 {
     margin: 0 0 2px 0;
@@ -4777,6 +4776,7 @@ ion-tabs.tabs-color-active-dark .tab-item {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal; }
+
 
 a.item {
   color: inherit;
@@ -5080,10 +5080,13 @@ a.item-content {
 
 .item-image {
   padding: 0;
-  text-align: center; }
+  text-align: center;
+
+}
   .item-image img:first-child, .item-image .list-img {
     width: 100%;
-    vertical-align: middle; }
+    vertical-align: middle;
+  }
 
 .item-body {
   overflow: auto;
@@ -5331,7 +5334,7 @@ a.item-content {
   overflow: hidden;
   margin: 20px 10px;
   border-radius: 2px;
-  background-color: #fff; }
+  background-color: #e5e5e5; }
 
 .card {
   padding-top: 1px;
@@ -6461,7 +6464,7 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
     color: #333;
     text-indent: 0.01px;
     text-overflow: '';
-    white-space: nowrap;
+    /*white-space: nowrap;*/
     font-size: 14px;
     cursor: pointer;
     direction: rtl; }

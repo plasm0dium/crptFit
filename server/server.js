@@ -4,7 +4,6 @@ var port = process.env.PORT || 8100;
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
 
-// Use middleware file from config folder
 require('./config/middleware')(app, express);
 
 // Show what port server listens to
