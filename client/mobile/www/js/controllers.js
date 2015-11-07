@@ -49,7 +49,7 @@ angular.module('crptFit.controllers', ['ionic'])
       }
     }
     return filtered;
-  }
+  };
 
   // Request the viewed user's object from the server and capture needed properties
   $http({
@@ -258,7 +258,7 @@ angular.module('crptFit.controllers', ['ionic'])
       deadliftProgress.checkMe(deadliftProgress.uId);
     });
   };
-  
+
   deadliftProgress.checkMe = function(val){
     deadliftProgress.deadData.weight = null;
     Progress.queryDed(val);
@@ -332,7 +332,7 @@ angular.module('crptFit.controllers', ['ionic'])
   squatProgress.squatData = {
     weight: null
   };
-  
+
   squatProgress.pushMe = function(){
     Progress.pushSqu(squatProgress.squatData.weight);
     Progress.postSqu(squatProgress.squatData.weight);
@@ -348,7 +348,7 @@ angular.module('crptFit.controllers', ['ionic'])
       squatProgress.checkMe(squatProgress.uId);
     });
   };
-  
+
   squatProgress.checkMe = function(val){
     squatProgress.squatData.weight = null;
     Progress.querySqu(val);
@@ -433,7 +433,7 @@ angular.module('crptFit.controllers', ['ionic'])
     speedProgress.timeSpd.val = null;
     Progress.getSpd();
   };
-  
+
   speedProgress.getUid = function(){
     $http({
       method: 'GET',
@@ -443,7 +443,7 @@ angular.module('crptFit.controllers', ['ionic'])
       speedProgress.checkMe(speedProgress.uId);
     });
   };
-  
+
   speedProgress.checkMe = function(val){
     speedProgress.timeSpd.val = null;
     speedProgress.distance.val = null;
@@ -534,7 +534,7 @@ angular.module('crptFit.controllers', ['ionic'])
       weightProgress.checkMe(weightProgress.uId);
     });
   };
-  
+
   weightProgress.checkMe = function(val){
     weightProgress.weight.weight = null;
     Progress.queryWgt(val);
@@ -633,7 +633,7 @@ angular.module('crptFit.controllers', ['ionic'])
 //NOTE Refactor me
   var self = this;
   var userObj = User.getUserObject();
-  
+
   Message.messageList();
 
   self.sendTo = {
@@ -648,8 +648,8 @@ angular.module('crptFit.controllers', ['ionic'])
 
 
   userObj.then(function(response){
-    self.userImg = response.data.profile_pic;
-  })
+     self.userImg = response.data.profile_pic;
+  });
   // self.sortedImage = function(){
   //   self.forSort = Message.messageToPage();
   //   self.sortName = Message.captureMessages();
@@ -658,7 +658,7 @@ angular.module('crptFit.controllers', ['ionic'])
   //     for(var key in self.sortName){
   //       console.log(self.forSort[i][2], key)
   //       if(parseInt(key) === self.forSort[i][2]){
-          
+
   //       }
   //     }
   //   }
@@ -670,7 +670,7 @@ angular.module('crptFit.controllers', ['ionic'])
   self.showId =function(val){
     Message.capturedChatID(val);
   };
-  
+
   self.showMessageContent = function(){
     Message.captureMessages();
   };
@@ -690,9 +690,9 @@ angular.module('crptFit.controllers', ['ionic'])
   };
 
   self.sendMessage = function(chatId, val){
-    console.log(chatId, val)
+    console.log(chatId, val);
     self.send = Message.sendMessage(chatId, val);
-    Message.messageUpdate(val)
+    Message.messageUpdate(val);
     self.sendTo.val = null;
     self.returnMessage = Message.messageToPage();
   };
@@ -703,17 +703,18 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.connect = function(id){
     var socket = io();
-    console.log(id, 'this is what im passing')
-    console.log('LOOKING TO CONNECTION')
-    socket.emit('connecting', id)
+
+    console.log(id, 'this is what im passing');
+    console.log('LOOKING TO CONNECTION');
+    socket.emit('connecting', id);
     socket.on('message-append', function(id, message){
-      console.log(id, message)
-      self.sendMessage(id, message)
-    })
+      console.log(id, message);
+      self.sendMessage(id, message);
+    });
     $scope.$on('$ionicView.leave', function(event){
-      console.log('the dc event actually fired', id)
-      socket.emit('disconnect', id)
-    })
+      console.log('the dc event actually fired', id);
+      socket.emit('disconnect', id);
+    });
   };
 
   self.liveUpdate = function(chatId, message){
@@ -762,8 +763,8 @@ angular.module('crptFit.controllers', ['ionic'])
         if(obj) {filtered.push(obj);}
       });
       self.reqlist = filtered;
-    })
-  }
+    });
+  };
 
   self.acceptFriend = function(friendId){
       $http({
@@ -774,7 +775,7 @@ angular.module('crptFit.controllers', ['ionic'])
         self.reqlist = [];
         self.showRequests();
       });
-  }
+  };
 
   self.showSearchResults = function(username){
     $http({
@@ -786,7 +787,7 @@ angular.module('crptFit.controllers', ['ionic'])
       }).then(function(response){
         self.list = response;
       });
-  }
+  };
 
   self.saveUserID = function(facebookID){
     Social.userViewerSet(facebookID);
@@ -839,7 +840,7 @@ angular.module('crptFit.controllers', ['ionic'])
     myPopup.then(function(res) {
       console.log('Tapped!', res);
       return self.showSearchResults(res);
-    })
+    });
   };
 
 }])

@@ -17,7 +17,7 @@ angular.module('crptFit.services', [])
   var tasks = [];
   return {
     getTaskHolder: function(val){
-      tasks.push({description:val})
+      tasks.push({description:val});
       return tasks;
     },
     finishTask : function(taskId, task){
@@ -29,7 +29,6 @@ angular.module('crptFit.services', [])
       tasks.splice(tasks.indexOf(task), 1);
     },
     getTasksList: function(){
-      console.log(tasks, 'this is tasks as soon as its clicked')
         tasks = [];
         $http({
           method: 'GET',
@@ -37,12 +36,11 @@ angular.module('crptFit.services', [])
         }).then(function(response){
           response.data.forEach(function(x){
             if(!x.complete){
-              tasks.push(x)
+              tasks.push(x);
             }
           });
-            console.log("Tasks returned from server:", response.data);
-          });
-          return tasks;
+        });
+        return tasks;
     },
     addTaskToClient : function(uId, val){
       $http({
@@ -116,7 +114,6 @@ angular.module('crptFit.services', [])
       })
       .then(function(response) {
         matches = response.data
-        console.log('MATCHES :', response.data)
       }, function(error) {
         console.log(error)
       });
@@ -206,12 +203,12 @@ angular.module('crptFit.services', [])
       messageReturn = [];
       for(var key in messages){
         if(messages[key][0] === parseInt(capChat)){
-          messageReturn.push([key, messages[key][1], messages[key][2], messages[key][3]]); 
+          messageReturn.push([key, messages[key][1], messages[key][2], messages[key][3]]);
         }
       }
     },
     messageUpdate: function(mess){
-      messageReturn.push(mess);
+      messageReturn.push([mess, null, null, null]);
     },
     clearCap: function(){
       return capChat;
@@ -242,7 +239,7 @@ angular.module('crptFit.services', [])
       return friends;
     },
     getMessage : function(){
-      //NOTE refactor for time complexity 
+      //NOTE refactor for time complexity
       //NOTE refactored for more time complexity, but more use, needs backend fix
       $http({
         method: 'GET',
@@ -487,10 +484,10 @@ angular.module('crptFit.services', [])
   var userLng;
   return {
     returnMyLat: function () {
-      return userLat
+      return userLat;
     },
     returnMyLng: function () {
-      return userLng
+      return userLng;
     },
     matchCheck: function (userId) {
       $http({
@@ -498,7 +495,7 @@ angular.module('crptFit.services', [])
         url: 'auth/matchcheck' + userId
       }).then(function (response) {
 
-      })
+      });
     },
     postUsersLocation: function(latitude, longitude) {
       console.log('SERVICE LAT', latitude);
@@ -510,24 +507,22 @@ angular.module('crptFit.services', [])
           lat: latitude,
           lng: longitude
           }
-        })
+        });
       },
     onLeftSwipe: function(userId) {
-      console.log('ON LEFT SWIPE FIRED', userId)
       $http({
         method: 'POST',
         url: 'auth/leftswipe/' + userId,
-      })
+      });
     },
    onRightSwipe: function(userId) {
-     console.log('ON RIGHT SWIPE FIRED', userId)
      $http({
        method: 'POST',
        url: 'auth/rightswipe/' + userId
-     })
+     });
     },
     returnNearbyUsers: function () {
-      return nearbyUsers
+      return nearbyUsers;
     },
     getNearbyUsers: function() {
     $http({
@@ -535,12 +530,11 @@ angular.module('crptFit.services', [])
       url: '/auth/nearbyusers'
     })
     .then(function(response) {
-      nearbyUsers.push(response.data)
-    })
+      nearbyUsers.push(response.data);
+    });
   },
     getUsers: function(){
-      console.log(nearbyUsers)
       return nearbyUsers;
     }
-}
-}])
+};
+}]);

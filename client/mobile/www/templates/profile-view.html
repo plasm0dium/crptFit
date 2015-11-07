@@ -1,25 +1,19 @@
 <ion-view view-title="Profile">
   <ion-content has-header="true" padding="true" class="overAll" ng-controller="ViewProfileCtrl as ctrl">
     <!-- these links do not exist -->
-    <div class="profile-pic">
-      <img ng-src="{{ctrl.pic}}">
+    <div >
+      <img ng-src="{{ctrl.pic}}" class="profile-pic">
     </div>
     <div class="profile-name">
       <h2 style="color:white;">{{ctrl.username}}</h2>
     </div>
 
-    <div class="social-container" style+"color:white;">
-      <ul class="row">
-        <li class="col">
+    <div class="social-container" style="color:white;">
           <div ng-bind="ctrl.friendCount"></div>
-          <div>F</div>
-        </li>
-      </ul>
+          <div>Friends</div>
     </div>
-    <div class="row">
+    <div>
       <button class="stats button icon-left ion-plus-circled button-positive" ng-click="ctrl.sendFriendRequest()" ng-disabled="ctrl.isFriend">F</button>
-      <button class="stats button icon-left ion-plus-circled button-positive" ng-click="ctrl.sendClientRequest()">C</button>
-      <button class="stats button icon-left ion-plus-circled button-positive">Stats</button>
     </div>
 
     <div class="recent-activity">
@@ -30,6 +24,6 @@
         </a>
       </div>
     </div>
-    
+
   </ion-content>
 </ion-view>
