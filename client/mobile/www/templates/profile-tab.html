@@ -18,15 +18,35 @@
     </div>
 
     <button class="stats button icon-left ion-arrow-graph-up-right button-positive">  Stats</button>
+    <div ng-repeat="update in ctrl.feed" >
+      <div class="list card">
+    <div class="item item-divider">Challenge Completed</div>
+    <div class="item item-body">
+      <!-- <a class="item item-avatar task"> -->
+    <div class="wrap">
+    <div class-"name-wrap">
+    <h3>{{update.username}}</h3>
 
-    <div class="recent-activity overAll item-remove-animate">
+    </div>
+    <div class="item completedTask">{{update.description}} !</div>
+    </div>
+      <!-- </a> -->
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+    <!-- <div class="recent-activity overAll item-remove-animate">
       <div ng-repeat="update in ctrl.feed">
         <a class="item item-avatar taskBox" style="color:white;">
           <h3>{{ctrl.username}}</h3>
-          <p>completed the task "<span class="completedTask">{{update.description}}</span>"!</p>
+          <p>Completed Challenge! "<span class="completedTask">{{update.description}}</span>"!</p>
         </a>
       </div>
-    </div>
+    </div> -->
 
   </ion-content>
 </ion-view>

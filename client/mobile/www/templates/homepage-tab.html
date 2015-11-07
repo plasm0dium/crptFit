@@ -4,6 +4,7 @@
   <div ng-repeat="update in ctrl.feed" >
     <div class="list card">
   <div class="item item-divider">Challenge Completed!</div>
+  <i class="icon ion-thumbsup"></i>
   <div class="item item-body">
     <!-- <a class="item item-avatar task"> -->
 <div class="wrap-newsfeed">
@@ -12,10 +13,11 @@
 <h3>{{update.username}}</h3>
 
 </div>
-<div class="item">{{update.tasks[0].description.toUpperCase()}}</div>"
+<div class="item completedTask">{{update.tasks[0].description.toUpperCase()}} !</div>
 </div>
     <!-- </a> -->
   </div>
+</div>
 </div>
   </ion-content>
 </ion-view>

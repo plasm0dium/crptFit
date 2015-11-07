@@ -4657,6 +4657,7 @@ ion-tabs.tabs-color-active-dark .tab-item {
 
   color: #444;
   position: relative;
+  background-color: #e5e5e5;
   z-index: 2;
   display: block;
   margin: -1px;
@@ -5329,7 +5330,7 @@ a.item-content {
   overflow: hidden;
   margin: 20px 10px;
   border-radius: 2px;
-  background-color: #fff; }
+  background-color: #e5e5e5; }
 
 .card {
   padding-top: 1px;
