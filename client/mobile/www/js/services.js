@@ -205,8 +205,8 @@ angular.module('crptFit.services', [])
     messageList : function(){
       messageReturn = [];
       for(var key in messages){
-        if(messages[key] === parseInt(capChat)){
-          messageReturn.push(key);
+        if(messages[key][0] === parseInt(capChat)){
+          messageReturn.push([key, messages[key][1], messages[key][2], messages[key][3]]); 
         }
       }
     },
@@ -242,24 +242,29 @@ angular.module('crptFit.services', [])
       return friends;
     },
     getMessage : function(){
-      //NOTE refactor for time complexity
+      //NOTE refactor for time complexity 
+      //NOTE refactored for more time complexity, but more use, needs backend fix
       $http({
         method: 'GET',
         url: '/auth/chatsessions'
       }).then(function(response){
         console.log(response, 'response data');
-          response.data.forEach(function(y){
-            y.chatstore.forEach(function(m){
+          response.data.forEach(function(messageParts){
+            messageParts.chatstore.forEach(function(session){
               // if(m.user_id !== 1){
                 friends.forEach(function(friend){
-                  if(friend.id === m.user_id){
-                    room_ids[y.id] = [friend.username, y.created_at, friend.profile_pic];
+                  if(friend.id === session.user_id){
+                    messageParts.message.forEach(function(innerMessage){
+                      if(innerMessage.user_id === session.user_id){
+                        messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, friend.username, friend.profile_pic];
+                      }else{
+                        messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, "Me", null]
+                      }
+                    room_ids[messageParts.id] = [friend.username, messageParts.created_at, friend.profile_pic];
+                  });
                   }
                 });
               // }
-            });
-            y.message.forEach(function(z){
-              messages[z.text] = y.id;
             });
           });
       }, function(error){

@@ -5,8 +5,8 @@
 </ion-header-bar>
   <ion-content id="chat-background" has-header="true" padding="true">
     <div class="item item-text-wrap bubble" ng-repeat="message in ctrl.returnMessage track by $index">
-      <span class="item item-avatar"><img ng-src="{{ctrl.userImg}}" /></span>
-      <span class="text"> :{{message}} </span>
+      <span class="item item-avatar"><img ng-src="{{message[3]}}" /></span>
+      <span class="text"> {{message[2]}}:{{message[0]}}</span>
     </div>
   </ion-content>
     <ion-footer-bar class="messageFoot">
