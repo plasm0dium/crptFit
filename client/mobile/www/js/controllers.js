@@ -87,6 +87,7 @@ angular.module('crptFit.controllers', ['ionic'])
   userProfile.updateProfile = function(bio) {
     console.log('HIT update')
     Social.updateBio(bio)
+    userProfile.bio = bio;
     userProfile.update.val = null
   };
 
@@ -767,7 +768,9 @@ angular.module('crptFit.controllers', ['ionic'])
         self.showRequests();
       });
   };
-
+  self.removeFriended = function(person){
+    self.reqlist.splice(self.reqlist.indexOf(person), 1)
+  }
   self.showSearchResults = function(username){
     $http({
       method: 'GET',

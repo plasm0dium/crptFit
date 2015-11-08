@@ -29,7 +29,7 @@
         </a>
       </div>
       <div ng-repeat="person in ctrl.reqlist" class='secondaryAll'>
-        <a class="item item-avatar" ng-click="ctrl.acceptFriend({{person.id}})" class="secondaryAll">
+        <a class="item item-avatar" ng-click="ctrl.acceptFriend({{person.id}}); ctrl.removeFriended(person)" class="secondaryAll">
           <img ng-src="{{person.profile_pic}}"/>
           <h3>{{person.username}}</h3>
         </a>
