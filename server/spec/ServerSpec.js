@@ -5,20 +5,12 @@ var stubs = require('./Stubs');
 var db = require('../mysql/config');
 var User = require('../mysql/models/users');
 var User = require('../mysql/collections/users');
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 7a12310e37c6ae300c4b6fbbb2cc3eac58ae0e11
 supertest = require('supertest');
 api = supertest('http://localhost:8100');
 require('../mysql/collections/geolocations');
 require('../mysql/models/geolocation');
 var io = require('socket.io');
 var mysql = require('mysql');
-<<<<<<< HEAD
-=======
->>>>>>> 90038c6bd843bf1a3700fc6635b576d3651d5bd0
->>>>>>> 7a12310e37c6ae300c4b6fbbb2cc3eac58ae0e11
 
 
 describe('server', function() {
@@ -153,7 +145,6 @@ describe('GET route auth/user:id', function() {
   });
 });
 
-
     it('should insert a sent message into the database', function(done){
       request({
         method: 'POST',
@@ -163,20 +154,16 @@ describe('GET route auth/user:id', function() {
           chat_id: 10,
           text: 'this really should go in the db'
         }
-      })
+      });
       var qs = 'SELECT * FROM messages';
       var qa = [];
       db.query(qs, qa, function(err, results){
-        console.log('this is results ', results)
         // expect(results[0].text).to.equal('this really should go in the db')
-      })
+      });
       done();
     });
 });
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 describe('GET route auth/user:id', function() {
   it('should return an object with keys and values', function (done) {
     api.get('/auth/user1')
@@ -192,8 +179,7 @@ describe('GET route auth/user:id', function() {
     })
   })
 }
-=======
->>>>>>> 7a12310e37c6ae300c4b6fbbb2cc3eac58ae0e11
+
 describe('benchpress', function(){
   var db;
   beforeEach(function(done){
@@ -241,7 +227,3 @@ describe('benchpress', function(){
 //       expect(ionEl).to.not.equal(null);
 //     })
 // });
-<<<<<<< HEAD
-=======
->>>>>>> 90038c6bd843bf1a3700fc6635b576d3651d5bd0
->>>>>>> 7a12310e37c6ae300c4b6fbbb2cc3eac58ae0e11
