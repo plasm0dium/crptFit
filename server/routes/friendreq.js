@@ -22,7 +22,7 @@ Friendreq.post('/friendreq/:id', function (req, res){
       status: 0,
       friend_req: true
     })
-    .save();
+    .save()
   })
   .catch(function(err){
     return err;

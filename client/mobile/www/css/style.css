@@ -220,11 +220,13 @@ h1, h4, h5, h6{
   margin-bottom: 5px;
   margin-left: 0px;
 }
-.bubbleLeftText {
-  position: relative;
+.bubbleLeft:after {
+  content: '';
+  position: absolute;
   border-style: solid;
   border-width: 7px 20px 7px 0;
   border-color: transparent #1A161D;
+  display: block;
   width: 0;
   z-index: 1;
   margin-top: -7px;
@@ -265,7 +267,7 @@ h1, h4, h5, h6{
   background-color: transparent !important;
 }
 .text{
-  color: black;
+  color: #FFF;
   text-align: justify;
   font-size: 16px;
   font-weight: bold;

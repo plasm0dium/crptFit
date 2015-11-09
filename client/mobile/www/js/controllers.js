@@ -190,7 +190,7 @@ angular.module('crptFit.controllers', ['ionic'])
 
   benchProgress.uId = null;
   benchProgress.getUid();
-  //Controls Highchart options 
+  //Controls Highchart options
   $scope.chartConfig = {
     options: {
       chart: {
@@ -678,7 +678,7 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.getMessagesById = function(){
     self.sendHelp = Message.clearCap();
-  }; 
+  };
   //Creates a new chatroom, closes friend popup, and forces a page reload so the new chat is immediately ready to use
   self.makeChat = function(userId){
     $scope.myPopup.close();
@@ -768,9 +768,11 @@ angular.module('crptFit.controllers', ['ionic'])
         self.showRequests();
       });
   };
+  
   self.removeFriended = function(person){
-    self.reqlist.splice(self.reqlist.indexOf(person), 1)
-  }
+    self.reqlist.splice(self.reqlist.indexOf(person), 1);
+  };
+
   self.showSearchResults = function(username){
     $http({
       method: 'GET',
@@ -890,7 +892,7 @@ angular.module('crptFit.controllers', ['ionic'])
        else {
        angular.forEach(users.data, function(card) {
          if(card[0] === null) {
-           return
+           return;
          } else {
          self.addCard(card[0].profile_pic, card[0].username, card[0].id, card[0].profile);
          console.log('THESE ARE CARDS', self.cards)
@@ -911,13 +913,13 @@ angular.module('crptFit.controllers', ['ionic'])
             //template: '<div class="popupImage"><img src="https://developer.apple.com/watch/human-interface-guidelines/icons-and-images/images/icon-and-image-large-icon-fitness.png"></div>'
      });
         } else {
-          return
+          return;
         }
-      })
+      });
   };
 
     self.cardDislike = function(card) {
-      Finder.onLeftSwipe(self.cards[0].id)
+      Finder.onLeftSwipe(self.cards[0].id);
     };
 
     self.removeCard = function($index) {
@@ -925,4 +927,4 @@ angular.module('crptFit.controllers', ['ionic'])
     };
   self.find = Finder.getUsers();
 
-}])
+}]);
