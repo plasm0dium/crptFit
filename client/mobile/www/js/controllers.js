@@ -688,7 +688,7 @@ angular.module('crptFit.controllers', ['ionic'])
   //Posts message to database under correct chatId for retrieval, pushes message data and user image to retrun array for immediate render
   self.sendMessage = function(chatId, val){
     self.send = Message.sendMessage(chatId, val);
-    Message.messageUpdate(val, self.userImg);
+    Message.messageUpdate(val);
     self.sendTo.val = null;
     self.returnMessage = Message.messageToPage();
   };

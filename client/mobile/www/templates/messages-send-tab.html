@@ -1,9 +1,9 @@
 <ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getMessagesById(); ctrl.connect(ctrl.sendHelp)">
   <ion-content id="chat-background">
     <ion-list class="list">
-      <li ng-repeat="message in ctrl.returnMessage track by $index" class="item item-avatar-left item-text-wrap overAll">
+      <li ng-repeat="message in ctrl.returnMessage track by $index" class="item item-avatar-left item-text-wrap overAll" ng-class="{{message[4]}} ? 'pointRight' : 'pointLeft'">
         <img ng-src="{{message[3]}}"/></span>
-        <span class="text"> {{message[0]}} </span>
+        <span class="text"> {{message[0]}} {{message[4]}}</span>
      </li>
    </ion-list>
   </ion-content>

@@ -174,13 +174,13 @@ angular.module('crptFit.services', [])
       messageReturn = [];
       for(var key in messages){
         if(messages[key][0] === parseInt(capChat)){
-          messageReturn.push([key, messages[key][1], messages[key][2], messages[key][3]]);
+          messageReturn.push([key, messages[key][1], messages[key][2], messages[key][3], messages[key][4]]);
         }
       }
     },
     //Forces immediate visual update of chat, the null values could be replaced with user data 
-    messageUpdate: function(mess, img){
-      messageReturn.push([mess, null, null, img]);
+    messageUpdate: function(mess){
+      messageReturn.push([mess, null, null, null, true]);
     },
     // Helper function for storing the value of the current chat room through a view change
     clearCap: function(){
@@ -229,10 +229,10 @@ angular.module('crptFit.services', [])
                     //Used on individual message pages
                     if(innerMessage.user_id === session.user_id){
                       //IF Friend
-                      messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, friend.username, friend.profile_pic];
+                      messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, friend.username, friend.profile_pic, false];
                     }else{
                       //IF Myself
-                      messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, "Me", null]
+                      messages[innerMessage.text] = [messageParts.id, innerMessage.user_id, "Me", null, true]
                     }
                     //Used in the outer message list
                     room_ids[messageParts.id] = [friend.username, messageParts.created_at, friend.profile_pic];
