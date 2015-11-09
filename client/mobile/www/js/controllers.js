@@ -638,7 +638,7 @@ angular.module('crptFit.controllers', ['ionic'])
 // Start of MESSAGES CTRL =====================================================
 //=============================================================================
 
-.controller('MessagesCtrl', ['$scope','$state', '$location', '$ionicPopup', 'Message', 'Social', 'User', '$ionicScrollDelegate', function($scope, $state, $location, $ionicPopup, Message, Social, User, $ionicScrollDelegate) {
+.controller('MessagesCtrl', ['$scope','$state', '$location', '$ionicPopup', 'Message', 'Social', 'User', '$ionicScrollDelegate', '$timeout', function($scope, $state, $location, $ionicPopup, Message, Social, User, $ionicScrollDelegate, $timeout) {
   var self = this;
   var userObj = User.getUserObject();
 
@@ -678,6 +678,9 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.getMessagesById = function(){
     self.sendHelp = Message.clearCap();
+    $timeout(function(){
+      $ionicScrollDelegate.$getByHandle('mainScroll').scrollBottom(true);
+    }, 100);
   };
   //Creates a new chatroom, closes friend popup, and forces a page reload so the new chat is immediately ready to use
   self.makeChat = function(userId){
@@ -691,7 +694,7 @@ angular.module('crptFit.controllers', ['ionic'])
     Message.messageUpdate(val, self.userImg);
     self.sendTo.val = null;
     self.returnMessage = Message.messageToPage();
-    $ionicScrollDelegate.$getByHandle('mainScroll').scrollBottom(true);
+    // $ionicScrollDelegate.$getByHandle('mainScroll').scrollBottom(true);
   };
 
   self.capChatId = function(chatId){
@@ -704,7 +707,6 @@ angular.module('crptFit.controllers', ['ionic'])
     socket.emit('connecting', id);
     socket.on('message-append', function(id, message){
       self.sendMessage(id, message);
-      $ionicScrollDelegate.$getByHandle('mainScroll').scrollBottom(true);
     });
 
     $scope.$on('$ionicView.leave', function(event){

@@ -1,5 +1,5 @@
 <ion-view title="Messages" ng-controller="MessagesCtrl as ctrl" ng-init="ctrl.getMessagesById(); ctrl.connect(ctrl.sendHelp)">
-  <ion-content id="chat-background">
+  <ion-content id="chat-background" delegate-handle="mainScroll">
     <ion-list class="list">
       <li ng-repeat="message in ctrl.returnMessage track by $index" class="item item-avatar-right item-text-wrap overAll noPadding noBg">
         <img ng-src="{{message[3]}}"/>
