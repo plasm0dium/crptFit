@@ -1,4 +1,4 @@
-<ion-view title="Challenges" ng-controller="ProgressCtrlTask as ctrl" ng-init="ctrl.startTasks()" class="overAll">
+<ion-view title="Challenges" ng-init="ctrl.startTasks()" class="overAll">
   <ion-content>
     <p style="color:white;">tap to complete</p>
     <div ng-repeat="task in ctrl.tasks track by $index" ng-click="ctrl.toggle(task)"  ng-class="{taskCom : task.toggled}" >
