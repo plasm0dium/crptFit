@@ -638,7 +638,7 @@ angular.module('crptFit.controllers', ['ionic'])
 // Start of MESSAGES CTRL =====================================================
 //=============================================================================
 
-.controller('MessagesCtrl', ['$scope','$state', '$location', '$ionicPopup', 'Message', 'Social', 'User', function($scope, $state, $location, $ionicPopup, Message, Social, User) {
+.controller('MessagesCtrl', ['$scope','$state', '$location', '$ionicPopup', 'Message', 'Social', 'User', '$ionicScrollDelegate', function($scope, $state, $location, $ionicPopup, Message, Social, User, $ionicScrollDelegate) {
   var self = this;
   var userObj = User.getUserObject();
 
@@ -658,7 +658,7 @@ angular.module('crptFit.controllers', ['ionic'])
 
   userObj.then(function(response){
     self.userImg = response.data.profile_pic;
-  })
+  });
   //Returns users friends on the current page
   self.getFriends = function(){
     Message.getFriends();
@@ -691,6 +691,7 @@ angular.module('crptFit.controllers', ['ionic'])
     Message.messageUpdate(val, self.userImg);
     self.sendTo.val = null;
     self.returnMessage = Message.messageToPage();
+    $ionicScrollDelegate.$getByHandle('mainScroll').scrollBottom(true);
   };
 
   self.capChatId = function(chatId){
@@ -700,19 +701,23 @@ angular.module('crptFit.controllers', ['ionic'])
   //NOTE Refactor for group chat
   self.connect = function(id){
     var socket = io();
-    socket.emit('connecting', id)
+    socket.emit('connecting', id);
     socket.on('message-append', function(id, message){
-      self.sendMessage(id, message)
-    })
+      self.sendMessage(id, message);
+      $ionicScrollDelegate.$getByHandle('mainScroll').scrollBottom(true);
+    });
+
     $scope.$on('$ionicView.leave', function(event){
-      socket.emit('disconnect', id)
-    })
+      socket.emit('disconnect', id);
+    });
   };
+
   //Sends message to socket connection in server to relay message content to all users in the socket room for live message update
   self.liveUpdate = function(chatId, message){
     var socket = io();
     socket.emit('chatroom id', chatId, message);
   };
+
   //Opens separate window with friends list to create new chats
   $scope.showPopup = function() {
     $scope.data = {};
@@ -768,7 +773,7 @@ angular.module('crptFit.controllers', ['ionic'])
         self.showRequests();
       });
   };
-  
+
   self.removeFriended = function(person){
     self.reqlist.splice(self.reqlist.indexOf(person), 1);
   };
