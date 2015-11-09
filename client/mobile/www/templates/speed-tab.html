@@ -4,10 +4,10 @@
     <div class="list list-inset overAll">
       <form name="spdForm" ng-submit="ctrl.pushMe()" class="overAll">
         <label class="item item-input speed-distance overAll">
-          <input type="number" placeholder="How far did you go?" style="color:white;" ng-model="ctrl.distance.val">Miles
+          <input type="number" placeholder="How far did you go?" style="color:white;" ng-model="ctrl.distance.val"><span class="text">Miles</span>
         </label>
         <label class="item item-input speed-time overAll">
-          <input type="number" placeholder="How long did it take?" style="color:white;" ng-model="ctrl.timeSpd.val">Minutes
+          <input type="number" placeholder="How long did it take?" style="color:white;" ng-model="ctrl.timeSpd.val"><span class="text">Minutes</span>
         </label>
         <button type="submit" class="button button-assertive">Submit</button>
       </form>

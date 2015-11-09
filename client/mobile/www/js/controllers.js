@@ -190,7 +190,7 @@ angular.module('crptFit.controllers', ['ionic'])
 
   benchProgress.uId = null;
   benchProgress.getUid();
-  //Controls Highchart options 
+  //Controls Highchart options
   $scope.chartConfig = {
     options: {
       chart: {
@@ -638,7 +638,7 @@ angular.module('crptFit.controllers', ['ionic'])
 // Start of MESSAGES CTRL =====================================================
 //=============================================================================
 
-.controller('MessagesCtrl', ['$scope','$state', '$location', '$ionicPopup', 'Message', 'Social', 'User', function($scope, $state, $location, $ionicPopup, Message, Social, User) {
+.controller('MessagesCtrl', ['$scope','$state', '$location', '$ionicPopup', 'Message', 'Social', 'User', '$ionicScrollDelegate', function($scope, $state, $location, $ionicPopup, Message, Social, User, $ionicScrollDelegate) {
   var self = this;
   var userObj = User.getUserObject();
 
@@ -658,7 +658,7 @@ angular.module('crptFit.controllers', ['ionic'])
 
   userObj.then(function(response){
     self.userImg = response.data.profile_pic;
-  })
+  });
   //Returns users friends on the current page
   self.getFriends = function(){
     Message.getFriends();
@@ -678,7 +678,7 @@ angular.module('crptFit.controllers', ['ionic'])
 
   self.getMessagesById = function(){
     self.sendHelp = Message.clearCap();
-  }; 
+  };
   //Creates a new chatroom, closes friend popup, and forces a page reload so the new chat is immediately ready to use
   self.makeChat = function(userId){
     $scope.myPopup.close();
@@ -691,6 +691,7 @@ angular.module('crptFit.controllers', ['ionic'])
     Message.messageUpdate(val);
     self.sendTo.val = null;
     self.returnMessage = Message.messageToPage();
+    $ionicScrollDelegate.$getByHandle('mainScroll').scrollBottom(true);
   };
 
   self.capChatId = function(chatId){
@@ -700,19 +701,23 @@ angular.module('crptFit.controllers', ['ionic'])
   //NOTE Refactor for group chat
   self.connect = function(id){
     var socket = io();
-    socket.emit('connecting', id)
+    socket.emit('connecting', id);
     socket.on('message-append', function(id, message){
-      self.sendMessage(id, message)
-    })
+      self.sendMessage(id, message);
+      $ionicScrollDelegate.$getByHandle('mainScroll').scrollBottom(true);
+    });
+
     $scope.$on('$ionicView.leave', function(event){
-      socket.emit('disconnect', id)
-    })
+      socket.emit('disconnect', id);
+    });
   };
+
   //Sends message to socket connection in server to relay message content to all users in the socket room for live message update
   self.liveUpdate = function(chatId, message){
     var socket = io();
     socket.emit('chatroom id', chatId, message);
   };
+
   //Opens separate window with friends list to create new chats
   $scope.showPopup = function() {
     $scope.data = {};
@@ -768,9 +773,11 @@ angular.module('crptFit.controllers', ['ionic'])
         self.showRequests();
       });
   };
+
   self.removeFriended = function(person){
-    self.reqlist.splice(self.reqlist.indexOf(person), 1)
-  }
+    self.reqlist.splice(self.reqlist.indexOf(person), 1);
+  };
+
   self.showSearchResults = function(username){
     $http({
       method: 'GET',
@@ -890,7 +897,7 @@ angular.module('crptFit.controllers', ['ionic'])
        else {
        angular.forEach(users.data, function(card) {
          if(card[0] === null) {
-           return
+           return;
          } else {
          self.addCard(card[0].profile_pic, card[0].username, card[0].id, card[0].profile);
          console.log('THESE ARE CARDS', self.cards)
@@ -911,13 +918,13 @@ angular.module('crptFit.controllers', ['ionic'])
             //template: '<div class="popupImage"><img src="https://developer.apple.com/watch/human-interface-guidelines/icons-and-images/images/icon-and-image-large-icon-fitness.png"></div>'
      });
         } else {
-          return
+          return;
         }
-      })
+      });
   };
 
     self.cardDislike = function(card) {
-      Finder.onLeftSwipe(self.cards[0].id)
+      Finder.onLeftSwipe(self.cards[0].id);
     };
 
     self.removeCard = function($index) {
@@ -925,4 +932,4 @@ angular.module('crptFit.controllers', ['ionic'])
     };
   self.find = Finder.getUsers();
 
-}])
+}]);
