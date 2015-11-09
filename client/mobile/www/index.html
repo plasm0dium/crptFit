@@ -17,11 +17,27 @@
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
-
+    <!-- NOTE grunt file compression needed here -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.1/angular-cookies.min.js"> </script>
     <script src="js/app.js"></script>
-    <script src="js/controllers.js"></script>
-    <script src="js/services.js"></script>
+    <script src="js/controllers/benchCtrl.js"></script>
+    <script src="js/controllers/cardsCtrl.js"></script>
+    <script src="js/controllers/deadliftCtrl.js"></script>
+    <script src="js/controllers/homeCtrl.js"></script>
+    <script src="js/controllers/messageCtrl.js"></script>
+    <script src="js/controllers/profileCtrl.js"></script>
+    <script src="js/controllers/socialCtrl.js"></script>
+    <script src="js/controllers/speedCtrl.js"></script>
+    <script src="js/controllers/squatsCtrl.js"></script>
+    <script src="js/controllers/taskCtrl.js"></script>
+    <script src="js/controllers/viewprofileCtrl.js"></script>
+    <script src="js/controllers/weightCtrl.js"></script>
+    <script src="js/services/finderFact.js"></script>
+    <script src="js/services/messageFact.js"></script>
+    <script src="js/services/progressFact.js"></script>
+    <script src="js/services/socialFact.js"></script>
+    <script src="js/services/taskFact.js"></script>
+    <script src="js/services/userFact.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.highcharts.com/adapters/standalone-framework.js"></script>
@@ -34,7 +50,7 @@
     <ion-nav-view>
       <ion-side-menus>
         <ion-side-menu side="left">
-          <ion-content ng-controller="ProfileCtrl as ctrl" class="sideProfile">
+          <ion-content class="sideProfile" ng-controller="ProfileCtrl as ctrl">
             <div class="sideBar-img-box">
               <img class="sideBar-pic" ng-src="{{ctrl.pic}}">
             </div>

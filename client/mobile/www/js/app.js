@@ -1,4 +1,4 @@
-angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', 'highcharts-ng', 'ionic.contrib.ui.tinderCards'])
+angular.module('crptFit', ['ionic', 'highcharts-ng', 'ionic.contrib.ui.tinderCards'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -27,6 +27,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         views: {
         'app-nav': {
           templateUrl: 'templates/messages-send-tab.html',
+          controller: 'MessagesCtrl as ctrl' 
         }
       }
   })
@@ -44,7 +45,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/profile-tab.html',
-          controller: 'ProfileCtrl'
+          controller: 'ProfileCtrl as ctrl'  
         }
       }
   })
@@ -62,14 +63,14 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
         'app-nav': {
           templateUrl: 'templates/strength-tab.html',
         }
-      }
+      }  
   })
   .state('benchpress', {
     url: '/benchpress',
       views: {
         'app-nav': {
           templateUrl: 'templates/benchpress-tab.html',
-          controller: 'ProgressCtrlBench'
+          controller: 'ProgressCtrlBench as ctrl'  
         }
       }
   })
@@ -78,7 +79,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
       'app-nav': {
         templateUrl: 'templates/deadlift-tab.html',
-        controller: 'ProgressCtrlDeadlift'
+        controller: 'ProgressCtrlDeadlift as ctrl'
         }
       }
   })
@@ -87,7 +88,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/squats-tab.html',
-          controller: 'ProgressCtrlSquats'
+          controller: 'ProgressCtrlSquats as ctrl'  
         }
       }
   })
@@ -96,7 +97,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/weight-tab.html',
-          controller: 'ProgressCtrlWgt'
+          controller: 'ProgressCtrlWgt as ctrl'  
         }
       }
   })
@@ -105,7 +106,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/speed-tab.html',
-          controller: 'ProgressCtrlSpd'
+          controller: 'ProgressCtrlSpd as ctrl'  
         }
       }
   })
@@ -114,7 +115,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/task-tab.html',
-          controller: 'ProgressCtrlTask'
+          controller: 'ProgressCtrlTask as ctrl'  
         }
       }
   })
@@ -123,6 +124,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/homepage-tab.html',
+          controller: 'HomeCtrl as ctrl' 
         }
       }
   })
@@ -131,6 +133,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/messages-tab.html',
+          controller: 'MessagesCtrl as ctrl' 
         }
       }
   })
@@ -139,6 +142,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/social-tab.html',
+          controller: 'SocialCtrl as ctrl'  
         }
       }
   })
@@ -147,6 +151,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/profile-view.html',
+          controller: 'ProfileCtlr as ctrl'  
         }
       }
   })
@@ -155,7 +160,7 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
       views: {
         'app-nav': {
           templateUrl: 'templates/tinder-tab.html',
-          controller: 'CardsCtrl'
+          controller: 'CardsCtrl as ctrl'
         }
       }
   })
@@ -179,7 +184,8 @@ angular.module('crptFit', ['ionic', 'crptFit.controllers', 'crptFit.services', '
     url: '/profile-edit',
       views: {
         'app-nav': {
-          templateUrl: '/templates/profile-edit.html'
+          templateUrl: '/templates/profile-edit.html',
+          controller: 'ProfileCtrl as ctrl'  
         }
       }
   })
